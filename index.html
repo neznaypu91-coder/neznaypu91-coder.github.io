@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Финансы — исправленные платежи</title>
+    <title>Финансы</title>
     <style>
         * {
             margin: 0;
@@ -26,7 +26,7 @@
             width: 100%;
             background: white;
             border-radius: 32px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 6px 12px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
             padding: 20px 16px;
         }
 
@@ -35,7 +35,6 @@
             font-weight: 700;
             color: #1a1e2b;
             margin-bottom: 16px;
-            letter-spacing: -0.3px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -51,33 +50,29 @@
         }
 
         .balance-card {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            background: linear-gradient(135deg, #1e293b, #0f172a);
             border-radius: 28px;
             padding: 22px 20px;
             margin-bottom: 24px;
             color: white;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
         .balance-label {
             font-size: 14px;
-            font-weight: 500;
             opacity: 0.7;
-            letter-spacing: 0.3px;
             margin-bottom: 6px;
         }
 
         .balance-amount {
             font-size: 40px;
             font-weight: 700;
-            line-height: 1.1;
             margin-bottom: 20px;
         }
 
         .balance-stats {
             display: flex;
             gap: 16px;
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255,255,255,0.15);
             padding-top: 16px;
         }
 
@@ -96,13 +91,8 @@
             font-weight: 600;
         }
 
-        .stat-value.positive {
-            color: #4ade80;
-        }
-
-        .stat-value.negative {
-            color: #f87171;
-        }
+        .positive { color: #4ade80; }
+        .negative { color: #f87171; }
 
         .tabs {
             display: flex;
@@ -115,7 +105,7 @@
 
         .tab-btn {
             flex: 1;
-            padding: 12px 0;
+            padding: 12px;
             border: none;
             background: transparent;
             border-radius: 40px;
@@ -123,13 +113,12 @@
             font-size: 15px;
             color: #6b7280;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
         .tab-btn.active {
             background: white;
             color: #1e293b;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
         .card {
@@ -138,14 +127,12 @@
             padding: 18px 16px;
             margin-bottom: 16px;
             border: 1px solid #edf2f7;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
             cursor: pointer;
         }
 
@@ -156,20 +143,6 @@
             font-weight: 600;
             font-size: 16px;
             color: #1e293b;
-        }
-
-        .card-title .icon {
-            font-size: 20px;
-        }
-
-        .collapse-icon {
-            font-size: 18px;
-            color: #94a3b8;
-            transition: transform 0.2s;
-        }
-
-        .collapse-icon.collapsed {
-            transform: rotate(-90deg);
         }
 
         .card-right {
@@ -207,8 +180,18 @@
             color: #166534;
         }
 
+        .collapse-icon {
+            font-size: 18px;
+            color: #94a3b8;
+            transition: transform 0.2s;
+        }
+
+        .collapse-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
         .card-content {
-            transition: all 0.2s;
+            margin-top: 16px;
         }
 
         .card-content.collapsed {
@@ -230,12 +213,6 @@
             background: #fafbfc;
         }
 
-        .add-row input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            background: white;
-        }
-
         .add-row button {
             background: #3b82f6;
             border: none;
@@ -245,15 +222,10 @@
             border-radius: 30px;
             font-size: 15px;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .add-row button:hover {
-            background: #2563eb;
         }
 
         .items-list {
-            max-height: 250px;
+            max-height: 300px;
             overflow-y: auto;
         }
 
@@ -265,10 +237,6 @@
             border-bottom: 1px solid #f1f5f9;
         }
 
-        .list-item:last-child {
-            border-bottom: none;
-        }
-
         .item-info {
             display: flex;
             flex-direction: column;
@@ -278,7 +246,6 @@
         .item-title {
             font-weight: 600;
             font-size: 15px;
-            color: #1e293b;
         }
 
         .item-date {
@@ -291,13 +258,8 @@
             font-size: 16px;
         }
 
-        .item-amount.income {
-            color: #10b981;
-        }
-
-        .item-amount.expense {
-            color: #ef4444;
-        }
+        .item-amount.income { color: #10b981; }
+        .item-amount.expense { color: #ef4444; }
 
         .delete-btn {
             background: none;
@@ -308,105 +270,18 @@
             padding: 4px;
         }
 
-        .calendar-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .calendar-nav button {
-            background: #f1f4f8;
-            border: none;
-            border-radius: 30px;
-            padding: 8px 16px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #334155;
-            cursor: pointer;
-        }
-
-        .month-year {
-            font-weight: 600;
-            font-size: 16px;
-            color: #1e293b;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            margin-bottom: 16px;
-        }
-
-        .weekday {
-            text-align: center;
-            font-size: 12px;
-            font-weight: 600;
-            color: #94a3b8;
-            padding: 8px 0;
-        }
-
-        .day-cell {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 500;
-            color: #1e293b;
-            background: white;
-            border-radius: 30px;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .day-cell.selected {
-            background: #3b82f6;
-            color: white;
-            font-weight: 600;
-        }
-
-        .day-cell.empty {
-            color: #cbd5e1;
-            cursor: default;
-        }
-
-        .day-indicator {
-            position: absolute;
-            bottom: 2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-        }
-
-        .indicator-income {
-            background: #10b981;
-        }
-
-        .indicator-expense {
-            background: #ef4444;
-        }
-
-        .indicator-obligation {
-            background: #f97316;
-            width: 6px;
-            height: 6px;
-        }
-
+        /* Обязательные платежи - отдельный блок */
         .obligation-item {
             background: #fafbfc;
             border-radius: 18px;
             padding: 14px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             border-left: 4px solid #f97316;
         }
 
         .obligation-item.paid {
             border-left-color: #10b981;
-            opacity: 0.8;
+            opacity: 0.9;
         }
 
         .obligation-header {
@@ -419,7 +294,6 @@
         .obligation-title {
             font-weight: 600;
             font-size: 15px;
-            color: #1e293b;
         }
 
         .obligation-amount {
@@ -457,19 +331,40 @@
             color: #166534;
         }
 
-        .form-group {
-            margin-bottom: 12px;
+        .obligation-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-blue {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .btn-red {
+            background: #fee2e2;
+            color: #b91c1c;
         }
 
         .form-row {
             display: flex;
             gap: 8px;
-            flex-wrap: wrap;
+            margin-bottom: 12px;
         }
 
         .form-input {
             flex: 1;
-            padding: 14px 16px;
+            padding: 12px 16px;
             border: 1px solid #e2e8f0;
             border-radius: 30px;
             font-size: 14px;
@@ -477,7 +372,7 @@
         }
 
         .form-select {
-            padding: 14px 16px;
+            padding: 12px 16px;
             border: 1px solid #e2e8f0;
             border-radius: 30px;
             font-size: 14px;
@@ -489,7 +384,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-top: 8px;
+            margin: 12px 0;
         }
 
         .periodicity-label {
@@ -517,11 +412,6 @@
             font-size: 15px;
             cursor: pointer;
             width: 100%;
-            transition: all 0.2s;
-        }
-
-        .btn-primary:hover {
-            background: #2563eb;
         }
 
         .type-toggle {
@@ -561,25 +451,24 @@
             padding: 16px;
             border-radius: 20px;
             margin-bottom: 12px;
+            flex-wrap: wrap;
         }
 
         .debt-fields.visible {
             display: flex;
-            flex-wrap: wrap;
         }
 
         .debt-fields input {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
             border: 1px solid #fcd34d;
             border-radius: 30px;
-            background: white;
         }
 
         .debt-fields label {
             display: flex;
             align-items: center;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: #b45309;
         }
@@ -643,7 +532,6 @@
         .analytics-title {
             font-size: 18px;
             font-weight: 700;
-            color: #1e293b;
             margin-bottom: 20px;
         }
 
@@ -658,7 +546,6 @@
             height: 100%;
             border-radius: 50%;
             background: #edf2f7;
-            transition: all 0.3s;
         }
 
         .legend {
@@ -671,7 +558,7 @@
             gap: 10px;
             padding: 8px 0;
             border-bottom: 1px solid #f1f5f9;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .legend-color {
@@ -680,19 +567,13 @@
             border-radius: 4px;
         }
 
-        .legend-category {
-            flex: 1;
-            color: #334155;
-        }
-
         .legend-amount {
             font-weight: 600;
-            color: #1e293b;
+            margin-left: auto;
         }
 
         .legend-percent {
             color: #64748b;
-            font-size: 13px;
             min-width: 50px;
             text-align: right;
         }
@@ -720,9 +601,6 @@
             font-size: 16px;
             font-weight: 700;
         }
-
-        .positive { color: #10b981; }
-        .negative { color: #ef4444; }
 
         .import-export {
             display: flex;
@@ -755,10 +633,10 @@
 </head>
 <body>
 <div class="app">
-    <h1>ФинПомощник <span>v2.0</span></h1>
+    <h1>ФинПомощник <span>v3.0</span></h1>
     
     <div class="import-export">
-        <span style="font-weight: 500; color: #334155;">💾 Резерв</span>
+        <span style="font-weight: 500;">💾 Резерв</span>
         <div style="display: flex; gap: 8px;">
             <button id="exportDataBtn">📤 Экспорт</button>
             <button id="importDataBtn">📥 Импорт</button>
@@ -786,11 +664,12 @@
         <button class="tab-btn" id="tabAnalytics">Аналитика</button>
     </div>
 
-    <div id="operationsTab" style="display: block;">
+    <div id="operationsTab">
+        <!-- Возможный доход -->
         <div class="card">
             <div class="card-header" id="potentialHeader">
                 <div class="card-title">
-                    <span class="icon">📌</span> Возможный доход
+                    <span>📌</span> Возможный доход
                 </div>
                 <div class="card-right">
                     <span class="badge orange" id="potentialTotalSum">0 ₽</span>
@@ -807,10 +686,11 @@
             </div>
         </div>
 
+        <!-- Календарь -->
         <div class="card">
             <div class="card-header" id="calendarHeader">
                 <div class="card-title">
-                    <span class="icon">📅</span> Календарь
+                    <span>📅</span> Календарь
                 </div>
                 <div class="card-right">
                     <span class="badge blue" id="currentDateTime"></span>
@@ -818,40 +698,40 @@
                 </div>
             </div>
             <div class="card-content" id="calendarContent">
-                <div class="calendar-nav">
-                    <button id="prevMonthBtn">←</button>
-                    <span class="month-year" id="currentMonthYear"></span>
-                    <button id="nextMonthBtn">→</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <button id="prevMonthBtn" class="filter-btn">←</button>
+                    <span class="badge" id="currentMonthYear"></span>
+                    <button id="nextMonthBtn" class="filter-btn">→</button>
                 </div>
-                <div class="calendar-grid" id="calendarGrid"></div>
+                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 16px;" id="calendarGrid"></div>
                 <div id="selectedDateInfo" class="empty-state">Выберите дату</div>
             </div>
         </div>
 
+        <!-- ОБЯЗАТЕЛЬНЫЕ ПЛАТЕЖИ (ПЕРЕПИСАНО) -->
         <div class="card">
             <div class="card-header" id="obligationsHeader">
                 <div class="card-title">
-                    <span class="icon">📌</span> Обязательные
+                    <span>📌</span> Обязательные
                 </div>
                 <div class="card-right">
-                    <span class="badge orange" id="nextPaymentTimer"></span>
+                    <span class="badge orange" id="nextPaymentTimer">Нет</span>
                     <span class="badge red" id="monthObligationLeft">0 ₽</span>
                     <span class="collapse-icon" id="collapseIcon">▼</span>
                 </div>
             </div>
             <div class="card-content" id="obligationsContent">
-                <div class="items-list" id="obligationsList">
-                    <div class="empty-state">Нет платежей на этот месяц</div>
-                </div>
+                <!-- СПИСОК ПЛАТЕЖЕЙ -->
+                <div class="items-list" id="obligationsList"></div>
 
-                <div style="margin-top: 16px;">
+                <!-- ФОРМА ДОБАВЛЕНИЯ -->
+                <div style="margin-top: 20px;">
                     <div class="form-row">
                         <input type="text" id="obligTitle" class="form-input" placeholder="Название">
                         <input type="number" id="obligAmount" class="form-input" placeholder="Сумма">
                     </div>
-                    <div class="form-group">
-                        <input type="date" id="obligDate" class="form-input">
-                    </div>
+                    <input type="date" id="obligDate" class="form-input" style="margin-bottom: 12px;">
+                    
                     <div class="periodicity-row">
                         <span class="periodicity-label">Повтор:</span>
                         <select id="obligPeriodicity" class="form-select">
@@ -861,14 +741,16 @@
                         </select>
                         <input type="number" id="obligMonths" class="months-input" placeholder="Кол-во" value="1" min="1" style="display: none;">
                     </div>
+                    
                     <button class="btn-primary" id="addObligationBtn" style="margin-top: 12px;">➕ Добавить платёж</button>
                 </div>
             </div>
         </div>
 
+        <!-- Новая операция -->
         <div class="card">
             <div class="card-title" style="margin-bottom: 12px;">
-                <span class="icon">💰</span> Новая операция
+                <span>💰</span> Новая операция
             </div>
             <div class="form-row">
                 <select id="categorySelect" class="form-select"></select>
@@ -886,13 +768,14 @@
                 <button class="type-btn income active" id="incomeTypeBtn">💰 Доход</button>
                 <button class="type-btn expense" id="expenseTypeBtn">💳 Расход</button>
             </div>
-            <button class="btn-primary" id="addRegularBtn" style="margin-top: 8px;">➕ Добавить</button>
+            <button class="btn-primary" id="addRegularBtn">➕ Добавить</button>
         </div>
 
+        <!-- История -->
         <div class="card">
             <div class="card-header" id="historyHeader">
                 <div class="card-title">
-                    <span class="icon">📋</span> История
+                    <span>📋</span> История
                 </div>
                 <div class="card-right">
                     <div class="history-controls">
@@ -945,6 +828,7 @@
 
 <script>
     (function(){
+        // Данные
         let transactions = [];
         let masterObligations = [];
         let potentialIncomes = [];
@@ -959,23 +843,28 @@
         let selectedCalendarDate = null;
         let currentTab = 'operations';
 
+        // Загрузка
         function loadFromStorage() {
-            const savedTrans = localStorage.getItem('transactions');
-            if (savedTrans) transactions = JSON.parse(savedTrans) || [];
+            try {
+                const savedTrans = localStorage.getItem('transactions');
+                transactions = savedTrans ? JSON.parse(savedTrans) : [];
 
-            const savedObl = localStorage.getItem('masterObligations');
-            if (savedObl) masterObligations = JSON.parse(savedObl) || [];
+                const savedObl = localStorage.getItem('masterObligations');
+                masterObligations = savedObl ? JSON.parse(savedObl) : [];
 
-            const savedPotential = localStorage.getItem('potentialIncomes');
-            if (savedPotential) potentialIncomes = JSON.parse(savedPotential) || [];
+                const savedPotential = localStorage.getItem('potentialIncomes');
+                potentialIncomes = savedPotential ? JSON.parse(savedPotential) : [];
 
-            const savedCollapsed = localStorage.getItem('collapsed');
-            if (savedCollapsed) {
-                const c = JSON.parse(savedCollapsed);
-                isObligationsCollapsed = c.obligations || false;
-                isPotentialCollapsed = c.potential || false;
-                isCalendarCollapsed = c.calendar || false;
-                isHistoryCollapsed = c.history || false;
+                const savedCollapsed = localStorage.getItem('collapsed');
+                if (savedCollapsed) {
+                    const c = JSON.parse(savedCollapsed);
+                    isObligationsCollapsed = c.obligations || false;
+                    isPotentialCollapsed = c.potential || false;
+                    isCalendarCollapsed = c.calendar || false;
+                    isHistoryCollapsed = c.history || false;
+                }
+            } catch(e) {
+                console.log('Ошибка загрузки');
             }
         }
 
@@ -991,6 +880,7 @@
             }));
         }
 
+        // Баланс
         function calcBalance() {
             let income = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
             let expense = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
@@ -1005,79 +895,88 @@
             return transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
         }
 
+        // Получение платежей на текущий месяц (ИСПРАВЛЕНО)
         function getObligationsForMonth(year, month) {
             const result = [];
+            
             masterObligations.forEach(master => {
-                // НЕ пропускаем оплаченные - показываем все
-                const startDate = new Date(master.startDate + 'T12:00:00');
-                
-                if (master.periodicity === 'once') {
-                    if (startDate.getFullYear() === year && startDate.getMonth() === month) {
-                        result.push({
-                            id: master.id,
-                            title: master.title,
-                            amount: master.amount,
-                            dueDate: master.startDate,
-                            masterId: master.id,
-                            paid: master.paid || false,
-                            periodicity: master.periodicity
-                        });
-                    }
-                } else if (master.periodicity === 'monthly') {
-                    const currentDate = new Date(year, month, 1);
-                    if (currentDate >= startDate) {
+                try {
+                    const startDate = new Date(master.startDate + 'T12:00:00');
+                    
+                    if (master.periodicity === 'once') {
+                        if (startDate.getFullYear() === year && startDate.getMonth() === month) {
+                            result.push({
+                                id: master.id,
+                                title: master.title,
+                                amount: master.amount,
+                                dueDate: master.startDate,
+                                masterId: master.id,
+                                paid: master.paid || false
+                            });
+                        }
+                    } 
+                    else if (master.periodicity === 'monthly') {
                         const dueDate = new Date(year, month, startDate.getDate());
-                        result.push({
-                            id: `${master.id}_${year}_${month}`,
-                            title: master.title,
-                            amount: master.amount,
-                            dueDate: dueDate.toISOString().split('T')[0],
-                            masterId: master.id,
-                            paid: master.paid || false,
-                            periodicity: master.periodicity
-                        });
+                        if (dueDate >= startDate) {
+                            result.push({
+                                id: master.id + '_' + year + '_' + month,
+                                title: master.title,
+                                amount: master.amount,
+                                dueDate: dueDate.toISOString().split('T')[0],
+                                masterId: master.id,
+                                paid: master.paid || false
+                            });
+                        }
                     }
-                } else if (master.periodicity === 'months' && master.remainingMonths > 0) {
-                    const currentDate = new Date(year, month, 1);
-                    const monthsDiff = (year - startDate.getFullYear()) * 12 + (month - startDate.getMonth());
-                    if (monthsDiff >= 0 && monthsDiff < master.remainingMonths) {
-                        const dueDate = new Date(year, month, startDate.getDate());
-                        result.push({
-                            id: `${master.id}_${year}_${month}`,
-                            title: master.title,
-                            amount: master.amount,
-                            dueDate: dueDate.toISOString().split('T')[0],
-                            masterId: master.id,
-                            paid: master.paid || false,
-                            periodicity: master.periodicity
-                        });
+                    else if (master.periodicity === 'months' && master.remainingMonths > 0) {
+                        const monthsDiff = (year - startDate.getFullYear()) * 12 + (month - startDate.getMonth());
+                        if (monthsDiff >= 0 && monthsDiff < master.remainingMonths) {
+                            const dueDate = new Date(year, month, startDate.getDate());
+                            result.push({
+                                id: master.id + '_' + year + '_' + month,
+                                title: master.title,
+                                amount: master.amount,
+                                dueDate: dueDate.toISOString().split('T')[0],
+                                masterId: master.id,
+                                paid: master.paid || false
+                            });
+                        }
                     }
+                } catch(e) {
+                    console.log('Ошибка обработки платежа', master);
                 }
             });
+            
             return result;
         }
 
+        // Ближайший платёж
         function getNextPayment() {
-            const all = [];
+            const now = new Date();
+            const upcoming = [];
+            
             masterObligations.forEach(m => {
                 if (!m.paid) {
-                    all.push({
+                    upcoming.push({
                         dueDate: m.startDate,
-                        title: m.title,
-                        amount: m.amount
+                        amount: m.amount,
+                        title: m.title
                     });
                 }
             });
-            all.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-            if (all.length === 0) return null;
-            return all[0];
+            
+            upcoming.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+            return upcoming[0] || null;
         }
 
+        // Обновление UI
         function updateUI() {
+            // Баланс
             document.getElementById('realBalance').textContent = calcBalance().toLocaleString() + ' ₽';
             document.getElementById('realIncome').textContent = getIncome().toLocaleString() + ' ₽';
             document.getElementById('realExpense').textContent = getExpense().toLocaleString() + ' ₽';
 
+            // Возможный доход
             const today = new Date().toISOString().split('T')[0];
             let todaySum = 0, totalSum = 0;
             potentialIncomes.forEach(inc => {
@@ -1087,6 +986,7 @@
             document.getElementById('potentialToday').textContent = todaySum.toLocaleString() + ' ₽';
             document.getElementById('potentialTotalSum').textContent = totalSum.toLocaleString() + ' ₽';
 
+            // Список возможного дохода
             const potentialList = document.getElementById('potentialList');
             if (potentialIncomes.length === 0) {
                 potentialList.innerHTML = '<div class="empty-state">Нет записей</div>';
@@ -1107,68 +1007,72 @@
                 potentialList.innerHTML = html;
             }
 
+            // ОБЯЗАТЕЛЬНЫЕ ПЛАТЕЖИ (ПЕРЕПИСАНО)
             const year = currentCalendarDate.getFullYear();
             const month = currentCalendarDate.getMonth();
             const monthObligations = getObligationsForMonth(year, month);
             
+            console.log('Платежи на месяц:', monthObligations); // Для отладки
+            
             const obligationsList = document.getElementById('obligationsList');
+            
             if (monthObligations.length === 0) {
                 obligationsList.innerHTML = '<div class="empty-state">Нет платежей на этот месяц</div>';
                 document.getElementById('monthObligationLeft').textContent = '0 ₽';
             } else {
                 let html = '';
+                let totalUnpaid = 0;
+                
                 monthObligations.forEach(obl => {
-                    const due = new Date(obl.dueDate + 'T12:00').toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
-                    const diff = new Date(obl.dueDate + 'T23:59') - new Date();
-                    const days = Math.floor(diff / (1000*60*60*24));
+                    if (!obl.paid) totalUnpaid += obl.amount;
                     
-                    let timerClass = 'badge orange';
+                    const dueDate = new Date(obl.dueDate + 'T12:00');
+                    const now = new Date();
+                    const diffTime = dueDate - now;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    let timerClass = 'obligation-timer';
                     let timerText = '';
+                    
                     if (obl.paid) {
-                        timerClass = 'badge green';
+                        timerClass += ' paid';
                         timerText = 'Оплачено';
-                    } else if (days < 0) {
-                        timerClass = 'badge red';
+                    } else if (diffDays < 0) {
+                        timerClass += ' red';
                         timerText = 'Просрочено';
-                    } else if (days === 0) {
-                        timerClass = 'badge orange';
+                    } else if (diffDays === 0) {
                         timerText = 'Сегодня';
                     } else {
-                        timerClass = 'badge orange';
-                        timerText = `${days} д`;
+                        timerText = diffDays + ' д';
                     }
                     
-                    const paidClass = obl.paid ? 'paid' : '';
+                    const dueStr = dueDate.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
                     
                     html += `
-                        <div class="obligation-item ${paidClass}">
+                        <div class="obligation-item ${obl.paid ? 'paid' : ''}">
                             <div class="obligation-header">
                                 <span class="obligation-title">${escapeHtml(obl.title)}</span>
-                                <span class="obligation-amount ${paidClass}">${obl.amount.toLocaleString()} ₽</span>
+                                <span class="obligation-amount ${obl.paid ? 'paid' : ''}">${obl.amount.toLocaleString()} ₽</span>
                             </div>
                             <div class="obligation-footer">
-                                <span class="obligation-date">📅 ${due}</span>
+                                <span class="obligation-date">📅 ${dueStr}</span>
                                 <span class="${timerClass}">⏱ ${timerText}</span>
                             </div>
                             ${!obl.paid ? `
-                                <div style="display: flex; gap: 8px; margin-top: 8px;">
-                                    <button class="filter-btn" onclick="payObligation(${obl.masterId})" style="background: #dbeafe; color: #1e40af;">✅ Оплатить</button>
-                                    <button class="filter-btn" onclick="deleteMaster(${obl.masterId})" style="background: #fee2e2; color: #b91c1c;">✕ Удалить</button>
+                                <div class="obligation-buttons">
+                                    <button class="btn-small btn-blue" onclick="payObligation(${obl.masterId})">✅ Оплатить</button>
+                                    <button class="btn-small btn-red" onclick="deleteMaster(${obl.masterId})">✕ Удалить</button>
                                 </div>
-                            ` : `
-                                <div style="margin-top: 8px; font-size: 12px; color: #10b981; text-align: right;">
-                                    ✓ Оплачено
-                                </div>
-                            `}
+                            ` : ''}
                         </div>
                     `;
                 });
-                obligationsList.innerHTML = html;
                 
-                const totalUnpaid = monthObligations.filter(o => !o.paid).reduce((s, o) => s + o.amount, 0);
+                obligationsList.innerHTML = html;
                 document.getElementById('monthObligationLeft').textContent = totalUnpaid.toLocaleString() + ' ₽';
             }
 
+            // Ближайший платёж
             const next = getNextPayment();
             if (next) {
                 const days = Math.ceil((new Date(next.dueDate + 'T12:00') - new Date()) / (1000*60*60*24));
@@ -1177,10 +1081,16 @@
                 document.getElementById('nextPaymentTimer').textContent = 'Нет';
             }
 
+            // История
             renderTransactions();
+
+            // Календарь
             renderCalendar();
+
+            // Аналитика
             updateAnalytics();
 
+            // Состояния сворачивания
             document.getElementById('potentialContent').classList.toggle('collapsed', isPotentialCollapsed);
             document.getElementById('potentialCollapseIcon').classList.toggle('collapsed', isPotentialCollapsed);
             document.getElementById('calendarContent').classList.toggle('collapsed', isCalendarCollapsed);
@@ -1191,6 +1101,7 @@
             document.getElementById('historyCollapseIcon').classList.toggle('collapsed', isHistoryCollapsed);
         }
 
+        // Календарь
         function renderCalendar() {
             const year = currentCalendarDate.getFullYear();
             const month = currentCalendarDate.getMonth();
@@ -1202,14 +1113,15 @@
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             let startOffset = firstDay === 0 ? 6 : firstDay - 1;
             
-            let gridHtml = '';
             const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+            let gridHtml = '';
+            
             weekdays.forEach(day => {
-                gridHtml += `<div class="weekday">${day}</div>`;
+                gridHtml += `<div style="text-align:center; font-size:12px; color:#94a3b8; padding:8px 0;">${day}</div>`;
             });
             
             for (let i = 0; i < startOffset; i++) {
-                gridHtml += '<div class="day-cell empty"></div>';
+                gridHtml += '<div style="aspect-ratio:1; display:flex; align-items:center; justify-content:center; color:#cbd5e1;"></div>';
             }
             
             const monthObligations = getObligationsForMonth(year, month);
@@ -1225,22 +1137,19 @@
                 
                 const isSelected = selectedCalendarDate === dateStr ? 'selected' : '';
                 
-                let indicators = '';
-                if (hasIncome) indicators += '<span class="day-indicator indicator-income"></span>';
-                if (hasExpense) indicators += '<span class="day-indicator indicator-expense"></span>';
-                if (hasObligation) indicators += '<span class="day-indicator indicator-obligation"></span>';
-                
                 gridHtml += `
-                    <div class="day-cell ${isSelected}" data-date="${dateStr}">
+                    <div style="aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:500; background:${isSelected ? '#3b82f6' : 'white'}; color:${isSelected ? 'white' : '#1e293b'}; border-radius:30px; cursor:pointer; position:relative;" data-date="${dateStr}">
                         ${d}
-                        ${indicators}
+                        ${hasIncome ? '<span style="position:absolute; bottom:2px; left:50%; transform:translateX(-50%); width:4px; height:4px; background:#10b981; border-radius:50%;"></span>' : ''}
+                        ${hasExpense ? '<span style="position:absolute; bottom:2px; left:50%; transform:translateX(6px); width:4px; height:4px; background:#ef4444; border-radius:50%;"></span>' : ''}
+                        ${hasObligation ? '<span style="position:absolute; top:2px; right:2px; width:6px; height:6px; background:#f97316; border-radius:50%;"></span>' : ''}
                     </div>
                 `;
             }
             
             document.getElementById('calendarGrid').innerHTML = gridHtml;
             
-            document.querySelectorAll('.day-cell[data-date]').forEach(day => {
+            document.querySelectorAll('[data-date]').forEach(day => {
                 day.addEventListener('click', function() {
                     selectedCalendarDate = this.dataset.date;
                     renderCalendar();
@@ -1257,20 +1166,20 @@
             const expense = dayTrans.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
             
             let html = `
-                <div style="font-weight: 600; margin-bottom: 8px;">📅 ${new Date(dateStr).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}</div>
-                <div style="display: flex; gap: 12px; margin-bottom: 8px;">
-                    <span style="color: #10b981;">+${income.toLocaleString()} ₽</span>
-                    <span style="color: #ef4444;">-${expense.toLocaleString()} ₽</span>
+                <div style="font-weight:600; margin-bottom:8px;">📅 ${new Date(dateStr).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}</div>
+                <div style="display:flex; gap:12px; margin-bottom:8px;">
+                    <span style="color:#10b981;">+${income.toLocaleString()} ₽</span>
+                    <span style="color:#ef4444;">-${expense.toLocaleString()} ₽</span>
                 </div>
             `;
             
             if (dayTrans.length > 0) {
-                html += '<div style="max-height: 150px; overflow-y: auto;">';
+                html += '<div style="max-height:150px; overflow-y:auto;">';
                 dayTrans.forEach(t => {
                     html += `
-                        <div style="display: flex; justify-content: space-between; padding: 6px 0;">
+                        <div style="display:flex; justify-content:space-between; padding:6px 0;">
                             <span>${escapeHtml(t.title)}</span>
-                            <span style="color: ${t.type === 'income' ? '#10b981' : '#ef4444'};">
+                            <span style="color:${t.type === 'income' ? '#10b981' : '#ef4444'};">
                                 ${t.type === 'income' ? '+' : '-'}${t.amount.toLocaleString()} ₽
                             </span>
                         </div>
@@ -1324,6 +1233,7 @@
             list.innerHTML = html;
         }
 
+        // Действия
         window.deletePotential = function(id) {
             potentialIncomes = potentialIncomes.filter(i => i.id !== id);
             saveToStorage();
@@ -1346,10 +1256,9 @@
             if (master.periodicity === 'once') {
                 master.paid = true;
             } else if (master.periodicity === 'months') {
-                master.remainingMonths -= 1;
+                master.remainingMonths = (master.remainingMonths || 1) - 1;
                 if (master.remainingMonths <= 0) master.paid = true;
             }
-            // monthly - не помечаем как оплаченный
 
             saveToStorage();
             updateUI();
@@ -1375,6 +1284,7 @@
             document.getElementById('tabOperations').click();
         };
 
+        // Обработчики
         document.getElementById('addPotentialBtn').addEventListener('click', () => {
             const amount = parseFloat(document.getElementById('potentialAmount').value);
             if (amount > 0) {
@@ -1466,6 +1376,7 @@
             document.getElementById('debtFields').classList.remove('visible');
         });
 
+        // Переключение типа
         document.getElementById('incomeTypeBtn').addEventListener('click', () => {
             currentType = 'income';
             document.getElementById('incomeTypeBtn').classList.add('active');
@@ -1520,6 +1431,7 @@
             }
         });
 
+        // Фильтры
         document.getElementById('filterAll').addEventListener('click', function() {
             currentFilter = 'all';
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -1548,6 +1460,7 @@
             renderTransactions();
         });
 
+        // Сворачивание
         document.getElementById('potentialHeader').addEventListener('click', () => {
             isPotentialCollapsed = !isPotentialCollapsed;
             saveToStorage();
@@ -1572,6 +1485,7 @@
             updateUI();
         });
 
+        // Навигация календаря
         document.getElementById('prevMonthBtn').addEventListener('click', () => {
             currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
             updateUI();
@@ -1582,6 +1496,7 @@
             updateUI();
         });
 
+        // Вкладки
         document.getElementById('tabOperations').addEventListener('click', function() {
             currentTab = 'operations';
             document.getElementById('tabOperations').classList.add('active');
@@ -1621,7 +1536,7 @@
                     legend += `
                         <div class="legend-item">
                             <div class="legend-color" style="background: ${colors[i % colors.length]};"></div>
-                            <span class="legend-category">${cat}</span>
+                            <span>${cat}</span>
                             <span class="legend-amount">${amt.toLocaleString()} ₽</span>
                             <span class="legend-percent">${p.toFixed(1)}%</span>
                         </div>
@@ -1641,6 +1556,7 @@
             document.getElementById('totalOperations').textContent = transactions.length;
         }
 
+        // Импорт/экспорт
         document.getElementById('exportDataBtn').addEventListener('click', () => {
             const data = { transactions, masterObligations, potentialIncomes };
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -1687,6 +1603,20 @@
             updateCategorySelect();
             updateTime();
             setInterval(updateTime, 1000);
+            
+            // Тестовые данные если пусто
+            if (masterObligations.length === 0) {
+                masterObligations.push({
+                    id: 1,
+                    title: 'Тестовый платёж',
+                    amount: 5000,
+                    startDate: new Date().toISOString().split('T')[0],
+                    periodicity: 'once',
+                    paid: false
+                });
+                saveToStorage();
+            }
+            
             updateUI();
 
             const today = new Date().toISOString().split('T')[0];

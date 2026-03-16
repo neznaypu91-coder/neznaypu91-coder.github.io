@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Финансы + Мобильная версия</title>
+    <title>Финансы + Периодические платежи</title>
     <style>
         * {
             box-sizing: border-box;
@@ -526,29 +526,61 @@
         }
         .add-obligation {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            flex-direction: column;
+            gap: 12px;
             margin-top: 16px;
             background: #f8fafc;
             border-radius: 20px;
             padding: 16px;
         }
-        .add-obligation input {
-            flex: 1 1 120px;
+        .add-obligation-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .add-obligation-row input, .add-obligation-row select {
+            flex: 1;
             padding: 12px;
             border: 1px solid #e2e8f0;
             border-radius: 30px;
             font-size: 13px;
+        }
+        .add-obligation-row.periodicity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .periodicity-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #2d3748;
+            min-width: 80px;
+        }
+        .periodicity-select {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 13px;
+        }
+        .months-input {
+            width: 70px;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 13px;
+            text-align: center;
         }
         .add-obligation button {
             background: #4299e1;
             border: none;
             color: white;
             font-weight: 600;
-            padding: 0 20px;
+            padding: 12px;
             border-radius: 30px;
             font-size: 14px;
             cursor: pointer;
+            width: 100%;
         }
 
         /* БЛОК ДОХОДОВ/РАСХОДОВ */
@@ -993,10 +1025,23 @@
             </div>
 
             <div class="add-obligation">
-                <input type="text" id="obligTitle" placeholder="Название">
-                <input type="number" id="obligAmount" placeholder="Сумма">
-                <input type="date" id="obligDate">
-                <button id="addObligationBtn">➕</button>
+                <div class="add-obligation-row">
+                    <input type="text" id="obligTitle" placeholder="Название">
+                    <input type="number" id="obligAmount" placeholder="Сумма">
+                </div>
+                <div class="add-obligation-row">
+                    <input type="date" id="obligDate">
+                </div>
+                <div class="add-obligation-row periodicity">
+                    <span class="periodicity-label">Повтор:</span>
+                    <select id="obligPeriodicity" class="periodicity-select">
+                        <option value="once">Единоразово</option>
+                        <option value="monthly">Каждый месяц</option>
+                        <option value="months">Несколько месяцев</option>
+                    </select>
+                    <input type="number" id="obligMonths" class="months-input" placeholder="Кол-во" value="1" min="1" style="display:none;">
+                </div>
+                <button id="addObligationBtn">➕ Добавить обязательный платёж</button>
             </div>
         </div>
 
@@ -1090,7 +1135,7 @@
     (function(){
         // ========== ДАННЫЕ ==========
         let transactions = [];
-        let obligations = [];
+        let obligations = []; // все обязательные платежи (включая периодические)
         let potentialIncomes = [];
 
         let currentType = 'income';
@@ -1112,7 +1157,7 @@
                 transactions = [];
             }
 
-            const savedObl = localStorage.getItem('finance_obligations');
+            const savedObl = localStorage.getItem('finance_obligations_v2');
             if (savedObl) {
                 try { obligations = JSON.parse(savedObl); } catch { obligations = []; }
             } else {
@@ -1149,7 +1194,7 @@
 
         function saveToStorage() {
             localStorage.setItem('finance_real_transactions', JSON.stringify(transactions));
-            localStorage.setItem('finance_obligations', JSON.stringify(obligations));
+            localStorage.setItem('finance_obligations_v2', JSON.stringify(obligations));
             localStorage.setItem('finance_potential_incomes', JSON.stringify(potentialIncomes));
             localStorage.setItem('finance_obligations_collapsed', isObligationsCollapsed);
             localStorage.setItem('finance_potential_collapsed', isPotentialCollapsed);
@@ -1213,7 +1258,7 @@
             updatePotentialStats();
             renderPotentialList();
             updateRealStats();
-            renderObligations();
+            renderObligationsForCurrentMonth();
             renderTransactions();
             updateCategorySelect();
             updatePotentialCollapseUI();
@@ -1238,8 +1283,20 @@
             return transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
         }
 
-        function getTotalUnpaidObligations() {
-            return obligations.filter(o => !o.paid).reduce((sum, o) => sum + o.amount, 0);
+        // ========== ПОЛУЧЕНИЕ ПЛАТЕЖЕЙ ДЛЯ ТЕКУЩЕГО МЕСЯЦА ==========
+        function getObligationsForMonth(year, month) {
+            return obligations.filter(o => {
+                if (o.paid) return false;
+                const dueDate = new Date(o.dueDate + 'T12:00:00');
+                return dueDate.getFullYear() === year && dueDate.getMonth() === month;
+            });
+        }
+
+        function getTotalUnpaidForCurrentMonth() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            const monthObligations = getObligationsForMonth(year, month);
+            return monthObligations.reduce((sum, o) => sum + o.amount, 0);
         }
 
         // ========== ВОЗМОЖНЫЙ ДОХОД ==========
@@ -1364,6 +1421,7 @@
                     <option value="Другое">📦 Другое</option>
                 `;
             } else {
+                // Получаем уникальные названия из обязательных платежей
                 const obligationTitles = [...new Set(obligations.map(o => o.title))];
                 let obligationOptions = '';
                 obligationTitles.forEach(title => {
@@ -1394,7 +1452,7 @@
             }
         }
 
-        // ========== ОБЯЗАТЕЛЬНЫЕ ПЛАТЕЖИ ==========
+        // ========== ТАЙМЕР ==========
         function getTimeRemaining(dueDate) {
             const diff = new Date(dueDate + 'T23:59') - new Date();
             if (diff < 0) return { text: 'Просрочено', class: 'timer-passed' };
@@ -1402,18 +1460,21 @@
             return { text: `${days} д`, class: days < 3 ? 'timer-urgent' : '' };
         }
 
-        function renderObligations() {
+        // ========== ОБЯЗАТЕЛЬНЫЕ ПЛАТЕЖИ ДЛЯ ТЕКУЩЕГО МЕСЯЦА ==========
+        function renderObligationsForCurrentMonth() {
             const container = document.getElementById('obligationsList');
             if (!container) return;
 
-            const unpaid = obligations.filter(o => !o.paid);
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            const monthObligations = getObligationsForMonth(year, month);
             
-            if (unpaid.length === 0) {
-                container.innerHTML = '<div class="empty-message">Нет активных платежей</div>';
+            if (monthObligations.length === 0) {
+                container.innerHTML = '<div class="empty-message">Нет платежей на этот месяц</div>';
                 document.getElementById('monthObligationLeft').textContent = '0 ₽';
             } else {
                 let html = '';
-                unpaid.forEach(obl => {
+                monthObligations.forEach(obl => {
                     const timer = getTimeRemaining(obl.dueDate);
                     const due = new Date(obl.dueDate + 'T12:00').toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
                     
@@ -1436,61 +1497,141 @@
                 });
                 container.innerHTML = html;
                 
-                const leftUnpaid = unpaid.reduce((s, o) => s + o.amount, 0);
-                document.getElementById('monthObligationLeft').textContent = leftUnpaid.toLocaleString() + ' ₽';
+                const total = monthObligations.reduce((s, o) => s + o.amount, 0);
+                document.getElementById('monthObligationLeft').textContent = total.toLocaleString() + ' ₽';
             }
             
             document.getElementById('obligationsList').classList.toggle('collapsed', isObligationsCollapsed);
             document.getElementById('collapseIcon').classList.toggle('collapsed', isObligationsCollapsed);
         }
 
+        // ========== ОТМЕТИТЬ КАК ОПЛАЧЕНО ==========
         window.markObligationAsPaid = function(id) {
             const obligation = obligations.find(o => o.id === id);
             if (!obligation) return;
 
+            // Создаём расход
             transactions.push({
                 id: Date.now(),
                 title: obligation.title,
                 amount: obligation.amount,
                 type: 'expense',
-                category: obligation.isDebt ? 'Вернуть долг' : obligation.title,
+                category: obligation.title,
                 date: new Date().toISOString(),
                 fromObligation: true
             });
             
-            obligations = obligations.filter(o => o.id !== id);
+            // Помечаем платёж как оплаченный
+            obligation.paid = true;
+            
+            // Если это периодический платёж, создаём следующий
+            if (obligation.periodicity === 'monthly') {
+                const nextDate = new Date(obligation.dueDate);
+                nextDate.setMonth(nextDate.getMonth() + 1);
+                
+                obligations.push({
+                    id: Date.now() + 1000,
+                    title: obligation.title,
+                    amount: obligation.amount,
+                    dueDate: nextDate.toISOString().split('T')[0],
+                    paid: false,
+                    periodicity: 'monthly'
+                });
+            } else if (obligation.periodicity === 'months' && obligation.remainingMonths > 1) {
+                const nextDate = new Date(obligation.dueDate);
+                nextDate.setMonth(nextDate.getMonth() + 1);
+                
+                obligations.push({
+                    id: Date.now() + 1000,
+                    title: obligation.title,
+                    amount: obligation.amount,
+                    dueDate: nextDate.toISOString().split('T')[0],
+                    paid: false,
+                    periodicity: 'months',
+                    remainingMonths: obligation.remainingMonths - 1
+                });
+            }
+            
             saveToStorage();
-            updateAllUI();
+            renderObligationsForCurrentMonth();
+            updateRealStats();
+            renderTransactions();
+            renderCalendar();
         };
 
+        // ========== УДАЛИТЬ ОБЯЗАТЕЛЬНЫЙ ПЛАТЁЖ ==========
         window.deleteObligation = function(id) {
             obligations = obligations.filter(o => o.id !== id);
             saveToStorage();
-            updateAllUI();
+            renderObligationsForCurrentMonth();
+            updateRealStats();
+            renderCalendar();
         };
 
+        // ========== ДОБАВЛЕНИЕ ОБЯЗАТЕЛЬНОГО ПЛАТЕЖА ==========
         document.getElementById('addObligationBtn').addEventListener('click', function() {
             const title = document.getElementById('obligTitle').value.trim();
             const amount = parseFloat(document.getElementById('obligAmount').value);
             const dateStr = document.getElementById('obligDate').value;
+            const periodicity = document.getElementById('obligPeriodicity').value;
 
-            if (!title || isNaN(amount) || amount <= 0 || !dateStr) return;
+            if (!title || isNaN(amount) || amount <= 0 || !dateStr) {
+                alert('Заполните название, сумму и дату');
+                return;
+            }
 
-            obligations.push({
-                id: Date.now(),
-                title: title,
-                amount: amount,
-                dueDate: dateStr,
-                paid: false
-            });
+            if (periodicity === 'once') {
+                // Единоразовый платёж
+                obligations.push({
+                    id: Date.now(),
+                    title: title,
+                    amount: amount,
+                    dueDate: dateStr,
+                    paid: false,
+                    periodicity: 'once'
+                });
+            } else if (periodicity === 'monthly') {
+                // Каждый месяц
+                obligations.push({
+                    id: Date.now(),
+                    title: title,
+                    amount: amount,
+                    dueDate: dateStr,
+                    paid: false,
+                    periodicity: 'monthly'
+                });
+            } else if (periodicity === 'months') {
+                // Несколько месяцев
+                const months = parseInt(document.getElementById('obligMonths').value) || 1;
+                obligations.push({
+                    id: Date.now(),
+                    title: title,
+                    amount: amount,
+                    dueDate: dateStr,
+                    paid: false,
+                    periodicity: 'months',
+                    remainingMonths: months
+                });
+            }
             
             saveToStorage();
-            renderObligations();
+            renderObligationsForCurrentMonth();
             updateRealStats();
             renderCalendar();
             
+            // Очистка формы
             document.getElementById('obligTitle').value = '';
             document.getElementById('obligAmount').value = '';
+        });
+
+        // ========== ПОКАЗ/СКРЫТИЕ ПОЛЯ ДЛЯ КОЛИЧЕСТВА МЕСЯЦЕВ ==========
+        document.getElementById('obligPeriodicity').addEventListener('change', function() {
+            const monthsInput = document.getElementById('obligMonths');
+            if (this.value === 'months') {
+                monthsInput.style.display = 'block';
+            } else {
+                monthsInput.style.display = 'none';
+            }
         });
 
         // ========== ДОБАВЛЕНИЕ ОПЕРАЦИИ ==========
@@ -1522,13 +1663,18 @@
                         amount: amount,
                         dueDate: repaymentDate,
                         paid: false,
-                        isDebt: true
+                        isDebt: true,
+                        periodicity: 'once'
                     });
                 }
             }
             
             if (currentType === 'expense' && category === 'Вернуть долг') {
-                obligations = obligations.filter(o => !(o.isDebt && o.amount === amount));
+                // Находим долг с такой суммой и удаляем
+                const debtIndex = obligations.findIndex(o => o.isDebt && !o.paid && o.amount === amount);
+                if (debtIndex !== -1) {
+                    obligations.splice(debtIndex, 1);
+                }
             }
             
             saveToStorage();
@@ -1568,13 +1714,17 @@
                 gridHtml += '<div class="calendar-day empty"></div>';
             }
             
+            // Получаем платежи только для текущего месяца
+            const monthObligations = getObligationsForMonth(year, month);
+            const obligationDates = new Set(monthObligations.map(o => o.dueDate));
+            
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 
                 const dayTransactions = transactions.filter(t => t.date.split('T')[0] === dateStr);
                 const hasIncome = dayTransactions.some(t => t.type === 'income');
                 const hasExpense = dayTransactions.some(t => t.type === 'expense');
-                const hasObligation = obligations.some(o => !o.paid && o.dueDate === dateStr);
+                const hasObligation = obligationDates.has(dateStr);
                 
                 let indicatorClass = '';
                 if (hasIncome && hasExpense) indicatorClass = 'both';
@@ -1603,6 +1753,9 @@
             });
             
             if (selectedCalendarDate) showSelectedDateInfo(selectedCalendarDate);
+            
+            // Обновляем список обязательных платежей при смене месяца
+            renderObligationsForCurrentMonth();
         }
 
         function showSelectedDateInfo(dateStr) {
@@ -1639,7 +1792,7 @@
 
         // ========== ИСТОРИЯ ==========
         function escapeHtml(unsafe) {
-            return unsafe ? unsafe.replace(/[&<>"]/g, '') : '';
+            return unsafe ? String(unsafe).replace(/[&<>"]/g, '') : '';
         }
 
         function formatDateTime(isoString) {

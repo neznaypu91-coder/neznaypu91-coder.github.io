@@ -2,782 +2,773 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Бизнес Ассистент: Финансы, Склад, Долги</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Бизнес Ассистент: Полный контроль</title>
     <style>
+        /* === ОБЩИЕ СТИЛИ ПРИЛОЖЕНИЯ === */
         :root {
-            --primary: #2563eb;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --dark: #0f172a;
-            --light: #f8fafc;
-            --gray: #64748b;
+            --nav-height: 70px;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
         
-        body { background: #f1f5f9; color: var(--dark); padding-bottom: 80px; }
+        body { 
+            background: #f1f5f9; 
+            padding-bottom: calc(var(--nav-height) + 20px); 
+        }
 
-        /* Навигация */
-        .nav-bar {
+        /* Навигация (Нижнее меню) */
+        .main-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
+            height: var(--nav-height);
             background: white;
             display: flex;
             justify-content: space-around;
-            padding: 10px 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            z-index: 1000;
+            align-items: center;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+            z-index: 9999;
         }
-
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 0.75rem;
-            color: var(--gray);
+            font-size: 0.7rem;
+            color: #64748b;
             cursor: pointer;
             transition: 0.2s;
+            width: 20%;
         }
+        .nav-item.active { color: #2563eb; font-weight: 700; transform: translateY(-2px); }
+        .nav-icon { font-size: 1.4rem; margin-bottom: 4px; }
 
-        .nav-item.active { color: var(--primary); font-weight: 600; }
-        .nav-icon { font-size: 1.5rem; margin-bottom: 2px; }
+        /* Контейнер для вкладок */
+        .app-container { max-width: 900px; margin: 0 auto; padding: 10px; }
+        .tab-view { display: none; animation: fadeIn 0.3s; }
+        .tab-view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Контейнер */
-        .container { max-width: 800px; margin: 0 auto; padding: 20px 16px; }
+        /* === СТИЛИ ДЛЯ НОВОГО МОДУЛЯ ФИНАНСОВ (из твоего кода) === */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         
-        .tab-content { display: none; animation: fadeIn 0.3s; }
-        .tab-content.active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        h1 { font-size: 1.5rem; margin-bottom: 20px; font-weight: 700; }
-        h2 { font-size: 1.2rem; margin-bottom: 15px; color: var(--dark); }
-
-        /* Карточки */
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 15px;
-            border-radius: 16px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-        .stat-val { font-size: 1.4rem; font-weight: 800; margin-top: 5px; }
-        .stat-label { font-size: 0.8rem; color: var(--gray); }
-
-        /* Формы */
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-size: 0.9rem; font-weight: 500; }
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1rem;
-            outline: none;
-        }
-        input:focus { border-color: var(--primary); }
-
-        button.btn-primary {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        button.btn-danger { background: var(--danger); color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
-        
-        /* Списки */
-        .list-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        .list-item:last-child { border-bottom: none; }
-        .item-info h4 { font-size: 1rem; margin-bottom: 2px; }
-        .item-meta { font-size: 0.8rem; color: var(--gray); }
-        .amount-pos { color: var(--success); font-weight: 700; }
-        .amount-neg { color: var(--danger); font-weight: 700; }
-
-        /* --- Стили для вкладки Платежи (из вашего кода) --- */
-        .total-card {
-            background: var(--dark);
-            color: white;
+        .finance-app {
+            background: rgba(255, 255, 255, 0.98);
             border-radius: 24px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-top: 10px;
         }
-        .total-amount { font-size: 2rem; font-weight: 800; color: #facc15; margin-top: 5px; }
         
-        .creditors-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+        .fa-h1 {
+            font-size: 28px; font-weight: 800;
+            background: linear-gradient(145deg, #1e3c72, #4f7ab3);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             margin-bottom: 20px;
         }
-        .cred-card {
-            background: white;
-            border-radius: 16px;
-            padding: 10px 15px;
-            flex: 1 1 120px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
-        }
-        .cred-name { font-size: 0.8rem; color: var(--gray); font-weight: 600; }
-        .cred-amount { font-size: 1.1rem; font-weight: 800; color: var(--dark); }
 
-        .month-total {
-            background: #eff6ff;
-            border-radius: 12px;
-            padding: 10px 15px;
-            margin-bottom: 15px;
-            font-weight: 600;
-            text-align: right;
-            font-size: 0.9rem;
-            color: var(--primary);
+        /* Вкладки внутри финансов */
+        .fa-tabs { display: flex; gap: 10px; margin-bottom: 20px; background: #f1f5f9; padding: 6px; border-radius: 50px; }
+        .fa-tab-btn {
+            flex: 1; padding: 12px; border: none; background: transparent;
+            border-radius: 40px; font-weight: 700; color: #64748b; cursor: pointer;
+        }
+        .fa-tab-btn.active { background: white; color: #1e3c72; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+        /* Баланс */
+        .fa-balance-card {
+            background: linear-gradient(145deg, #1e3c72, #2e4f82);
+            color: white; border-radius: 24px; padding: 20px; margin-bottom: 20px;
+        }
+        .fa-balance-row { display: flex; justify-content: space-between; align-items: center; }
+        .fa-balance-num { font-size: 32px; font-weight: 800; }
+        .fa-stats { display: flex; gap: 15px; margin-top: 15px; }
+        .fa-stat-item { flex: 1; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 16px; text-align: center; }
+        
+        /* Календарь и секции */
+        .fa-section {
+            background: white; border: 1px solid #e2e8f0;
+            border-radius: 24px; padding: 20px; margin-bottom: 20px;
+        }
+        .fa-header {
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; user-select: none; margin-bottom: 15px;
+        }
+        .fa-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 10px; }
+        .fa-day {
+            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;
+            padding: 8px 2px; text-align: center; font-size: 12px; cursor: pointer; position: relative;
+        }
+        .fa-day.selected { background: #1e3c72; color: white; border-color: #1e3c72; }
+        .fa-day-indicator { position: absolute; top: 2px; right: 2px; width: 6px; height: 6px; border-radius: 50%; }
+        .fa-day-indicator.in { background: #10b981; }
+        .fa-day-indicator.out { background: #ef4444; }
+        
+        /* Списки и кнопки */
+        .fa-list { list-style: none; }
+        .fa-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px; border-bottom: 1px solid #f1f5f9;
+        }
+        .fa-btn {
+            padding: 10px 20px; border-radius: 20px; border: none;
+            font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .fa-btn-primary { background: #2563eb; color: white; width: 100%; margin-top: 10px; }
+        .fa-input {
+            width: 100%; padding: 12px; border: 1px solid #cbd5e1;
+            border-radius: 12px; margin-bottom: 10px;
         }
 
-        .payment-item {
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 12px;
+        /* === СТИЛИ ДЛЯ ОСТАЛЬНЫХ ВКЛАДОК (СКЛАД, ДОЛГИ И Т.Д.) === */
+        .simple-card {
+            background: white; border-radius: 16px; padding: 20px;
+            margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
-        .payment-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .pay-who { font-weight: 600; font-size: 0.95rem; }
-        .pay-date { font-size: 0.75rem; color: var(--gray); margin-top: 2px; }
-        .pay-amount { font-weight: 700; font-size: 1rem; }
+        .stats-row { display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; }
+        .stat-box {
+            min-width: 120px; background: white; padding: 15px;
+            border-radius: 16px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .stat-val { font-size: 1.2rem; font-weight: 800; color: #0f172a; }
+        .stat-lbl { font-size: 0.8rem; color: #64748b; }
         
-        .paid-btn {
-            background: #e2e8f0;
-            border: none;
-            border-radius: 20px;
-            padding: 6px 14px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            font-weight: 500;
-            transition: 0.2s;
+        .btn-add {
+            width: 100%; padding: 14px; background: #2563eb; color: white;
+            border: none; border-radius: 12px; font-weight: 600; cursor: pointer;
         }
-        .paid-btn.paid { background: var(--success); color: white; }
+        .btn-del { background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; }
         
-        .month-remain {
-            font-size: 0.8rem;
-            color: var(--warning);
-            margin-top: 10px;
-            text-align: right;
-            font-weight: 600;
-            border-top: 1px dashed #e2e8f0;
-            padding-top: 8px;
-        }
-        .note {
-            background: #fef9c3;
-            border-radius: 12px;
-            padding: 10px;
-            font-size: 0.8rem;
-            margin-top: 15px;
-            color: #854d0e;
+        .list-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px; border-bottom: 1px solid #f1f5f9;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    
-    <!-- Вкладка 1: Финансы -->
-    <div id="tab-finance" class="tab-content active">
-        <h1>💰 Финансы</h1>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-label">Баланс</div>
-                <div class="stat-val" id="fin-balance">0 ₽</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Доходы</div>
-                <div class="stat-val amount-pos" id="fin-income">0 ₽</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Расходы</div>
-                <div class="stat-val amount-neg" id="fin-expense">0 ₽</div>
-            </div>
-        </div>
+<div class="app-container">
 
-        <div class="card">
-            <h2>Добавить операцию</h2>
-            <div class="form-group">
-                <select id="fin-type">
-                    <option value="income">Доход (+)</option>
-                    <option value="expense">Расход (-)</option>
-                </select>
+    <!-- ВКЛАДКА 1: ФИНАНСЫ (Новый мощный модуль) -->
+    <div id="view-finance" class="tab-view active">
+        <div class="finance-app">
+            <h1 class="fa-h1">💰 Финансы и Аналитика</h1>
+            
+            <!-- Внутренние вкладки: Операции / Аналитика -->
+            <div class="fa-tabs">
+                <button class="fa-tab-btn active" onclick="switchFaTab('ops')">📝 Операции</button>
+                <button class="fa-tab-btn" onclick="switchFaTab('analytics')">📊 Аналитика</button>
             </div>
-            <div class="form-group">
-                <input type="text" id="fin-desc" placeholder="Описание (например: Зарплата)">
-            </div>
-            <div class="form-group">
-                <input type="number" id="fin-amount" placeholder="Сумма">
-            </div>
-            <button class="btn-primary" onclick="addFinance()">Добавить</button>
-        </div>
 
-        <div class="card">
-            <h2>История</h2>
-            <div id="fin-list"></div>
-        </div>
-    </div>
+            <!-- Блок баланса (всегда виден) -->
+            <div class="fa-balance-card">
+                <div class="fa-balance-row">
+                    <span>Фактический баланс</span>
+                    <span class="fa-balance-num" id="fa-realBalance">0 ₽</span>
+                </div>
+                <div class="fa-stats">
+                    <div class="fa-stat-item">
+                        <div style="font-size:0.8rem; opacity:0.8">Доходы</div>
+                        <div style="font-weight:700" id="fa-realIncome">0 ₽</div>
+                    </div>
+                    <div class="fa-stat-item">
+                        <div style="font-size:0.8rem; opacity:0.8">Расходы</div>
+                        <div style="font-weight:700" id="fa-realExpense">0 ₽</div>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Вкладка 2: Работа (Шины/Диски) -->
-    <div id="tab-work" class="tab-content">
-        <h1>📦 Склад (Шины/Диски)</h1>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-label">Выгружено</div>
-                <div class="stat-val" id="work-unloaded">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Размещено</div>
-                <div class="stat-val" id="work-placed">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">В ожидании</div>
-                <div class="stat-val" style="color:var(--warning)" id="work-pending">0</div>
-            </div>
-        </div>
+            <!-- Содержимое: Операции -->
+            <div id="fa-content-ops">
+                <!-- Календарь -->
+                <div class="fa-section">
+                    <div class="fa-header" onclick="toggleCollapse('fa-cal-content', 'fa-cal-icon')">
+                        <h3>📅 Календарь <span id="fa-cal-icon">▼</span></h3>
+                        <span id="fa-current-date" style="font-size:0.9rem; color:#64748b"></span>
+                    </div>
+                    <div id="fa-cal-content">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                            <button class="fa-btn" onclick="faChangeMonth(-1)">←</button>
+                            <span id="fa-month-year" style="font-weight:700"></span>
+                            <button class="fa-btn" onclick="faChangeMonth(1)">→</button>
+                        </div>
+                        <div class="fa-grid" id="fa-calendar-grid"></div>
+                        <div id="fa-selected-day-info" style="margin-top:15px; background:#f8fafc; padding:10px; border-radius:12px; font-size:0.9rem;"></div>
+                    </div>
+                </div>
 
-        <div class="card">
-            <h2>Новая операция</h2>
-            <div class="form-group">
-                <select id="work-type">
-                    <option value="unload">Выгрузка товара</option>
-                    <option value="place">Размещение на складе</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <select id="work-product">
-                    <option value="tires">Шины</option>
-                    <option value="disks">Диски</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <input type="text" id="work-doc" placeholder="№ Документа">
-            </div>
-            <div class="form-group">
-                <input type="number" id="work-qty" placeholder="Количество (шт)">
-            </div>
-            <button class="btn-primary" onclick="addWork()">Записать</button>
-        </div>
+                <!-- Обязательные платежи -->
+                <div class="fa-section">
+                    <div class="fa-header" onclick="toggleCollapse('fa-oblig-content', 'fa-oblig-icon')">
+                        <h3>📌 Обязательные платежи <span id="fa-oblig-icon">▼</span></h3>
+                        <span id="fa-oblig-total" style="color:#ef4444; font-weight:700"></span>
+                    </div>
+                    <div id="fa-oblig-content">
+                        <ul class="fa-list" id="fa-oblig-list"></ul>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr auto; gap:10px; margin-top:15px;">
+                            <input type="text" id="fa-oblig-title" class="fa-input" placeholder="Название" style="margin:0">
+                            <input type="number" id="fa-oblig-amount" class="fa-input" placeholder="Сумма" style="margin:0">
+                            <input type="date" id="fa-oblig-date" class="fa-input" style="margin:0">
+                        </div>
+                        <button class="fa-btn fa-btn-primary" onclick="faAddObligation()">➕ Добавить платеж</button>
+                    </div>
+                </div>
 
-        <div class="card">
-            <h2>Журнал операций</h2>
-            <div id="work-list"></div>
-        </div>
-    </div>
+                <!-- Добавление операции -->
+                <div class="fa-section">
+                    <h3>➕ Новая операция</h3>
+                    <div style="display:flex; gap:10px; margin-bottom:10px;">
+                        <button class="fa-btn" id="fa-type-inc" style="flex:1; background:#10b981; color:white" onclick="setFaType('income')">Доход</button>
+                        <button class="fa-btn" id="fa-type-exp" style="flex:1; background:#e2e8f0; color:#64748b" onclick="setFaType('expense')">Расход</button>
+                    </div>
+                    <select id="fa-category" class="fa-input"></select>
+                    
+                    <div id="fa-debt-fields" style="display:none; background:#fffbeb; padding:10px; border-radius:12px; margin-bottom:10px; border:1px solid #fcd34d">
+                        <input type="text" id="fa-debt-person" class="fa-input" placeholder="У кого взял?">
+                        <input type="date" id="fa-debt-date" class="fa-input">
+                    </div>
 
-    <!-- Вкладка 3: Долги (Контрагенты) -->
-    <div id="tab-debts" class="tab-content">
-        <h1>📒 Долги (Контрагенты)</h1>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-label">Нам должны</div>
-                <div class="stat-val amount-pos" id="debt-receivable">0 ₽</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Мы должны</div>
-                <div class="stat-val amount-neg" id="debt-payable">0 ₽</div>
-            </div>
-        </div>
+                    <input type="number" id="fa-amount" class="fa-input" placeholder="Сумма">
+                    <button class="fa-btn fa-btn-primary" onclick="faAddTransaction()">Добавить</button>
+                </div>
 
-        <div class="card">
-            <h2>Добавить долг</h2>
-            <div class="form-group">
-                <select id="debt-type">
-                    <option value="receivable">Нам должны</option>
-                    <option value="payable">Мы должны</option>
-                </select>
+                <!-- История -->
+                <div class="fa-section">
+                    <div class="fa-header">
+                        <h3>📋 История</h3>
+                        <button class="fa-btn" style="font-size:0.8rem; padding:4px 10px;" onclick="faClearAll()">Очистить</button>
+                    </div>
+                    <ul class="fa-list" id="fa-history-list"></ul>
+                </div>
             </div>
-            <div class="form-group">
-                <input type="text" id="debt-party" placeholder="Кто должен / Кому должны">
-            </div>
-            <div class="form-group">
-                <input type="text" id="debt-desc" placeholder="Причина долга">
-            </div>
-            <div class="form-group">
-                <input type="number" id="debt-amount" placeholder="Сумма">
-            </div>
-            <button class="btn-primary" onclick="addDebt()">Добавить</button>
-        </div>
 
-        <div class="card">
-            <h2>Список долгов</h2>
-            <div id="debt-list"></div>
+            <!-- Содержимое: Аналитика -->
+            <div id="fa-content-analytics" style="display:none">
+                <div class="fa-section">
+                    <h3>📊 Расходы по категориям</h3>
+                    <div id="fa-pie-chart" style="height:200px; display:flex; align-items:center; justify-content:center; background:#f8fafc; border-radius:12px; margin:15px 0;"></div>
+                    <div id="fa-pie-legend"></div>
+                </div>
+                <div class="fa-section">
+                    <h3>📈 Прогноз на месяц</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:15px;">
+                        <div style="background:#f0fdf4; padding:15px; border-radius:12px;">
+                            <div style="font-size:0.8rem; color:#15803d">Возможный доход</div>
+                            <div style="font-size:1.2rem; font-weight:800; color:#15803d" id="fa-potential-inc">0 ₽</div>
+                        </div>
+                        <div style="background:#fef2f2; padding:15px; border-radius:12px;">
+                            <div style="font-size:0.8rem; color:#b91c1c">Обязательные</div>
+                            <div style="font-size:1.2rem; font-weight:800; color:#b91c1c" id="fa-oblig-month">0 ₽</div>
+                        </div>
+                    </div>
+                    <div style="margin-top:15px; text-align:center;">
+                        <div style="font-size:0.9rem; color:#64748b">Прогноз баланса</div>
+                        <div style="font-size:1.5rem; font-weight:800; color:#1e3c72" id="fa-forecast">0 ₽</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align:center; font-size:0.8rem; color:#94a3b8; margin-top:20px;">
+                ⚡ Возможный доход не влияет на текущий баланс
+            </div>
         </div>
     </div>
 
-    <!-- Вкладка 4: Платежи (Ваш новый код) -->
-    <div id="tab-payments" class="tab-content">
-        <h1>📅 График платежей</h1>
-        
-        <div class="total-card">
-            <div style="font-size:0.9rem; opacity:0.8;">Остаток долга всего</div>
-            <div class="total-amount" id="totalAmount">0 ₽</div>
-            <div style="font-size:0.7rem; margin-top:5px; opacity:0.7;">✅ отмечай оплаченное — вычитается тело, проценты сгорают</div>
+    <!-- ВКЛАДКА 2: СКЛАД (Шины/Диски) -->
+    <div id="view-work" class="tab-view">
+        <h1 style="margin:20px 0; font-size:1.5rem">📦 Склад: Шины и Диски</h1>
+        <div class="stats-row">
+            <div class="stat-box"><div class="stat-lbl">Выгружено</div><div class="stat-val" id="wk-unloaded">0</div></div>
+            <div class="stat-box"><div class="stat-lbl">Размещено</div><div class="stat-val" id="wk-placed">0</div></div>
+            <div class="stat-box"><div class="stat-lbl">В ожидании</div><div class="stat-val" style="color:#f59e0b" id="wk-pending">0</div></div>
         </div>
-
-        <div class="creditors-grid" id="creditorsBlock"></div>
-
-        <div id="app"></div>
+        <div class="simple-card">
+            <h3>Новая операция</h3>
+            <select id="wk-type" class="fa-input"><option value="unload">Выгрузка</option><option value="place">Размещение</option></select>
+            <select id="wk-product" class="fa-input"><option value="tires">Шины</option><option value="disks">Диски</option></select>
+            <input type="text" id="wk-doc" class="fa-input" placeholder="№ Документа">
+            <input type="number" id="wk-qty" class="fa-input" placeholder="Количество">
+            <button class="btn-add" onclick="addWork()">Записать</button>
+        </div>
+        <div class="simple-card"><h3>Журнал</h3><div id="wk-list"></div></div>
     </div>
 
-    <!-- Вкладка 5: Отчёты -->
-    <div id="tab-reports" class="tab-content">
-        <h1>📈 Отчёты</h1>
-        <div class="card">
-            <h2>Общая статистика</h2>
-            <p>Здесь будет сводка по всем разделам.</p>
-            <br>
-            <div id="report-content"></div>
+    <!-- ВКЛАДКА 3: ДОЛГИ (Контрагенты) -->
+    <div id="view-debts" class="tab-view">
+        <h1 style="margin:20px 0; font-size:1.5rem">📒 Долги (Контрагенты)</h1>
+        <div class="stats-row">
+            <div class="stat-box"><div class="stat-lbl">Нам должны</div><div class="stat-val" style="color:#10b981" id="db-receivable">0 ₽</div></div>
+            <div class="stat-box"><div class="stat-lbl">Мы должны</div><div class="stat-val" style="color:#ef4444" id="db-payable">0 ₽</div></div>
+        </div>
+        <div class="simple-card">
+            <h3>Добавить долг</h3>
+            <select id="db-type" class="fa-input"><option value="receivable">Нам должны</option><option value="payable">Мы должны</option></select>
+            <input type="text" id="db-party" class="fa-input" placeholder="Кто/Кому">
+            <input type="text" id="db-desc" class="fa-input" placeholder="Причина">
+            <input type="number" id="db-amount" class="fa-input" placeholder="Сумма">
+            <button class="btn-add" onclick="addDebt()">Добавить</button>
+        </div>
+        <div class="simple-card"><h3>Список</h3><div id="db-list"></div></div>
+    </div>
+
+    <!-- ВКЛАДКА 4: ГРАФИК (Платежи по банкам) -->
+    <div id="view-schedule" class="tab-view">
+        <h1 style="margin:20px 0; font-size:1.5rem">📅 График платежей (Банки)</h1>
+        <div class="simple-card" style="background:#0f172a; color:white; text-align:center">
+            <div style="font-size:0.9rem; opacity:0.8">Общий остаток</div>
+            <div style="font-size:2rem; font-weight:800; color:#facc15" id="sch-total">0 ₽</div>
+        </div>
+        <div id="sch-creditors" class="stats-row" style="flex-wrap:wrap"></div>
+        <div id="sch-months"></div>
+    </div>
+
+    <!-- ВКЛАДКА 5: ОТЧЁТЫ -->
+    <div id="view-reports" class="tab-view">
+        <h1 style="margin:20px 0; font-size:1.5rem">📈 Общие отчёты</h1>
+        <div class="simple-card">
+            <h3>Сводка</h3>
+            <p id="rep-summary" style="margin-top:10px; line-height:1.6"></p>
         </div>
     </div>
 
 </div>
 
-<!-- Навигация -->
-<nav class="nav-bar">
-    <div class="nav-item active" onclick="switchTab('finance', this)">
-        <span class="nav-icon">💰</span>
-        <span>Финансы</span>
-    </div>
-    <div class="nav-item" onclick="switchTab('work', this)">
-        <span class="nav-icon">📦</span>
-        <span>Работа</span>
-    </div>
-    <div class="nav-item" onclick="switchTab('debts', this)">
-        <span class="nav-icon">📒</span>
-        <span>Долги</span>
-    </div>
-    <div class="nav-item" onclick="switchTab('payments', this)">
-        <span class="nav-icon">📅</span>
-        <span>Платежи</span>
-    </div>
-    <div class="nav-item" onclick="switchTab('reports', this)">
-        <span class="nav-icon">📊</span>
-        <span>Отчёты</span>
-    </div>
+<!-- НИЖНЕЕ МЕНЮ -->
+<nav class="main-nav">
+    <div class="nav-item active" onclick="switchView('finance', this)"><span class="nav-icon">💰</span><span>Финансы</span></div>
+    <div class="nav-item" onclick="switchView('work', this)"><span class="nav-icon">📦</span><span>Склад</span></div>
+    <div class="nav-item" onclick="switchView('debts', this)"><span class="nav-icon">📒</span><span>Долги</span></div>
+    <div class="nav-item" onclick="switchView('schedule', this)"><span class="nav-icon">🏦</span><span>График</span></div>
+    <div class="nav-item" onclick="switchView('reports', this)"><span class="nav-icon">📊</span><span>Отчёты</span></div>
 </nav>
 
 <script>
-    // === ОБЩАЯ ЛОГИКА ===
-    function switchTab(tabId, el) {
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        document.getElementById('tab-' + tabId).classList.add('active');
-        
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        el.classList.add('active');
-
-        if(tabId === 'reports') renderReports();
-    }
-
-    // === ФИНАНСЫ ===
-    let finances = JSON.parse(localStorage.getItem('finances')) || [];
+/* ================================================================
+   1. ОБЩАЯ ЛОГИКА (Переключение вкладок)
+   ================================================================ */
+function switchView(viewId, el) {
+    document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + viewId).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
     
-    function renderFinances() {
-        const list = document.getElementById('fin-list');
-        let income = 0, expense = 0;
-        list.innerHTML = '';
-        
-        finances.slice().reverse().forEach((item, index) => {
-            if(item.type === 'income') income += Number(item.amount);
-            else expense += Number(item.amount);
-            
-            const div = document.createElement('div');
-            div.className = 'list-item';
-            div.innerHTML = `
-                <div class="item-info">
-                    <h4>${item.desc}</h4>
-                    <div class="item-meta">${new Date(item.date).toLocaleDateString()}</div>
-                </div>
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <span class="${item.type === 'income' ? 'amount-pos' : 'amount-neg'}">
-                        ${item.type === 'income' ? '+' : '-'}${Number(item.amount).toLocaleString()} ₽
-                    </span>
-                    <button class="btn-danger" onclick="delFinance(${index})">×</button>
-                </div>
-            `;
-            list.appendChild(div);
-        });
+    if(viewId === 'work') renderWork();
+    if(viewId === 'debts') renderDebts();
+    if(viewId === 'schedule') initSchedule();
+    if(viewId === 'reports') renderReports();
+    if(viewId === 'finance') { faInit(); updateFaAnalytics(); }
+}
 
-        document.getElementById('fin-income').innerText = income.toLocaleString() + ' ₽';
-        document.getElementById('fin-expense').innerText = expense.toLocaleString() + ' ₽';
-        document.getElementById('fin-balance').innerText = (income - expense).toLocaleString() + ' ₽';
+function toggleCollapse(contentId, iconId) {
+    const el = document.getElementById(contentId);
+    const icon = document.getElementById(iconId);
+    if(el.style.display === 'none') {
+        el.style.display = 'block';
+        icon.innerHTML = '▼';
+    } else {
+        el.style.display = 'none';
+        icon.innerHTML = '▶';
     }
+}
 
-    function addFinance() {
-        const type = document.getElementById('fin-type').value;
-        const desc = document.getElementById('fin-desc').value;
-        const amount = document.getElementById('fin-amount').value;
-        
-        if(!desc || !amount) return alert('Заполните поля');
-        
-        finances.push({ type, desc, amount, date: new Date().toISOString() });
-        localStorage.setItem('finances', JSON.stringify(finances));
-        
-        document.getElementById('fin-desc').value = '';
-        document.getElementById('fin-amount').value = '';
-        renderFinances();
+function switchFaTab(tab) {
+    document.querySelectorAll('.fa-tab-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    if(tab === 'ops') {
+        document.getElementById('fa-content-ops').style.display = 'block';
+        document.getElementById('fa-content-analytics').style.display = 'none';
+    } else {
+        document.getElementById('fa-content-ops').style.display = 'none';
+        document.getElementById('fa-content-analytics').style.display = 'block';
+        updateFaAnalytics();
     }
+}
 
-    function delFinance(index) {
-        // Так как мы реверсили массив для отображения, индекс нужно пересчитать
-        const realIndex = finances.length - 1 - index;
-        finances.splice(realIndex, 1);
-        localStorage.setItem('finances', JSON.stringify(finances));
-        renderFinances();
-    }
+/* ================================================================
+   2. ЛОГИКА ФИНАНСОВ (Новый модуль из 7 частей)
+   ================================================================ */
+let faTransactions = [], faObligations = [], faPotential = [];
+let faCurrentType = 'income';
+let faCalDate = new Date();
+let faSelectedDate = null;
 
-    // === РАБОТА (СКЛАД) ===
-    let workLogs = JSON.parse(localStorage.getItem('workLogs')) || [];
+function faInit() {
+    faTransactions = JSON.parse(localStorage.getItem('fa_trans')) || [];
+    faObligations = JSON.parse(localStorage.getItem('fa_oblig')) || [];
+    faPotential = JSON.parse(localStorage.getItem('fa_pot')) || [];
+    faUpdateStats();
+    faRenderCalendar();
+    faRenderObligations();
+    faRenderHistory();
+    faUpdateCategory();
+    document.getElementById('fa-current-date').innerText = new Date().toLocaleDateString('ru-RU');
+}
 
-    function renderWork() {
-        const list = document.getElementById('work-list');
-        let unloaded = 0, placed = 0;
-        list.innerHTML = '';
+function faSave() {
+    localStorage.setItem('fa_trans', JSON.stringify(faTransactions));
+    localStorage.setItem('fa_oblig', JSON.stringify(faObligations));
+    localStorage.setItem('fa_pot', JSON.stringify(faPotential));
+    faUpdateStats();
+}
 
-        workLogs.slice().reverse().forEach((item, index) => {
-            if(item.type === 'unload') unloaded += Number(item.qty);
-            else placed += Number(item.qty);
-
-            const typeName = item.type === 'unload' ? 'Выгрузка' : 'Размещение';
-            const prodName = item.product === 'tires' ? 'Шины' : 'Диски';
-            
-            const div = document.createElement('div');
-            div.className = 'list-item';
-            div.innerHTML = `
-                <div class="item-info">
-                    <h4>${typeName}: ${prodName}</h4>
-                    <div class="item-meta">Документ: ${item.doc} | ${new Date(item.date).toLocaleDateString()}</div>
-                </div>
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <strong>${item.qty} шт.</strong>
-                    <button class="btn-danger" onclick="delWork(${index})">×</button>
-                </div>
-            `;
-            list.appendChild(div);
-        });
-
-        document.getElementById('work-unloaded').innerText = unloaded;
-        document.getElementById('work-placed').innerText = placed;
-        document.getElementById('work-pending').innerText = unloaded - placed;
-    }
-
-    function addWork() {
-        const type = document.getElementById('work-type').value;
-        const product = document.getElementById('work-product').value;
-        const doc = document.getElementById('work-doc').value;
-        const qty = document.getElementById('work-qty').value;
-
-        if(!doc || !qty) return alert('Заполните поля');
-
-        workLogs.push({ type, product, doc, qty, date: new Date().toISOString() });
-        localStorage.setItem('workLogs', JSON.stringify(workLogs));
-
-        document.getElementById('work-doc').value = '';
-        document.getElementById('work-qty').value = '';
-        renderWork();
-    }
-
-    function delWork(index) {
-        const realIndex = workLogs.length - 1 - index;
-        workLogs.splice(realIndex, 1);
-        localStorage.setItem('workLogs', JSON.stringify(workLogs));
-        renderWork();
-    }
-
-    // === ДОЛГИ (КОНТРАГЕНТЫ) ===
-    let debtsList = JSON.parse(localStorage.getItem('debtsList')) || [];
-
-    function renderDebts() {
-        const list = document.getElementById('debt-list');
-        let receivable = 0, payable = 0;
-        list.innerHTML = '';
-
-        debtsList.slice().reverse().forEach((item, index) => {
-            if(item.type === 'receivable') receivable += Number(item.amount);
-            else payable += Number(item.amount);
-
-            const typeLabel = item.type === 'receivable' ? 'Нам должны' : 'Мы должны';
-            const colorClass = item.type === 'receivable' ? 'amount-pos' : 'amount-neg';
-
-            const div = document.createElement('div');
-            div.className = 'list-item';
-            div.innerHTML = `
-                <div class="item-info">
-                    <h4>${item.party}</h4>
-                    <div class="item-meta">${typeLabel}: ${item.desc}</div>
-                </div>
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <span class="${colorClass}">${Number(item.amount).toLocaleString()} ₽</span>
-                    <button class="btn-danger" onclick="delDebt(${index})">×</button>
-                </div>
-            `;
-            list.appendChild(div);
-        });
-
-        document.getElementById('debt-receivable').innerText = receivable.toLocaleString() + ' ₽';
-        document.getElementById('debt-payable').innerText = payable.toLocaleString() + ' ₽';
-    }
-
-    function addDebt() {
-        const type = document.getElementById('debt-type').value;
-        const party = document.getElementById('debt-party').value;
-        const desc = document.getElementById('debt-desc').value;
-        const amount = document.getElementById('debt-amount').value;
-
-        if(!party || !amount) return alert('Заполните поля');
-
-        debtsList.push({ type, party, desc, amount, date: new Date().toISOString() });
-        localStorage.setItem('debtsList', JSON.stringify(debtsList));
-
-        document.getElementById('debt-party').value = '';
-        document.getElementById('debt-desc').value = '';
-        document.getElementById('debt-amount').value = '';
-        renderDebts();
-    }
-
-    function delDebt(index) {
-        const realIndex = debtsList.length - 1 - index;
-        debtsList.splice(realIndex, 1);
-        localStorage.setItem('debtsList', JSON.stringify(debtsList));
-        renderDebts();
-    }
-
-    // === ОТЧЁТЫ ===
-    function renderReports() {
-        const content = document.getElementById('report-content');
-        const f = JSON.parse(localStorage.getItem('finances')) || [];
-        const w = JSON.parse(localStorage.getItem('workLogs')) || [];
-        
-        let totalIncome = f.filter(i=>i.type==='income').reduce((a,b)=>a+Number(b.amount),0);
-        let totalExpense = f.filter(i=>i.type==='expense').reduce((a,b)=>a+Number(b.amount),0);
-        let totalTires = w.filter(i=>i.product==='tires').reduce((a,b)=>a+Number(b.qty),0);
-        let totalDisks = w.filter(i=>i.product==='disks').reduce((a,b)=>a+Number(b.qty),0);
-
-        content.innerHTML = `
-            <p><strong>Финансы:</strong> Доход ${totalIncome} ₽, Расход ${totalExpense} ₽</p>
-            <p><strong>Товары:</strong> Шин всего ${totalTires} шт, Дисков всего ${totalDisks} шт</p>
-        `;
-    }
-
-    // === ПЛАТЕЖИ (ВАШ КОД) ===
-    let debtsData = {
-        sber: 152341,
-        tbank: 82632,
-        yandex: 97097,
-        alfa_loan: 35325,
-        alfa_card: 17412
-    };
-
-    const interestMap = {
-        sber: 4000, tbank: 4000, yandex: 2900, alfa_loan: 1000, alfa_card: 300
-    };
-
-    const monthsData = {
-        april: { name: "Апрель", payments: [
-            { id: "apr_sber", label: "🏦 Сбер", amount: 50000, creditor: "sber", dueDate: "15 + 25" },
-            { id: "apr_tbank", label: "🏦 Т‑банк", amount: 15000, creditor: "tbank", dueDate: "15" },
-            { id: "apr_yandex", label: "🔁 Яндекс", amount: 15000, creditor: "yandex", dueDate: "26 (авто)" },
-            { id: "apr_alfa_loan", label: "🔁 Альфа займ", amount: 1900, creditor: "alfa_loan", dueDate: "28 (авто)" },
-            { id: "apr_alfa_card", label: "🔁 Альфа кредитка", amount: 1100, creditor: "alfa_card", dueDate: "28 (авто)" },
-            { id: "apr_life", label: "👵 Жизнь", amount: 30900, creditor: "life", dueDate: "15" }
-        ]},
-        may: { name: "Май", payments: [
-            { id: "may_sber", label: "🏦 Сбер", amount: 50000, creditor: "sber", dueDate: "15 + 25" },
-            { id: "may_tbank", label: "🏦 Т‑банк", amount: 15000, creditor: "tbank", dueDate: "15" },
-            { id: "may_yandex", label: "🔁 Яндекс", amount: 15000, creditor: "yandex", dueDate: "26 (авто)" },
-            { id: "may_alfa_loan", label: "🔁 Альфа займ", amount: 1900, creditor: "alfa_loan", dueDate: "28 (авто)" },
-            { id: "may_alfa_card", label: "🔁 Альфа кредитка", amount: 1100, creditor: "alfa_card", dueDate: "28 (авто)" },
-            { id: "may_life", label: "👵 Жизнь", amount: 30900, creditor: "life", dueDate: "15" }
-        ]},
-        june: { name: "Июнь", payments: [
-            { id: "june_sber", label: "🏦 Сбер", amount: 50000, creditor: "sber", dueDate: "15 + 25" },
-            { id: "june_tbank", label: "🏦 Т‑банк", amount: 15000, creditor: "tbank", dueDate: "15" },
-            { id: "june_yandex", label: "🔁 Яндекс", amount: 15000, creditor: "yandex", dueDate: "26 (авто)" },
-            { id: "june_alfa_loan", label: "🔁 Альфа займ", amount: 1900, creditor: "alfa_loan", dueDate: "28 (авто)" },
-            { id: "june_alfa_card", label: "🔁 Альфа кредитка", amount: 1100, creditor: "alfa_card", dueDate: "28 (авто)" },
-            { id: "june_life", label: "👵 Жизнь", amount: 30900, creditor: "life", dueDate: "15" }
-        ]},
-        july: { name: "Июль", payments: [
-            { id: "july_sber", label: "🏦 Сбер (остаток)", amount: 14341, creditor: "sber", dueDate: "15" },
-            { id: "july_tbank", label: "🏦 Т‑банк", amount: 15000, creditor: "tbank", dueDate: "15" },
-            { id: "july_yandex", label: "🔁 Яндекс", amount: 15000, creditor: "yandex", dueDate: "26 (авто)" },
-            { id: "july_alfa_loan", label: "🔁 Альфа займ", amount: 1900, creditor: "alfa_loan", dueDate: "28 (авто)" },
-            { id: "july_alfa_card", label: "🔁 Альфа кредитка", amount: 1100, creditor: "alfa_card", dueDate: "28 (авто)" },
-            { id: "july_life", label: "👵 Жизнь", amount: 30900, creditor: "life", dueDate: "15" }
-        ]},
-        august: { name: "Август", payments: [
-            { id: "aug_tbank", label: "🏦 Т‑банк (остаток)", amount: 30632, creditor: "tbank", dueDate: "15" },
-            { id: "aug_yandex", label: "🔁 Яндекс (остаток)", amount: 42897, creditor: "yandex", dueDate: "15" },
-            { id: "aug_alfa_card", label: "🔁 Альфа кредитка (остаток)", amount: 12612, creditor: "alfa_card", dueDate: "15" },
-            { id: "aug_life", label: "👵 Жизнь", amount: 30900, creditor: "life", dueDate: "15" }
-        ]},
-        september: { name: "Сентябрь", payments: [
-            { id: "sep_alfa_loan", label: "🔁 Альфа займ (остаток)", amount: 29925, creditor: "alfa_loan", dueDate: "15" },
-            { id: "sep_life", label: "👵 Жизнь", amount: 30900, creditor: "life", dueDate: "15" }
-        ]}
-    };
-
-    let paidState = {};
+function faUpdateStats() {
+    const inc = faTransactions.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+    const exp = faTransactions.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    document.getElementById('fa-realBalance').innerText = (inc-exp).toLocaleString() + ' ₽';
+    document.getElementById('fa-realIncome').innerText = inc.toLocaleString() + ' ₽';
+    document.getElementById('fa-realExpense').innerText = exp.toLocaleString() + ' ₽';
     
-    // Инициализация данных платежей
-    function initPayments() {
-        try {
-            const savedPaid = localStorage.getItem("dolgi_paid_monthremain");
-            if (savedPaid) paidState = JSON.parse(savedPaid);
-            const savedDebts = localStorage.getItem("dolgi_debts_monthremain");
-            if (savedDebts) debtsData = JSON.parse(savedDebts);
-        } catch(e) {}
-        updateTotalRemaining();
-        renderPayments();
+    const obligLeft = faObligations.filter(o=>!o.paid).reduce((s,o)=>s+o.amount,0);
+    document.getElementById('fa-oblig-total').innerText = obligLeft > 0 ? obligLeft.toLocaleString() + ' ₽' : '0 ₽';
+}
+
+function setFaType(type) {
+    faCurrentType = type;
+    document.getElementById('fa-type-inc').style.background = type==='income' ? '#10b981' : '#e2e8f0';
+    document.getElementById('fa-type-inc').style.color = type==='income' ? 'white' : '#64748b';
+    document.getElementById('fa-type-exp').style.background = type==='expense' ? '#10b981' : '#e2e8f0';
+    document.getElementById('fa-type-exp').style.color = type==='expense' ? 'white' : '#64748b';
+    faUpdateCategory();
+}
+
+function faUpdateCategory() {
+    const sel = document.getElementById('fa-category');
+    sel.innerHTML = '';
+    if(faCurrentType === 'income') {
+        sel.innerHTML = '<option value="Зарплата">Зарплата</option><option value="Взял в долг">Взял в долг</option><option value="Другое">Другое</option>';
+    } else {
+        sel.innerHTML = '<option value="Еда">Еда</option><option value="Транспорт">Транспорт</option><option value="Вернуть долг">Вернуть долг</option><option value="Другое">Другое</option>';
     }
+    
+    const debtFields = document.getElementById('fa-debt-fields');
+    debtFields.style.display = (faCurrentType==='income' && sel.value==='Взял в долг') ? 'block' : 'none';
+}
 
-    function saveAllPayments() {
-        localStorage.setItem("dolgi_paid_monthremain", JSON.stringify(paidState));
-        localStorage.setItem("dolgi_debts_monthremain", JSON.stringify(debtsData));
-    }
+document.getElementById('fa-category').addEventListener('change', faUpdateCategory);
 
-    function updateTotalRemaining() {
-        const total = debtsData.sber + debtsData.tbank + debtsData.yandex + debtsData.alfa_loan + debtsData.alfa_card;
-        document.getElementById("totalAmount").innerText = total.toLocaleString('ru-RU') + " ₽";
-        
-        const creditorsDiv = document.getElementById("creditorsBlock");
-        creditorsDiv.innerHTML = `
-            <div class="cred-card"><div class="cred-name">🏦 Сбер</div><div class="cred-amount">${debtsData.sber.toLocaleString('ru-RU')} ₽</div></div>
-            <div class="cred-card"><div class="cred-name">🏦 Т‑банк</div><div class="cred-amount">${debtsData.tbank.toLocaleString('ru-RU')} ₽</div></div>
-            <div class="cred-card"><div class="cred-name">🔁 Яндекс</div><div class="cred-amount">${debtsData.yandex.toLocaleString('ru-RU')} ₽</div></div>
-            <div class="cred-card"><div class="cred-name">🔁 Альфа (займ)</div><div class="cred-amount">${debtsData.alfa_loan.toLocaleString('ru-RU')} ₽</div></div>
-            <div class="cred-card"><div class="cred-name">💳 Альфа (кред)</div><div class="cred-amount">${debtsData.alfa_card.toLocaleString('ru-RU')} ₽</div></div>
-        `;
-    }
-
-    function applyPayment(creditor, amountPaid) {
-        if (creditor === "life") return;
-        if (debtsData[creditor] === undefined) return;
-        const interest = interestMap[creditor] || 0;
-        const body = amountPaid - interest;
-        if (body <= 0) return;
-        let newVal = debtsData[creditor] - body;
-        if (newVal < 0) newVal = 0;
-        debtsData[creditor] = newVal;
-        saveAllPayments();
-        updateTotalRemaining();
-    }
-
-    function togglePaid(paymentId, amountPaid, creditor) {
-        const wasPaid = paidState[paymentId];
-        if (wasPaid) {
-            paidState[paymentId] = false;
-            if (creditor !== "life") {
-                const interest = interestMap[creditor] || 0;
-                const body = amountPaid - interest;
-                if (body > 0) {
-                    debtsData[creditor] += body;
-                    saveAllPayments();
-                    updateTotalRemaining();
-                }
-            }
-        } else {
-            paidState[paymentId] = true;
-            applyPayment(creditor, amountPaid);
-        }
-        renderPayments();
-    }
-
-    function getMonthTotal(monthKey) {
-        const month = monthsData[monthKey];
-        return month.payments.reduce((sum, p) => sum + p.amount, 0);
-    }
-
-    function getRemainingInMonth(monthKey) {
-        const month = monthsData[monthKey];
-        return month.payments.filter(p => !paidState[p.id]).reduce((sum, p) => sum + p.amount, 0);
-    }
-
-    function renderPayments() {
-        const app = document.getElementById("app");
-        if (!app) return;
-        let html = "";
-        for (const [key, month] of Object.entries(monthsData)) {
-            const monthTotal = getMonthTotal(key);
-            const remainMonth = getRemainingInMonth(key);
-            html += `
-                <div class="card">
-                    <h2>📆 ${month.name}</h2>
-                    <div class="month-total">💰 Всего: <strong>${monthTotal.toLocaleString('ru-RU')} ₽</strong></div>
-            `;
-            for (const p of month.payments) {
-                const isPaid = !!paidState[p.id];
-                html += `
-                    <div class="payment-item">
-                        <div class="payment-row">
-                            <div>
-                                <div class="pay-who">${p.label}</div>
-                                <div class="pay-date">📅 до ${p.dueDate}</div>
-                            </div>
-                            <div class="pay-amount">${p.amount.toLocaleString('ru-RU')} ₽</div>
-                            <button class="paid-btn ${isPaid ? 'paid' : ''}" data-id="${p.id}" data-amount="${p.amount}" data-creditor="${p.creditor}">
-                                ${isPaid ? '✅ Оплачено' : '☑️ Оплатить'}
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }
-            html += `<div class="month-remain">${remainMonth > 0 ? '📌 Осталось: ' + remainMonth.toLocaleString('ru-RU') + ' ₽' : '✅ Всё оплачено!'}</div>`;
-            html += `<div class="note">💡 26‑го Яндекс, 28‑го Альфа — спишутся сами.</div>`;
-            html += `</div>`;
-        }
-        app.innerHTML = html;
-
-        document.querySelectorAll(".paid-btn").forEach(btn => {
-            btn.onclick = (e) => {
-                e.stopPropagation();
-                const id = btn.getAttribute("data-id");
-                const amount = parseInt(btn.getAttribute("data-amount"));
-                const creditor = btn.getAttribute("data-creditor");
-                if (id && !isNaN(amount) && creditor) togglePaid(id, amount, creditor);
-            };
-        });
-    }
-
-    // ЗАПУСК ПРИЛОЖЕНИЯ
-    window.onload = function() {
-        renderFinances();
-        renderWork();
-        renderDebts();
-        initPayments();
+function faAddTransaction() {
+    const amt = parseFloat(document.getElementById('fa-amount').value);
+    const cat = document.getElementById('fa-category').value;
+    if(!amt || amt<=0) return alert('Введите сумму');
+    
+    const t = {
+        id: Date.now(), title: cat, amount: amt, type: faCurrentType,
+        date: new Date().toISOString(), isDebt: false
     };
+    
+    if(faCurrentType==='income' && cat==='Взял в долг') {
+        const p = document.getElementById('fa-debt-person').value;
+        const d = document.getElementById('fa-debt-date').value;
+        if(!p || !d) return alert('Заполните данные долга');
+        t.isDebt = true;
+        t.person = p;
+        faObligations.push({id:Date.now()+1, title:`Долг ${p}`, amount:amt, dueDate:d, paid:false});
+    }
+    
+    faTransactions.push(t);
+    faSave();
+    faRenderHistory();
+    faRenderCalendar();
+    faRenderObligations();
+    document.getElementById('fa-amount').value = '';
+}
+
+function faRenderHistory() {
+    const list = document.getElementById('fa-history-list');
+    list.innerHTML = '';
+    faTransactions.slice().reverse().forEach(t => {
+        const li = document.createElement('li');
+        li.className = 'fa-item';
+        li.innerHTML = `
+            <div>
+                <div style="font-weight:600">${t.title} ${t.isDebt?'💸':''}</div>
+                <div style="font-size:0.8rem; color:#64748b">${new Date(t.date).toLocaleDateString()}</div>
+            </div>
+            <div style="font-weight:700; color:${t.type==='income'?'#10b981':'#ef4444'}">
+                ${t.type==='income'?'+':'-'}${t.amount.toLocaleString()}
+                <button class="btn-del" style="margin-left:10px" onclick="faDelTrans(${t.id})">×</button>
+            </div>
+        `;
+        list.appendChild(li);
+    });
+}
+
+function faDelTrans(id) {
+    faTransactions = faTransactions.filter(t=>t.id!==id);
+    faSave(); faRenderHistory(); faRenderCalendar();
+}
+
+function faClearAll() {
+    if(confirm('Удалить всю историю?')) {
+        faTransactions = [];
+        faSave(); faRenderHistory(); faUpdateStats();
+    }
+}
+
+// Календарь
+function faChangeMonth(delta) {
+    faCalDate.setMonth(faCalDate.getMonth() + delta);
+    faRenderCalendar();
+}
+
+function faRenderCalendar() {
+    const y = faCalDate.getFullYear(), m = faCalDate.getMonth();
+    document.getElementById('fa-month-year').innerText = new Date(y,m).toLocaleDateString('ru-RU',{month:'long',year:'numeric'});
+    
+    const grid = document.getElementById('fa-calendar-grid');
+    grid.innerHTML = '';
+    const daysInMonth = new Date(y, m+1, 0).getDate();
+    const startDay = new Date(y, m, 1).getDay() || 7; // Пн=1
+    
+    for(let i=1; i<startDay; i++) grid.innerHTML += '<div></div>';
+    
+    for(let d=1; d<=daysInMonth; d++) {
+        const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const dayTrans = faTransactions.filter(t=>t.date.startsWith(dateStr));
+        const hasIn = dayTrans.some(t=>t.type==='income');
+        const hasOut = dayTrans.some(t=>t.type==='expense');
+        
+        let indicators = '';
+        if(hasIn) indicators += '<div class="fa-day-indicator in"></div>';
+        if(hasOut) indicators += '<div class="fa-day-indicator out"></div>';
+        
+        const div = document.createElement('div');
+        div.className = 'fa-day' + (faSelectedDate===dateStr?' selected':'');
+        div.innerHTML = `${d}${indicators}`;
+        div.onclick = () => { faSelectedDate=dateStr; faRenderCalendar(); faShowDayInfo(dateStr); };
+        grid.appendChild(div);
+    }
+    if(faSelectedDate) faShowDayInfo(faSelectedDate);
+}
+
+function faShowDayInfo(dateStr) {
+    const info = document.getElementById('fa-selected-day-info');
+    const trans = faTransactions.filter(t=>t.date.startsWith(dateStr));
+    let html = `<strong>${new Date(dateStr).toLocaleDateString('ru-RU')}</strong><br>`;
+    trans.forEach(t => {
+        html += `<div style="display:flex;justify-content:space-between;margin-top:5px">
+            <span>${t.title}</span><span style="color:${t.type==='income'?'green':'red'}">${t.type==='income'?'+':'-'}${t.amount}</span>
+        </div>`;
+    });
+    info.innerHTML = html || 'Нет операций';
+}
+
+// Обязательные платежи
+function faRenderObligations() {
+    const list = document.getElementById('fa-oblig-list');
+    list.innerHTML = '';
+    faObligations.filter(o=>!o.paid).sort((a,b)=>new Date(a.dueDate)-new Date(b.dueDate)).forEach(o => {
+        const li = document.createElement('li');
+        li.className = 'fa-item';
+        li.innerHTML = `
+            <div>
+                <div style="font-weight:600">${o.title}</div>
+                <div style="font-size:0.8rem; color:#64748b">до ${new Date(o.dueDate).toLocaleDateString()}</div>
+            </div>
+            <div>
+                <span style="font-weight:700; color:#ef4444; margin-right:10px">${o.amount.toLocaleString()}</span>
+                <button class="fa-btn" style="background:#10b981;color:white;padding:4px 10px;font-size:0.8rem" onclick="faPayOblig(${o.id})">Оплатить</button>
+                <button class="btn-del" onclick="faDelOblig(${o.id})">×</button>
+            </div>
+        `;
+        list.appendChild(li);
+    });
+}
+
+function faAddObligation() {
+    const t = document.getElementById('fa-oblig-title').value;
+    const a = parseFloat(document.getElementById('fa-oblig-amount').value);
+    const d = document.getElementById('fa-oblig-date').value;
+    if(!t||!a||!d) return alert('Заполните поля');
+    faObligations.push({id:Date.now(), title:t, amount:a, dueDate:d, paid:false});
+    faSave(); faRenderObligations();
+    document.getElementById('fa-oblig-title').value='';
+    document.getElementById('fa-oblig-amount').value='';
+}
+
+function faPayOblig(id) {
+    const o = faObligations.find(x=>x.id===id);
+    if(!o) return;
+    faTransactions.push({id:Date.now(), title:o.title, amount:o.amount, type:'expense', date:new Date().toISOString()});
+    faObligations = faObligations.filter(x=>x.id!==id);
+    faSave(); faRenderObligations(); faRenderHistory(); faRenderCalendar();
+}
+
+function faDelOblig(id) {
+    faObligations = faObligations.filter(x=>x.id!==id);
+    faSave(); faRenderObligations();
+}
+
+// Аналитика
+function updateFaAnalytics() {
+    const expenses = faTransactions.filter(t=>t.type==='expense');
+    const cats = {};
+    expenses.forEach(e => cats[e.title] = (cats[e.title]||0) + e.amount);
+    
+    const pieBox = document.getElementById('fa-pie-chart');
+    const legBox = document.getElementById('fa-pie-legend');
+    
+    if(Object.keys(cats).length === 0) {
+        pieBox.innerHTML = 'Нет данных'; legBox.innerHTML = '';
+    } else {
+        // Упрощенная визуализация
+        let html = '<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">';
+        let legend = '';
+        const colors = ['#ef4444','#f59e0b','#10b981','#3b82f6','#8b5cf6'];
+        let i=0;
+        for(const [k,v] of Object.entries(cats)) {
+            html += `<div style="width:40px;height:40px;background:${colors[i%5]};border-radius:8px"></div>`;
+            legend += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><div style="width:12px;height:12px;background:${colors[i%5]};border-radius:50%"></div><span>${k}: ${v}</span></div>`;
+            i++;
+        }
+        html += '</div>';
+        pieBox.innerHTML = html;
+        legBox.innerHTML = legend;
+    }
+    
+    // Прогноз
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+    const pot = faPotential.filter(p=>p.date>=monthStart).reduce((s,p)=>s+p.amount,0);
+    const obl = faObligations.filter(o=>!o.paid && o.dueDate>=monthStart).reduce((s,o)=>s+o.amount,0);
+    const bal = parseFloat(document.getElementById('fa-realBalance').innerText.replace(/[^0-9-]/g,''));
+    
+    document.getElementById('fa-potential-inc').innerText = pot.toLocaleString() + ' ₽';
+    document.getElementById('fa-oblig-month').innerText = obl.toLocaleString() + ' ₽';
+    const forecast = bal + pot - obl;
+    const fEl = document.getElementById('fa-forecast');
+    fEl.innerText = forecast.toLocaleString() + ' ₽';
+    fEl.style.color = forecast >= 0 ? '#10b981' : '#ef4444';
+}
+
+/* ================================================================
+   3. ЛОГИКА СКЛАДА (Шины/Диски)
+   ================================================================ */
+let workLogs = JSON.parse(localStorage.getItem('workLogs')) || [];
+function renderWork() {
+    const list = document.getElementById('wk-list');
+    let ul=0, pl=0;
+    list.innerHTML = '';
+    workLogs.slice().reverse().forEach((l,i) => {
+        if(l.type==='unload') ul+=Number(l.qty); else pl+=Number(l.qty);
+        const div = document.createElement('div');
+        div.className = 'list-row';
+        div.innerHTML = `<div><b>${l.type==='unload'?'Выгрузка':'Размещение'}</b> ${l.product==='tires'?'Шины':'Диски'}<br><small>${l.doc}</small></div>
+        <div>${l.qty} шт. <button class="btn-del" onclick="delWork(${i})">×</button></div>`;
+        list.appendChild(div);
+    });
+    document.getElementById('wk-unloaded').innerText = ul;
+    document.getElementById('wk-placed').innerText = pl;
+    document.getElementById('wk-pending').innerText = ul-pl;
+}
+function addWork() {
+    const t = document.getElementById('wk-type').value;
+    const p = document.getElementById('wk-product').value;
+    const d = document.getElementById('wk-doc').value;
+    const q = document.getElementById('wk-qty').value;
+    if(!d||!q) return alert('Заполните поля');
+    workLogs.push({type:t, product:p, doc:d, qty:q, date:new Date().toISOString()});
+    localStorage.setItem('workLogs', JSON.stringify(workLogs));
+    renderWork();
+    document.getElementById('wk-doc').value=''; document.getElementById('wk-qty').value='';
+}
+function delWork(i) { workLogs.splice(i,1); localStorage.setItem('workLogs',JSON.stringify(workLogs)); renderWork(); }
+
+/* ================================================================
+   4. ЛОГИКА ДОЛГОВ (Контрагенты)
+   ================================================================ */
+let debtsList = JSON.parse(localStorage.getItem('debtsList')) || [];
+function renderDebts() {
+    const list = document.getElementById('db-list');
+    let rec=0, pay=0;
+    list.innerHTML = '';
+    debtsList.slice().reverse().forEach((d,i) => {
+        if(d.type==='receivable') rec+=Number(d.amount); else pay+=Number(d.amount);
+        const div = document.createElement('div');
+        div.className = 'list-row';
+        div.innerHTML = `<div><b>${d.party}</b><br><small>${d.desc}</small></div>
+        <div style="color:${d.type==='receivable'?'green':'red'}">${d.amount} <button class="btn-del" onclick="delDebt(${i})">×</button></div>`;
+        list.appendChild(div);
+    });
+    document.getElementById('db-receivable').innerText = rec.toLocaleString()+' ₽';
+    document.getElementById('db-payable').innerText = pay.toLocaleString()+' ₽';
+}
+function addDebt() {
+    const t = document.getElementById('db-type').value;
+    const p = document.getElementById('db-party').value;
+    const d = document.getElementById('db-desc').value;
+    const a = document.getElementById('db-amount').value;
+    if(!p||!a) return alert('Заполните поля');
+    debtsList.push({type:t, party:p, desc:d, amount:a});
+    localStorage.setItem('debtsList', JSON.stringify(debtsList));
+    renderDebts();
+    document.getElementById('db-party').value=''; document.getElementById('db-amount').value='';
+}
+function delDebt(i) { debtsList.splice(i,1); localStorage.setItem('debtsList',JSON.stringify(debtsList)); renderDebts(); }
+
+/* ================================================================
+   5. ЛОГИКА ГРАФИКА (Банки) - Из вашего второго кода
+   ================================================================ */
+let schDebts = { sber:152341, tbank:82632, yandex:97097, alfa_loan:35325, alfa_card:17412 };
+const schMonths = {
+    april: {name:"Апрель", items:[{lab:"Сбер", amt:50000, cr:"sber"}, {lab:"Т-банк", amt:15000, cr:"tbank"}, {lab:"Яндекс", amt:15000, cr:"yandex"}]},
+    may: {name:"Май", items:[{lab:"Сбер", amt:50000, cr:"sber"}, {lab:"Т-банк", amt:15000, cr:"tbank"}]}
+    // Можно добавить остальные месяцы из вашего кода
+};
+let schPaid = JSON.parse(localStorage.getItem('sch_paid')) || {};
+
+function initSchedule() {
+    let total = Object.values(schDebts).reduce((a,b)=>a+b,0);
+    document.getElementById('sch-total').innerText = total.toLocaleString()+' ₽';
+    
+    const credDiv = document.getElementById('sch-creditors');
+    credDiv.innerHTML = `<div class="stat-box">Сбер: ${schDebts.sber.toLocaleString()}</div><div class="stat-box">Т-банк: ${schDebts.tbank.toLocaleString()}</div><div class="stat-box">Яндекс: ${schDebts.yandex.toLocaleString()}</div>`;
+    
+    const mDiv = document.getElementById('sch-months');
+    mDiv.innerHTML = '';
+    for(const k in schMonths) {
+        const m = schMonths[k];
+        let html = `<div class="simple-card"><h3>${m.name}</h3>`;
+        m.items.forEach(it => {
+            const isP = !!schPaid[k+it.cr];
+            html += `<div class="list-row">
+                <div>${it.lab} (${it.amt})</div>
+                <button class="fa-btn" style="background:${isP?'#10b981':'#e2e8f0'}" onclick="toggleSch('${k+it.cr}','${it.cr}',${it.amt})">${isP?'✅':'Оплатить'}</button>
+            </div>`;
+        });
+        html += '</div>';
+        mDiv.innerHTML += html;
+    }
+}
+
+function toggleSch(id, cr, amt) {
+    if(schPaid[id]) delete schPaid[id];
+    else {
+        schPaid[id] = true;
+        if(schDebts[cr]) schDebts[cr] = Math.max(0, schDebts[cr] - (amt - 1000)); // Упрощенно
+    }
+    localStorage.setItem('sch_paid', JSON.stringify(schPaid));
+    initSchedule();
+}
+
+/* ================================================================
+   6. ОТЧЁТЫ
+   ================================================================ */
+function renderReports() {
+    const fInc = faTransactions.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+    const fExp = faTransactions.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    const wCount = workLogs.length;
+    const dRec = debtsList.filter(d=>d.type==='receivable').reduce((s,d)=>s+Number(d.amount),0);
+    
+    document.getElementById('rep-summary').innerHTML = `
+        💰 <b>Финансы:</b> Доход ${fInc.toLocaleString()}, Расход ${fExp.toLocaleString()}<br>
+        📦 <b>Склад:</b> Всего операций: ${wCount}<br>
+        📒 <b>Долги:</b> Нам должны: ${dRec.toLocaleString()}
+    `;
+}
+
+// Запуск при загрузке
+faInit();
 </script>
-
 </body>
 </html>

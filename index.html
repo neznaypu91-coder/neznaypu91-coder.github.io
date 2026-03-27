@@ -1,1 +1,502 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Финансы и Учёт Товаров</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #ca8a04;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+            --border: #e5e7eb;
+        }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        
+        body { background-color: var(--bg); color: var(--text); padding-bottom: 80px; }
+
+        /* Header */
+        header { background: linear-gradient(135deg, var(--primary), #1d4ed8); color: white; padding: 20px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        h1 { font-size: 1.5rem; margin-bottom: 5px; }
+        .subtitle { font-size: 0.9rem; opacity: 0.9; }
+
+        /* Tabs */
+        .tabs { display: flex; justify-content: space-around; background: white; position: fixed; bottom: 0; width: 100%; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
+        .tab-btn { flex: 1; padding: 15px 5px; border: none; background: none; cursor: pointer; font-size: 0.9rem; color: #6b7280; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .tab-btn.active { color: var(--primary); font-weight: bold; background-color: #eff6ff; }
+        .tab-icon { font-size: 1.2rem; }
+
+        /* Content */
+        .content { display: none; padding: 20px; max-width: 800px; margin: 0 auto; animation: fadeIn 0.3s ease; }
+        .content.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Cards */
+        .card { background: var(--card-bg); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-item { background: #f8fafc; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid var(--border); }
+        .stat-value { font-size: 1.4rem; font-weight: bold; margin-top: 5px; }
+        .stat-label { font-size: 0.85rem; color: #6b7280; }
+        .text-green { color: var(--success); }
+        .text-red { color: var(--danger); }
+        .text-blue { color: var(--primary); }
+
+        /* Forms */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.9rem; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; }
+        button.btn-primary { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button.btn-primary:hover { background: #1d4ed8; }
+        button.btn-sm { padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; border: none; cursor: pointer; }
+        .btn-danger { background: #fee2e2; color: var(--danger); }
+        .btn-success { background: #dcfce7; color: var(--success); }
+
+        /* Lists */
+        .item-list { list-style: none; }
+        .list-item { background: white; border-bottom: 1px solid var(--border); padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .list-item:first-child { border-top-left-radius: 12px; border-top-right-radius: 12px; }
+        .list-item:last-child { border-bottom: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
+        .item-info h4 { font-size: 1rem; margin-bottom: 4px; }
+        .item-meta { font-size: 0.85rem; color: #6b7280; }
+        .item-actions { display: flex; gap: 8px; }
+
+        /* Badges */
+        .badge { padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
+        .badge-income { background: #dcfce7; color: var(--success); }
+        .badge-expense { background: #fee2e2; color: var(--danger); }
+        .badge-tire { background: #e0f2fe; color: #0369a1; }
+        .badge-disk { background: #fef3c7; color: #b45309; }
+
+        /* Responsive Table for Desktop */
+        @media (min-width: 768px) {
+            .list-item { border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border); }
+            .tabs { max-width: 800px; left: 50%; transform: translateX(-50%); border-radius: 12px 12px 0 0; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Мой Бизнес</h1>
+    <div class="subtitle">Финансы • Склад • Долги</div>
+</header>
+
+<!-- Вкладка ФИНАНСЫ -->
+<div id="tab-finance" class="content active">
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-label">Баланс</div>
+            <div class="stat-value text-blue" id="fin-balance">0 ₽</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Доходы</div>
+            <div class="stat-value text-green" id="fin-income">0 ₽</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Расходы</div>
+            <div class="stat-value text-red" id="fin-expense">0 ₽</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Добавить операцию</h3>
+        <form id="finance-form">
+            <div class="form-group">
+                <label>Тип</label>
+                <select id="f-type">
+                    <option value="income">Доход (+)</option>
+                    <option value="expense">Расход (-)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Сумма</label>
+                <input type="number" id="f-amount" placeholder="0" required>
+            </div>
+            <div class="form-group">
+                <label>Описание</label>
+                <input type="text" id="f-desc" placeholder="Например: Продажа шин" required>
+            </div>
+            <button type="submit" class="btn-primary">Добавить</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>История операций</h3>
+        <ul class="item-list" id="finance-list">
+            <!-- JS заполнит это -->
+        </ul>
+    </div>
+</div>
+
+<!-- Вкладка РАБОТА (Шины/Диски) -->
+<div id="tab-work" class="content">
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-label">Выгружено</div>
+            <div class="stat-value text-orange" id="work-unloaded">0 шт</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Размещено</div>
+            <div class="stat-value text-green" id="work-placed">0 шт</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">В ожидании</div>
+            <div class="stat-value text-blue" id="work-pending">0 шт</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Новая партия</h3>
+        <form id="work-form">
+            <div class="form-group">
+                <label>Номер документа</label>
+                <input type="text" id="w-doc" placeholder="№ Накладной" required>
+            </div>
+            <div class="form-group">
+                <label>Тип товара</label>
+                <select id="w-type">
+                    <option value="tire">Шины</option>
+                    <option value="disk">Диски</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Количество (шт)</label>
+                <input type="number" id="w-qty" placeholder="0" required>
+            </div>
+            <div class="form-group">
+                <label>Статус</label>
+                <select id="w-status">
+                    <option value="unloaded">Выгружено (ждёт размещения)</option>
+                    <option value="placed">Размещено на складе</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary">Добавить запись</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>Журнал товаров</h3>
+        <ul class="item-list" id="work-list"></ul>
+    </div>
+</div>
+
+<!-- Вкладка ДОЛГИ -->
+<div id="tab-debts" class="content">
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-label">Нам должны</div>
+            <div class="stat-value text-green" id="debt-receivable">0 ₽</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Мы должны</div>
+            <div class="stat-value text-red" id="debt-payable">0 ₽</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Добавить долг</h3>
+        <form id="debt-form">
+            <div class="form-group">
+                <label>Тип долга</label>
+                <select id="d-type">
+                    <option value="receivable">Нам должны (Дебиторка)</option>
+                    <option value="payable">Мы должны (Кредиторка)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Контрагент</label>
+                <input type="text" id="d-name" placeholder="Имя или компания" required>
+            </div>
+            <div class="form-group">
+                <label>Сумма</label>
+                <input type="number" id="d-amount" placeholder="0" required>
+            </div>
+            <div class="form-group">
+                <label>Комментарий</label>
+                <input type="text" id="d-desc" placeholder="За что долг?">
+            </div>
+            <button type="submit" class="btn-primary">Добавить долг</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>Список долгов</h3>
+        <ul class="item-list" id="debt-list"></ul>
+    </div>
+</div>
+
+<!-- Вкладка ОТЧЁТЫ -->
+<div id="tab-reports" class="content">
+    <div class="card">
+        <h3>Общий отчёт</h3>
+        <p style="margin-bottom: 15px; color: #666;">Автоматическая сводка по всем данным.</p>
+        
+        <div class="stat-item" style="text-align: left; margin-bottom: 10px;">
+            <strong>Чистая прибыль:</strong>
+            <div class="stat-value text-green" id="rep-profit">0 ₽</div>
+        </div>
+        <div class="stat-item" style="text-align: left; margin-bottom: 10px;">
+            <strong>Всего товаров обработано:</strong>
+            <div class="stat-value text-blue" id="rep-total-items">0 шт</div>
+        </div>
+        <div class="stat-item" style="text-align: left;">
+            <strong>Активные долги (разница):</strong>
+            <div class="stat-value" id="rep-debt-diff">0 ₽</div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h3>Управление данными</h3>
+        <button onclick="clearAllData()" class="btn-primary" style="background-color: var(--danger);">⚠️ Очистить все данные</button>
+    </div>
+</div>
+
+<!-- Навигация -->
+<nav class="tabs">
+    <button class="tab-btn active" onclick="switchTab('finance')">
+        <span class="tab-icon">💰</span>
+        <span>Финансы</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('work')">
+        <span class="tab-icon">📦</span>
+        <span>Работа</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('debts')">
+        <span class="tab-icon">📒</span>
+        <span>Долги</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('reports')">
+        <span class="tab-icon">📈</span>
+        <span>Отчёты</span>
+    </button>
+</nav>
+
+<script>
+    // --- Логика приложения ---
+
+    // Инициализация данных из LocalStorage
+    let finances = JSON.parse(localStorage.getItem('finances')) || [];
+    let works = JSON.parse(localStorage.getItem('works')) || [];
+    let debts = JSON.parse(localStorage.getItem('debts')) || [];
+
+    // Функция сохранения
+    function saveData() {
+        localStorage.setItem('finances', JSON.stringify(finances));
+        localStorage.setItem('works', JSON.stringify(works));
+        localStorage.setItem('debts', JSON.stringify(debts));
+        renderAll();
+    }
+
+    // Переключение вкладок
+    function switchTab(tabId) {
+        document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById(`tab-${tabId}`).classList.add('active');
+        // Находим кнопку, которая вызвала функцию (примерно)
+        const buttons = document.querySelectorAll('.tab-btn');
+        if(tabId === 'finance') buttons[0].classList.add('active');
+        if(tabId === 'work') buttons[1].classList.add('active');
+        if(tabId === 'debts') buttons[2].classList.add('active');
+        if(tabId === 'reports') buttons[3].classList.add('active');
+    }
+
+    // --- ФИНАНСЫ ---
+    document.getElementById('finance-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const type = document.getElementById('f-type').value;
+        const amount = parseFloat(document.getElementById('f-amount').value);
+        const desc = document.getElementById('f-desc').value;
+
+        finances.unshift({ id: Date.now(), type, amount, desc, date: new Date().toLocaleDateString() });
+        document.getElementById('finance-form').reset();
+        saveData();
+    });
+
+    function deleteFinance(id) {
+        if(confirm('Удалить запись?')) {
+            finances = finances.filter(i => i.id !== id);
+            saveData();
+        }
+    }
+
+    // --- РАБОТА ---
+    document.getElementById('work-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const doc = document.getElementById('w-doc').value;
+        const type = document.getElementById('w-type').value;
+        const qty = parseInt(document.getElementById('w-qty').value);
+        const status = document.getElementById('w-status').value;
+
+        works.unshift({ id: Date.now(), doc, type, qty, status, date: new Date().toLocaleDateString() });
+        document.getElementById('work-form').reset();
+        saveData();
+    });
+
+    function deleteWork(id) {
+        if(confirm('Удалить запись о товаре?')) {
+            works = works.filter(i => i.id !== id);
+            saveData();
+        }
+    }
+
+    // --- ДОЛГИ ---
+    document.getElementById('debt-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const type = document.getElementById('d-type').value;
+        const name = document.getElementById('d-name').value;
+        const amount = parseFloat(document.getElementById('d-amount').value);
+        const desc = document.getElementById('d-desc').value;
+
+        debts.unshift({ id: Date.now(), type, name, amount, desc, paid: false, date: new Date().toLocaleDateString() });
+        document.getElementById('debt-form').reset();
+        saveData();
+    });
+
+    function toggleDebtStatus(id) {
+        const debt = debts.find(i => i.id === id);
+        if(debt) {
+            debt.paid = !debt.paid;
+            saveData();
+        }
+    }
+
+    function deleteDebt(id) {
+        if(confirm('Удалить долг?')) {
+            debts = debts.filter(i => i.id !== id);
+            saveData();
+        }
+    }
+
+    function clearAllData() {
+        if(confirm('ВНИМАНИЕ! Это удалит ВСЕ данные безвозвратно. Вы уверены?')) {
+            localStorage.clear();
+            finances = [];
+            works = [];
+            debts = [];
+            renderAll();
+            alert('Все данные очищены.');
+        }
+    }
+
+    // --- ОТРИСОВКА ---
+    function renderAll() {
+        // 1. Финансы
+        const finList = document.getElementById('finance-list');
+        finList.innerHTML = '';
+        let totalInc = 0, totalExp = 0;
+
+        finances.forEach(item => {
+            if(item.type === 'income') totalInc += item.amount;
+            else totalExp += item.amount;
+
+            const li = document.createElement('li');
+            li.className = 'list-item';
+            li.innerHTML = `
+                <div class="item-info">
+                    <h4>${item.desc} <span class="badge ${item.type === 'income' ? 'badge-income' : 'badge-expense'}">${item.type === 'income' ? '+' : '-'} ${item.amount} ₽</span></h4>
+                    <div class="item-meta">${item.date}</div>
+                </div>
+                <button class="btn-sm btn-danger" onclick="deleteFinance(${item.id})">✕</button>
+            `;
+            finList.appendChild(li);
+        });
+
+        document.getElementById('fin-income').textContent = `${totalInc.toLocaleString()} ₽`;
+        document.getElementById('fin-expense').textContent = `${totalExp.toLocaleString()} ₽`;
+        document.getElementById('fin-balance').textContent = `${(totalInc - totalExp).toLocaleString()} ₽`;
+
+        // 2. Работа
+        const workList = document.getElementById('work-list');
+        workList.innerHTML = '';
+        let countUnloaded = 0, countPlaced = 0;
+
+        works.forEach(item => {
+            if(item.status === 'unloaded') countUnloaded += item.qty;
+            else countPlaced += item.qty;
+
+            const typeName = item.type === 'tire' ? 'Шина' : 'Диск';
+            const badgeClass = item.type === 'tire' ? 'badge-tire' : 'badge-disk';
+            const statusText = item.status === 'unloaded' ? 'Выгружено' : 'Размещено';
+            const statusColor = item.status === 'unloaded' ? '#ca8a04' : '#16a34a';
+
+            const li = document.createElement('li');
+            li.className = 'list-item';
+            li.innerHTML = `
+                <div class="item-info">
+                    <h4>Документ: ${item.doc} <span class="badge ${badgeClass}">${typeName}</span></h4>
+                    <div class="item-meta">
+                        Кол-во: <b>${item.qty}</b> шт. | 
+                        Статус: <span style="color:${statusColor}">${statusText}</span> | 
+                        ${item.date}
+                    </div>
+                </div>
+                <button class="btn-sm btn-danger" onclick="deleteWork(${item.id})">✕</button>
+            `;
+            workList.appendChild(li);
+        });
+
+        document.getElementById('work-unloaded').textContent = `${countUnloaded} шт`;
+        document.getElementById('work-placed').textContent = `${countPlaced} шт`;
+        document.getElementById('work-pending').textContent = `${countUnloaded} шт`; // В ожидании = выгружено
+
+        // 3. Долги
+        const debtList = document.getElementById('debt-list');
+        debtList.innerHTML = '';
+        let recTotal = 0, payTotal = 0;
+
+        debts.forEach(item => {
+            if(!item.paid) {
+                if(item.type === 'receivable') recTotal += item.amount;
+                else payTotal += item.amount;
+            }
+
+            const typeLabel = item.type === 'receivable' ? 'Нам должны' : 'Мы должны';
+            const typeColor = item.type === 'receivable' ? 'text-green' : 'text-red';
+            
+            const li = document.createElement('li');
+            li.className = 'list-item';
+            li.style.opacity = item.paid ? '0.6' : '1';
+            li.style.background = item.paid ? '#f9fafb' : 'white';
+            
+            li.innerHTML = `
+                <div class="item-info">
+                    <h4>${item.name} <span class="${typeColor}">${typeLabel}</span></h4>
+                    <div class="item-meta">
+                        ${item.desc} | ${item.amount} ₽ | ${item.date}
+                        ${item.paid ? '<br><b style="color:green">ПОГАШЕНО</b>' : ''}
+                    </div>
+                </div>
+                <div class="item-actions">
+                    ${!item.paid ? `<button class="btn-sm btn-success" onclick="toggleDebtStatus(${item.id})">OK</button>` : ''}
+                    <button class="btn-sm btn-danger" onclick="deleteDebt(${item.id})">✕</button>
+                </div>
+            `;
+            debtList.appendChild(li);
+        });
+
+        document.getElementById('debt-receivable').textContent = `${recTotal.toLocaleString()} ₽`;
+        document.getElementById('debt-payable').textContent = `${payTotal.toLocaleString()} ₽`;
+
+        // 4. Отчёты
+        document.getElementById('rep-profit').textContent = `${(totalInc - totalExp).toLocaleString()} ₽`;
+        document.getElementById('rep-total-items').textContent = `${countUnloaded + countPlaced} шт`;
+        const debtDiff = recTotal - payTotal;
+        const diffEl = document.getElementById('rep-debt-diff');
+        diffEl.textContent = `${debtDiff >= 0 ? '+' : ''}${debtDiff.toLocaleString()} ₽`;
+        diffEl.className = `stat-value ${debtDiff >= 0 ? 'text-green' : 'text-red'}`;
+    }
+
+    // Запуск при загрузке
+    renderAll();
+
+</script>
+
+</body>
+</html>

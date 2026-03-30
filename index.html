@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>План погашения — с накоплением остатков</title>
+    <title>План погашения — остаток на жизнь с копилкой</title>
     <style>
         * {
             margin: 0;
@@ -212,7 +212,7 @@
     </div>
 
     <div id="app"></div>
-    <div class="footer">📌 Остаток после платежа считается с учётом всех предыдущих платежей.</div>
+    <div class="footer">📌 Остаток на жизнь = Заработал − (все внесённые платежи) − (копилка)</div>
 </div>
 
 <script>
@@ -305,15 +305,15 @@
     }
 
     try {
-        const savedDebts = localStorage.getItem("plan_cumulative_debts");
+        const savedDebts = localStorage.getItem("plan_life_with_save");
         if (savedDebts) initialDebts = JSON.parse(savedDebts);
-        const savedMonths = localStorage.getItem("plan_cumulative_months");
+        const savedMonths = localStorage.getItem("plan_life_with_save_months");
         if (savedMonths) monthsData = JSON.parse(savedMonths);
     } catch(e) {}
 
     function saveAll() {
-        localStorage.setItem("plan_cumulative_debts", JSON.stringify(initialDebts));
-        localStorage.setItem("plan_cumulative_months", JSON.stringify(monthsData));
+        localStorage.setItem("plan_life_with_save", JSON.stringify(initialDebts));
+        localStorage.setItem("plan_life_with_save_months", JSON.stringify(monthsData));
         updateTotalDisplay();
         render();
     }
@@ -372,7 +372,7 @@
             if (!month) continue;
             const cumSave = getCumulativeSave(monthKey);
             const totalPayments = (month.payments.sber.paid || 0) + (month.payments.tbank.paid || 0) + (month.payments.yandex.paid || 0) + (month.payments.alfa_loan.paid || 0) + (month.payments.alfa_card.paid || 0) + (month.payments.babushka.paid || 0);
-            const lifeRemain = month.income - totalPayments;
+            const lifeRemain = month.income - totalPayments - month.save;
             html += `<div class="card">
                 <h2>📆 ${month.name}</h2>
                 <div class="income-row">
@@ -406,7 +406,6 @@
         }
         app.innerHTML = html;
 
-        // Обновляем остатки после платежа с накоплением
         for (const monthKey of monthsOrder) {
             const remaining = computeRemainingAfterMonth(monthKey);
             for (let creditor of ["sber", "tbank", "yandex", "alfa_loan", "alfa_card", "babushka"]) {

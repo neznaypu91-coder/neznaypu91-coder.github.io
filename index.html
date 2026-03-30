@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>План погашения — остаток на жизнь с копилкой</title>
+    <title>План погашения — сворачиваем, скрываем нули, копилка в дело</title>
     <style>
         * {
             margin: 0;
@@ -79,14 +79,29 @@
         .card {
             background: white;
             border-radius: 28px;
-            padding: 1.2rem;
-            margin-bottom: 1.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
             border: 1px solid #e2e8f0;
         }
-        .card h2 {
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+        .card-header h2 {
             font-size: 1.3rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
+        }
+        .toggle-icon {
+            font-size: 1.2rem;
+            background: none;
+            border: none;
+            font-weight: bold;
+        }
+        .card-content {
+            margin-top: 12px;
         }
         .income-row {
             background: #e6f0ff;
@@ -178,7 +193,7 @@
             border-radius: 20px;
             margin-top: 8px;
         }
-        .save-btn {
+        .save-btn, .use-savings-btn {
             background: #f97316;
             border: none;
             border-radius: 40px;
@@ -188,6 +203,9 @@
             width: 100%;
             margin-top: 12px;
             cursor: pointer;
+        }
+        .use-savings-btn {
+            background: #10b981;
         }
         .footer {
             text-align: center;
@@ -206,13 +224,10 @@
         <div class="reminder-note">⚠️ Не меняется от платежей</div>
     </div>
 
-    <div class="debts-editor">
-        <div style="font-weight: 600; margin-bottom: 8px;">✏️ Редактируй текущие остатки долгов</div>
-        <div class="debts-grid" id="debtsEditor"></div>
-    </div>
+    <div class="debts-editor" id="debtsEditorContainer"></div>
 
     <div id="app"></div>
-    <div class="footer">📌 Остаток на жизнь = Заработал − (все внесённые платежи) − (копилка)</div>
+    <div class="footer">📌 Нажми на месяц — свернуть/развернуть. Копилка накапливается. В сентябре можно закрыть остатки копилкой.</div>
 </div>
 
 <script>
@@ -226,7 +241,7 @@
     };
 
     let monthsData = {
-        april: { name: "Апрель", income: 126000,
+        april: { name: "Апрель", collapsed: false, income: 126000,
             payments: {
                 sber: { paid: 50000, interest: 4000 },
                 tbank: { paid: 0, interest: 0 },
@@ -237,7 +252,7 @@
             },
             save: 20000
         },
-        may: { name: "Май", income: 126000,
+        may: { name: "Май", collapsed: false, income: 126000,
             payments: {
                 sber: { paid: 50000, interest: 4000 },
                 tbank: { paid: 0, interest: 0 },
@@ -248,7 +263,7 @@
             },
             save: 20000
         },
-        june: { name: "Июнь", income: 126000,
+        june: { name: "Июнь", collapsed: false, income: 126000,
             payments: {
                 sber: { paid: 0, interest: 0 },
                 tbank: { paid: 0, interest: 0 },
@@ -259,7 +274,7 @@
             },
             save: 20000
         },
-        july: { name: "Июль", income: 126000,
+        july: { name: "Июль", collapsed: false, income: 126000,
             payments: {
                 sber: { paid: 0, interest: 0 },
                 tbank: { paid: 0, interest: 0 },
@@ -270,7 +285,7 @@
             },
             save: 20000
         },
-        august: { name: "Август", income: 126000,
+        august: { name: "Август", collapsed: false, income: 126000,
             payments: {
                 sber: { paid: 0, interest: 0 },
                 tbank: { paid: 0, interest: 0 },
@@ -281,7 +296,7 @@
             },
             save: 20000
         },
-        september: { name: "Сентябрь", income: 126000,
+        september: { name: "Сентябрь", collapsed: false, income: 126000,
             payments: {
                 sber: { paid: 0, interest: 0 },
                 tbank: { paid: 0, interest: 0 },
@@ -292,6 +307,16 @@
             },
             save: 20000
         }
+    };
+
+    const creditorsOrder = ["sber", "tbank", "yandex", "alfa_loan", "alfa_card", "babushka"];
+    const creditorLabels = {
+        sber: "🏦 Сбер",
+        tbank: "🏦 Т‑банк",
+        yandex: "🔁 Яндекс",
+        alfa_loan: "🔁 Альфа (займ)",
+        alfa_card: "💳 Альфа (кредитка)",
+        babushka: "👵 Бабушка"
     };
 
     function getCumulativeSave(monthKey) {
@@ -305,15 +330,15 @@
     }
 
     try {
-        const savedDebts = localStorage.getItem("plan_life_with_save");
+        const savedDebts = localStorage.getItem("plan_collapse_use_savings");
         if (savedDebts) initialDebts = JSON.parse(savedDebts);
-        const savedMonths = localStorage.getItem("plan_life_with_save_months");
+        const savedMonths = localStorage.getItem("plan_collapse_use_savings_months");
         if (savedMonths) monthsData = JSON.parse(savedMonths);
     } catch(e) {}
 
     function saveAll() {
-        localStorage.setItem("plan_life_with_save", JSON.stringify(initialDebts));
-        localStorage.setItem("plan_life_with_save_months", JSON.stringify(monthsData));
+        localStorage.setItem("plan_collapse_use_savings", JSON.stringify(initialDebts));
+        localStorage.setItem("plan_collapse_use_savings_months", JSON.stringify(monthsData));
         updateTotalDisplay();
         render();
     }
@@ -321,21 +346,24 @@
     function updateTotalDisplay() {
         const total = initialDebts.sber + initialDebts.tbank + initialDebts.yandex + initialDebts.alfa_loan + initialDebts.alfa_card + initialDebts.babushka;
         document.getElementById("totalAmount").innerText = total.toLocaleString('ru-RU') + " ₽";
-        const editorDiv = document.getElementById("debtsEditor");
+        const editorDiv = document.getElementById("debtsEditorContainer");
         editorDiv.innerHTML = `
-            <div class="debt-edit"><label>🏦 Сбер</label><input type="number" id="edit_sber" value="${initialDebts.sber}"></div>
-            <div class="debt-edit"><label>🏦 Т‑банк</label><input type="number" id="edit_tbank" value="${initialDebts.tbank}"></div>
-            <div class="debt-edit"><label>🔁 Яндекс</label><input type="number" id="edit_yandex" value="${initialDebts.yandex}"></div>
-            <div class="debt-edit"><label>🔁 Альфа займ</label><input type="number" id="edit_alfa_loan" value="${initialDebts.alfa_loan}"></div>
-            <div class="debt-edit"><label>💳 Альфа кред</label><input type="number" id="edit_alfa_card" value="${initialDebts.alfa_card}"></div>
-            <div class="debt-edit"><label>👵 Бабушка</label><input type="number" id="edit_babushka" value="${initialDebts.babushka}"></div>
+            <div style="font-weight: 600; margin-bottom: 8px;">✏️ Редактируй текущие остатки долгов</div>
+            <div class="debts-grid" id="debtsGrid"></div>
         `;
-        document.getElementById("edit_sber")?.addEventListener("change", (e) => { initialDebts.sber = parseFloat(e.target.value) || 0; saveAll(); });
-        document.getElementById("edit_tbank")?.addEventListener("change", (e) => { initialDebts.tbank = parseFloat(e.target.value) || 0; saveAll(); });
-        document.getElementById("edit_yandex")?.addEventListener("change", (e) => { initialDebts.yandex = parseFloat(e.target.value) || 0; saveAll(); });
-        document.getElementById("edit_alfa_loan")?.addEventListener("change", (e) => { initialDebts.alfa_loan = parseFloat(e.target.value) || 0; saveAll(); });
-        document.getElementById("edit_alfa_card")?.addEventListener("change", (e) => { initialDebts.alfa_card = parseFloat(e.target.value) || 0; saveAll(); });
-        document.getElementById("edit_babushka")?.addEventListener("change", (e) => { initialDebts.babushka = parseFloat(e.target.value) || 0; saveAll(); });
+        const grid = document.getElementById("debtsGrid");
+        grid.innerHTML = creditorsOrder.map(cred => {
+            const val = initialDebts[cred];
+            if (val <= 0) return '';
+            return `<div class="debt-edit"><label>${creditorLabels[cred]}</label><input type="number" class="debt-input" data-creditor="${cred}" value="${val}"></div>`;
+        }).join('');
+        document.querySelectorAll(".debt-input").forEach(inp => {
+            inp.addEventListener("change", (e) => {
+                const cred = inp.getAttribute("data-creditor");
+                initialDebts[cred] = parseFloat(inp.value) || 0;
+                saveAll();
+            });
+        });
     }
 
     function computeRemainingAfterMonth(monthKey) {
@@ -344,7 +372,7 @@
         for (let m of monthsOrder) {
             const month = monthsData[m];
             if (!month) continue;
-            for (let creditor of ["sber", "tbank", "yandex", "alfa_loan", "alfa_card", "babushka"]) {
+            for (let creditor of creditorsOrder) {
                 const paid = month.payments[creditor]?.paid || 0;
                 const interest = month.payments[creditor]?.interest || 0;
                 const body = paid - interest;
@@ -362,6 +390,42 @@
         return remaining;
     }
 
+    function useSavingsForSeptember() {
+        const cumSave = getCumulativeSave("september");
+        if (cumSave <= 0) {
+            alert("Копилка пуста, нечего использовать.");
+            return;
+        }
+        let remaining = computeRemainingAfterMonth("august");
+        let totalRemaining = remaining.sber + remaining.tbank + remaining.yandex + remaining.alfa_loan + remaining.alfa_card + remaining.babushka;
+        if (totalRemaining <= 0) {
+            alert("Долгов уже нет.");
+            return;
+        }
+        let toUse = Math.min(cumSave, totalRemaining);
+        let left = toUse;
+        const order = ["sber", "tbank", "yandex", "alfa_loan", "alfa_card", "babushka"];
+        for (let cred of order) {
+            if (left <= 0) break;
+            let debt = remaining[cred];
+            if (debt <= 0) continue;
+            let deduct = Math.min(left, debt);
+            remaining[cred] -= deduct;
+            left -= deduct;
+        }
+        // обновляем initialDebts
+        initialDebts = remaining;
+        // обнуляем копилку в сентябре и сбрасываем платежи
+        monthsData.september.save = 0;
+        for (let cred of creditorsOrder) {
+            monthsData.september.payments[cred].paid = 0;
+            monthsData.september.payments[cred].interest = 0;
+        }
+        saveAll();
+        alert(`✅ Использовано ${toUse.toLocaleString('ru-RU')} ₽ из копилки для закрытия остатков долгов.`);
+        render();
+    }
+
     function render() {
         const app = document.getElementById("app");
         if (!app) return;
@@ -371,48 +435,57 @@
             const month = monthsData[monthKey];
             if (!month) continue;
             const cumSave = getCumulativeSave(monthKey);
-            const totalPayments = (month.payments.sber.paid || 0) + (month.payments.tbank.paid || 0) + (month.payments.yandex.paid || 0) + (month.payments.alfa_loan.paid || 0) + (month.payments.alfa_card.paid || 0) + (month.payments.babushka.paid || 0);
+            const totalPayments = creditorsOrder.reduce((sum, cred) => sum + (month.payments[cred]?.paid || 0), 0);
             const lifeRemain = month.income - totalPayments - month.save;
+            const remaining = computeRemainingAfterMonth(monthKey);
+            const hasAnyDebt = creditorsOrder.some(cred => remaining[cred] > 0);
             html += `<div class="card">
-                <h2>📆 ${month.name}</h2>
-                <div class="income-row">
-                    <label>💰 Заработал за месяц (₽)</label>
-                    <input type="number" class="income-input" data-month="${monthKey}" value="${month.income}">
-                </div>`;
-            for (let creditor of ["sber", "tbank", "yandex", "alfa_loan", "alfa_card", "babushka"]) {
-                let label = "";
-                if (creditor === "sber") label = "🏦 Сбер";
-                else if (creditor === "tbank") label = "🏦 Т‑банк";
-                else if (creditor === "yandex") label = "🔁 Яндекс";
-                else if (creditor === "alfa_loan") label = "🔁 Альфа (займ)";
-                else if (creditor === "alfa_card") label = "💳 Альфа (кредитка)";
-                else label = "👵 Бабушка";
+                <div class="card-header" data-month="${monthKey}">
+                    <h2>📆 ${month.name}</h2>
+                    <span class="toggle-icon">${month.collapsed ? '▼' : '▲'}</span>
+                </div>
+                <div class="card-content" style="display: ${month.collapsed ? 'none' : 'block'}">
+                    <div class="income-row">
+                        <label>💰 Заработал за месяц (₽)</label>
+                        <input type="number" class="income-input" data-month="${monthKey}" value="${month.income}">
+                    </div>`;
+            for (let creditor of creditorsOrder) {
+                const remainingVal = remaining[creditor];
+                if (remainingVal <= 0) continue; // строка банка пропадает
+                const label = creditorLabels[creditor];
+                const paid = month.payments[creditor]?.paid || 0;
+                const interest = month.payments[creditor]?.interest || 0;
                 html += `<div class="creditor-block">
                     <div class="creditor-title">${label}</div>
                     <div class="payment-row">
-                        <div class="payment-field"><label>Вношу (₽)</label><input type="number" class="payment-paid" data-month="${monthKey}" data-creditor="${creditor}" value="${month.payments[creditor].paid}"></div>
-                        <div class="payment-field"><label>Проценты (₽)</label><input type="number" class="payment-interest" data-month="${monthKey}" data-creditor="${creditor}" value="${month.payments[creditor].interest}"></div>
+                        <div class="payment-field"><label>Вношу (₽)</label><input type="number" class="payment-paid" data-month="${monthKey}" data-creditor="${creditor}" value="${paid}"></div>
+                        <div class="payment-field"><label>Проценты (₽)</label><input type="number" class="payment-interest" data-month="${monthKey}" data-creditor="${creditor}" value="${interest}"></div>
                     </div>
                     <div class="remain" id="remain-${creditor}-${monthKey}"></div>
                 </div>`;
             }
             html += `<div class="life-save-row">
-                    <div class="life-result">🏠 Остаток на жизнь: <strong>${lifeRemain.toLocaleString('ru-RU')} ₽</strong></div>
-                    <div class="save-field"><label>🐖 В копилку (₽)</label><input type="number" class="save-input" data-month="${monthKey}" value="${month.save}"></div>
-                </div>
-                <div class="savings-total">💰 Всего в копилке на этот месяц: <strong>${cumSave.toLocaleString('ru-RU')} ₽</strong></div>
-                <button class="save-month-btn" data-month="${monthKey}">💾 Сохранить план на месяц</button>
-            </div>`;
+                        <div class="life-result">🏠 Остаток на жизнь: <strong>${lifeRemain.toLocaleString('ru-RU')} ₽</strong></div>
+                        <div class="save-field"><label>🐖 В копилку (₽)</label><input type="number" class="save-input" data-month="${monthKey}" value="${month.save}"></div>
+                    </div>
+                    <div class="savings-total">💰 Всего в копилке на этот месяц: <strong>${cumSave.toLocaleString('ru-RU')} ₽</strong></div>`;
+            if (monthKey === "september" && hasAnyDebt && getCumulativeSave("september") > 0) {
+                html += `<button class="use-savings-btn" id="use-savings-btn">💰 Использовать копилку для закрытия остатков</button>`;
+            }
+            html += `<button class="save-month-btn" data-month="${monthKey}">💾 Сохранить план на месяц</button>
+                    </div>
+                </div>`;
         }
         app.innerHTML = html;
 
+        // остатки после платежа
         for (const monthKey of monthsOrder) {
             const remaining = computeRemainingAfterMonth(monthKey);
-            for (let creditor of ["sber", "tbank", "yandex", "alfa_loan", "alfa_card", "babushka"]) {
+            for (let creditor of creditorsOrder) {
                 const remainSpan = document.getElementById(`remain-${creditor}-${monthKey}`);
                 if (remainSpan) {
                     const val = remaining[creditor];
-                    if (val !== undefined && monthsData[monthKey].payments[creditor].paid > 0) {
+                    if (val !== undefined && monthsData[monthKey].payments[creditor]?.paid > 0) {
                         remainSpan.innerText = `📉 После платежа останется: ${val.toLocaleString('ru-RU')} ₽`;
                     } else {
                         remainSpan.innerText = ``;
@@ -426,18 +499,10 @@
                 const monthKey = this.getAttribute("data-month");
                 const month = monthsData[monthKey];
                 const creditor = this.getAttribute("data-creditor");
-                if (this.classList.contains("income-input")) {
-                    month.income = parseFloat(this.value) || 0;
-                }
-                if (creditor && this.classList.contains("payment-paid")) {
-                    month.payments[creditor].paid = parseFloat(this.value) || 0;
-                }
-                if (creditor && this.classList.contains("payment-interest")) {
-                    month.payments[creditor].interest = parseFloat(this.value) || 0;
-                }
-                if (this.classList.contains("save-input")) {
-                    month.save = parseFloat(this.value) || 0;
-                }
+                if (this.classList.contains("income-input")) month.income = parseFloat(this.value) || 0;
+                if (creditor && this.classList.contains("payment-paid")) month.payments[creditor].paid = parseFloat(this.value) || 0;
+                if (creditor && this.classList.contains("payment-interest")) month.payments[creditor].interest = parseFloat(this.value) || 0;
+                if (this.classList.contains("save-input")) month.save = parseFloat(this.value) || 0;
                 saveAll();
                 render();
             });
@@ -449,6 +514,22 @@
                 const month = monthsData[monthKey];
                 alert(`✅ План на ${month.name} сохранён.`);
                 saveAll();
+            });
+        });
+
+        const useBtn = document.getElementById("use-savings-btn");
+        if (useBtn) {
+            useBtn.addEventListener("click", () => useSavingsForSeptember());
+        }
+
+        document.querySelectorAll(".card-header").forEach(header => {
+            header.addEventListener("click", (e) => {
+                const monthKey = header.getAttribute("data-month");
+                if (monthKey) {
+                    monthsData[monthKey].collapsed = !monthsData[monthKey].collapsed;
+                    saveAll();
+                    render();
+                }
             });
         });
     }

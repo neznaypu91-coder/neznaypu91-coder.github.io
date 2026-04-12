@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>Tyres & Wheels • Контроль товарооборота + Карантин</title>
-  <!-- Chart.js для графиков -->
+  <title>Tyres & Wheels • Контроль товарооборота</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     * {
@@ -122,36 +121,6 @@
       color: white;
     }
 
-    /* Карантин подвкладки */
-    .quarantine-subtabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .quarantine-subtab {
-      background: #1a2230;
-      border: 1px solid #2a3647;
-      color: #8e9aab;
-      padding: 10px 24px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      border-radius: 30px;
-      transition: all 0.2s;
-    }
-
-    .quarantine-subtab:hover {
-      background: #252f40;
-      color: #cbd5e1;
-    }
-
-    .quarantine-subtab.active {
-      background: #2563eb;
-      border-color: #3b82f6;
-      color: white;
-    }
-
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -235,7 +204,6 @@
       font-weight: 600;
     }
 
-    /* Календарь */
     .calendar-container {
       background: #131822;
       border-radius: 24px;
@@ -733,7 +701,7 @@
       background: #131822;
       border-radius: 24px;
       padding: 30px;
-      max-width: 700px;
+      max-width: 600px;
       width: 90%;
       border: 1px solid #3b82f6;
       max-height: 85vh;
@@ -741,8 +709,8 @@
     }
 
     .modal h3 { margin-top: 0; margin-bottom: 20px; }
-    .modal-input { width: 100%; margin-bottom: 16px; }
-    .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+    .modal-input { width: 100%; margin-bottom: 20px; }
+    .modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
 
     .toast-notification {
       position: fixed;
@@ -819,42 +787,6 @@
       flex-wrap: wrap;
     }
 
-    /* Карантинные бейджи */
-    .type-badge {
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      display: inline-block;
-    }
-    .type-badge.quarantine { background: #7f1d1d; color: #fecaca; }
-    .type-badge.delivery { background: #065f46; color: #a7f3d0; }
-    .direction-badge {
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      display: inline-block;
-    }
-    .direction-badge.wholesale { background: #1e3a5f; color: #93c5fd; }
-    .direction-badge.retail { background: #854d0e; color: #fde047; }
-    .product-badge {
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      display: inline-block;
-    }
-    .product-badge.tyres { background: #1e3a5f; color: #93c5fd; }
-    .product-badge.wheels { background: #854d0e; color: #fde047; }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-
     @media (max-width: 768px) {
       .operations-container, .analytics-grid, .client-cards {
         grid-template-columns: 1fr;
@@ -880,16 +812,14 @@
 </head>
 <body>
 <div class="dashboard">
-  <h1>📊 TYRE·WHEEL HUB + КАРАНТИН</h1>
+  <h1>📊 TYRE·WHEEL HUB</h1>
 
   <div class="tabs-container">
-    <button class="tab-btn" data-tab="operations">📦 Операции</button>
+    <button class="tab-btn active" data-tab="operations">📦 Операции</button>
     <button class="tab-btn" data-tab="analytics">📈 Аналитика</button>
-    <button class="tab-btn active" data-tab="quarantine">⚠️ Карантин</button>
   </div>
 
-  <!-- ОПЕРАЦИИ -->
-  <div id="operationsView" style="display: none;">
+  <div id="operationsView">
     <div class="sub-tabs">
       <button class="sub-tab-btn active" data-product="tyres"><span class="tyre-icon"></span> Шины</button>
       <button class="sub-tab-btn" data-product="wheels"><span class="wheel-icon"></span> Диски</button>
@@ -932,10 +862,9 @@
     </div>
 
     <div class="history-header"><h2 style="margin: 0;">📋 Журнал операций</h2><div class="history-search"><input type="text" id="historySearchInput" placeholder="🔍 Поиск по номеру документа..."><button class="btn btn-outline" id="clearHistorySearchBtn" title="Очистить поиск">✕</button><span id="searchResultCount" style="display: none;"></span></div></div>
-    <div class="table-wrapper"><table id="historyTable"><thead><tr><th>Дата выгрузки</th><th>Клиент</th><th>Кол-во</th><th>Время выгр.</th><th>Скорость выгр.</th><th>№ документов</th><th>Время разм.</th><th>Скорость разм.</th><th>Статус</th><th>Действия</th></tr></thead><tbody id="historyBody"></tbody></table></div>
+    <div class="table-wrapper"><table id="historyTable"><thead><tr><th>Дата выгрузки</th><th>Клиент</th><th>Кол-во</th><th>Время выгр.</th><th>Скорость выгр.</th><th>№ документов</th><th>Время разм.</th><th>Дата размещения</th><th>Скорость разм.</th><th>Статус</th><th>Действия</th></tr></thead><tbody id="historyBody"></tbody></table></div>
   </div>
 
-  <!-- АНАЛИТИКА -->
   <div id="analyticsView" style="display: none;">
     <div class="sub-tabs">
       <button class="sub-tab-btn active" data-analytics-product="tyres"><span class="tyre-icon"></span> Шины</button>
@@ -973,84 +902,6 @@
     <div class="chart-container"><h3>📈 Скорость размещения по дням</h3><canvas id="placementChart"></canvas></div>
   </div>
 
-  <!-- КАРАНТИН -->
-  <div id="quarantineView">
-    <div class="quarantine-subtabs">
-      <button class="quarantine-subtab active" data-qview="list">📋 Список записей</button>
-      <button class="quarantine-subtab" data-qview="stats">📊 Статистика</button>
-    </div>
-
-    <div id="quarantineListView">
-      <div class="form-section">
-        <h3>➕ Добавить запись в карантин</h3>
-        <div class="form-grid">
-          <div class="input-group"><label>Дата прихода</label><input type="date" id="qDateArrival"></div>
-          <div class="input-group"><label>№ ПО</label><input type="text" id="qPoNumber" placeholder="Номер ПО"></div>
-          <div class="input-group"><label>№ Задачи</label><input type="text" id="qTaskNumber" placeholder="Номер задачи"></div>
-          <div class="input-group"><label>Клиент</label><input type="text" id="qClient" placeholder="Клиент"></div>
-          <div class="input-group"><label>Дата отправки УКД</label><input type="text" id="qUkdDate" placeholder="Дата или 'ещё не отправлено'"></div>
-          <div class="input-group"><label>Товар</label><select id="qProduct"><option value="Шины">Шины</option><option value="Диски">Диски</option></select></div>
-          <div class="input-group"><label>Дата постановки задачи</label><input type="date" id="qTaskDate"></div>
-          <div class="input-group"><label>Проблема</label><textarea id="qProblem" rows="2" placeholder="Описание проблемы"></textarea></div>
-          <div class="input-group"><label>Менеджер</label><input type="text" id="qManager" placeholder="ФИО менеджера"></div>
-          <div class="input-group"><label>Кол-во</label><input type="number" id="qQuantity" min="1" value="0"></div>
-          <div class="input-group"><label>Тип</label><select id="qType"><option value="Карантин">Карантин</option><option value="На развоз">На развоз</option></select></div>
-          <div class="input-group"><label>Направление</label><select id="qDirection"><option value="Опт">Опт</option><option value="Розница">Розница</option></select></div>
-        </div>
-        <button class="btn btn-primary" id="addQuarantineBtn" style="width: 100%;">➕ Добавить запись</button>
-      </div>
-
-      <div class="import-export-section">
-        <h3>📁 Импорт / Экспорт данных карантина</h3>
-        <div class="settings-row">
-          <button class="btn btn-success" id="exportQuarantineCSVBtn">📤 Экспорт в CSV</button>
-          <button class="btn btn-outline" id="importQuarantineCSVBtn">📥 Импорт из CSV</button>
-          <button class="btn btn-primary" id="saveQuarantineToFileBtn">💾 Сохранить карантин в файл</button>
-          <button class="btn btn-outline" id="loadQuarantineFromFileBtn">📂 Загрузить карантин из файла</button>
-          <input type="file" id="quarantineCsvFileInput" accept=".csv,.txt,text/csv" style="display: none;">
-          <input type="file" id="quarantineBackupFileInput" accept=".json,application/json" style="display: none;">
-        </div>
-      </div>
-
-      <div class="search-section">
-        <h3>🔍 Поиск по карантину</h3>
-        <div class="search-bar">
-          <input type="text" class="search-input" id="quarantineSearch" placeholder="Поиск по клиенту, ПО, задаче, менеджеру...">
-          <button class="btn btn-outline" id="clearQuarantineSearchBtn">Очистить</button>
-        </div>
-      </div>
-
-      <div class="history-header">
-        <h2 style="margin: 0;">📋 Журнал карантина</h2>
-        <span id="quarantineSearchResultCount" style="display: none;"></span>
-      </div>
-      <div class="table-wrapper">
-        <table id="quarantineTable">
-          <thead><tr><th>Дата прихода</th><th>№ ПО</th><th>№ Задачи</th><th>Клиент</th><th>Дата отправки УКД</th><th>Товар</th><th>Дата постановки</th><th>Проблема</th><th>Менеджер</th><th>Кол-во</th><th>Тип</th><th>Направление</th><th>Действия</th></tr></thead>
-          <tbody id="quarantineBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="quarantineStatsView" style="display: none;">
-      <div class="cards-grid">
-        <div class="card"><div class="card-label">Всего записей</div><div class="card-value" id="qTotalRecords">0</div><div class="card-sub">в карантине</div></div>
-        <div class="card"><div class="card-label">Всего товара</div><div class="card-value" id="qTotalQuantity">0</div><div class="card-sub">штук</div></div>
-        <div class="card"><div class="card-label">Карантин</div><div class="card-value" id="qQuarantineCount">0</div><div class="card-sub">записей</div></div>
-        <div class="card"><div class="card-label">На развоз</div><div class="card-value" id="qDeliveryCount">0</div><div class="card-sub">записей</div></div>
-      </div>
-
-      <div class="analytics-grid">
-        <div class="analytics-card"><h3>📊 По менеджерам</h3><canvas id="managerChart"></canvas></div>
-        <div class="analytics-card"><h3>📊 По товарам</h3><canvas id="productChart"></canvas></div>
-        <div class="analytics-card"><h3>📊 По типу</h3><canvas id="typeChart"></canvas></div>
-        <div class="analytics-card"><h3>📊 По направлению</h3><canvas id="directionChart"></canvas></div>
-      </div>
-
-      <div class="chart-container"><h3>📈 Динамика по дате прихода</h3><canvas id="timelineChart"></canvas></div>
-    </div>
-  </div>
-
   <div class="footer-actions">
     <button class="btn btn-danger" id="resetCurrentTabBtn">🗑️ Сбросить данные текущей вкладки</button>
     <button class="btn btn-danger" id="resetAllDataBtn">⚠️ Сбросить ВСЕ данные</button>
@@ -1074,31 +925,37 @@
 (function(){
   "use strict";
 
-  // Ключи для localStorage
-  const STORAGE_KEY_TYRES = 'tyreWheelDashboard_tyres_v21';
-  const STORAGE_KEY_WHEELS = 'tyreWheelDashboard_wheels_v21';
-  const STORAGE_KEY_QUARANTINE = 'tyreWheelDashboard_quarantine_v2';
+  const STORAGE_KEY_TYRES = 'tyreWheelDashboard_tyres_v23';
+  const STORAGE_KEY_WHEELS = 'tyreWheelDashboard_wheels_v23';
   const NORMS_KEY = 'tyreWheelDashboard_norms';
-
-  // Данные
-  let currentMainTab = 'quarantine';
+  const BACKUP_FILE_NAME = 'tyre_wheel_backup.json';
+  
+  const CLIENTS = ['РВБ', 'ОЗОН', 'ЯНДЕКС'];
+  const CLIENT_COLORS = {
+    'РВБ': '#a855f7',
+    'ОЗОН': '#0ea5e9',
+    'ЯНДЕКС': '#fde047'
+  };
+  
+  let currentMainTab = 'operations';
   let currentProduct = 'tyres';
   let tyresRecords = [];
   let wheelsRecords = [];
-  let quarantineRecords = [];
   let norms = { unload: 60, placement: 40 };
+  
+  let unloadChartInstance = null;
+  let placementChartInstance = null;
+  let clientsChartInstance = null;
+  let dailyClientsChartInstance = null;
+  
+  let historySearchTerm = '';
+  let chartDateFrom = '';
+  let chartDateTo = '';
+  
+  let currentYear = new Date().getFullYear();
+  let currentMonth = new Date().getMonth();
+  let selectedDate = null;
 
-  // Для карантина
-  let quarantineSearchTerm = '';
-  let quarantineSubview = 'list';
-  let managerChart = null, productChart = null, typeChart = null, directionChart = null, timelineChart = null;
-
-  // Для основной аналитики
-  let unloadChartInstance = null, placementChartInstance = null, clientsChartInstance = null, dailyClientsChartInstance = null;
-  let historySearchTerm = '', chartDateFrom = '', chartDateTo = '';
-  let currentYear = new Date().getFullYear(), currentMonth = new Date().getMonth(), selectedDate = null;
-
-  // Общие функции
   function showNotification(message, isSuccess = false) {
     const container = document.getElementById('notificationArea');
     const toast = document.createElement('div');
@@ -1120,50 +977,163 @@
     return 'speed-slow';
   }
 
-  function getCurrentRecords() { return currentProduct === 'tyres' ? tyresRecords : wheelsRecords; }
-  function setCurrentRecords(newRecords) { if (currentProduct === 'tyres') tyresRecords = newRecords; else wheelsRecords = newRecords; }
+  function getCurrentRecords() {
+    return currentProduct === 'tyres' ? tyresRecords : wheelsRecords;
+  }
 
-  function formatDate(iso) { if (!iso) return ''; const [y,m,d] = iso.split('-'); return `${d}.${m}.${y}`; }
+  function setCurrentRecords(newRecords) {
+    if (currentProduct === 'tyres') {
+      tyresRecords = newRecords;
+    } else {
+      wheelsRecords = newRecords;
+    }
+  }
 
-  // Загрузка/сохранение
+  function getDemoTyresData() {
+    // ВАШИ ДАННЫЕ С ДАТОЙ РАЗМЕЩЕНИЯ 11.04.2026
+    return [
+      { id: Date.now() + 1, unloadDate: '2026-04-10', client: 'РВБ', quantity: 59, unloadTime: 30, docNumbers: ['22818'], placementTime: 60, placementDate: '2026-04-11' },
+      { id: Date.now() + 2, unloadDate: '2026-04-10', client: 'РВБ', quantity: 99, unloadTime: 45, docNumbers: ['22824'], placementTime: 120, placementDate: '2026-04-11' },
+      { id: Date.now() + 3, unloadDate: '2026-04-09', client: 'РВБ', quantity: 155, unloadTime: 71, docNumbers: ['22791','22794'], placementTime: 150, placementDate: '2026-04-11' },
+      { id: Date.now() + 4, unloadDate: '2026-04-09', client: 'РВБ', quantity: 37, unloadTime: 15, docNumbers: ['22803'], placementTime: 30, placementDate: '2026-04-11' },
+      { id: Date.now() + 5, unloadDate: '2026-04-09', client: 'РВБ', quantity: 137, unloadTime: 60, docNumbers: ['22801','22804'], placementTime: 135, placementDate: '2026-04-11' },
+      { id: Date.now() + 6, unloadDate: '2026-04-09', client: 'РВБ', quantity: 168, unloadTime: 75, docNumbers: ['22814','22816','22817'], placementTime: 170, placementDate: '2026-04-11' },
+      { id: Date.now() + 7, unloadDate: '2026-04-09', client: 'ОЗОН', quantity: 84, unloadTime: 35, docNumbers: ['22780'], placementTime: 130, placementDate: '2026-04-11' },
+      { id: Date.now() + 8, unloadDate: '2026-04-09', client: 'ЯНДЕКС', quantity: 27, unloadTime: 10, docNumbers: [], placementTime: null, placementDate: null },
+      { id: Date.now() + 9, unloadDate: '2026-04-08', client: 'РВБ', quantity: 32, unloadTime: 15, docNumbers: ['22760'], placementTime: 32, placementDate: '2026-04-11' },
+      { id: Date.now() + 10, unloadDate: '2026-04-08', client: 'РВБ', quantity: 21, unloadTime: 10, docNumbers: ['22771'], placementTime: 21, placementDate: '2026-04-11' },
+      { id: Date.now() + 11, unloadDate: '2026-04-07', client: 'ОЗОН', quantity: 283, unloadTime: 120, docNumbers: ['22729','22754','22755'], placementTime: 340, placementDate: '2026-04-11' },
+      { id: Date.now() + 12, unloadDate: '2026-04-06', client: 'РВБ', quantity: 176, unloadTime: 90, docNumbers: ['22707'], placementTime: 180, placementDate: '2026-04-11' },
+      { id: Date.now() + 13, unloadDate: '2026-04-06', client: 'РВБ', quantity: 154, unloadTime: 70, docNumbers: ['22720'], placementTime: 300, placementDate: '2026-04-11' },
+      { id: Date.now() + 14, unloadDate: '2026-04-06', client: 'РВБ', quantity: 69, unloadTime: 30, docNumbers: ['22728','22723'], placementTime: 120, placementDate: '2026-04-11' },
+      { id: Date.now() + 15, unloadDate: '2026-04-06', client: 'ЯНДЕКС', quantity: 19, unloadTime: 10, docNumbers: ['22741','22759'], placementTime: 20, placementDate: '2026-04-11' },
+      { id: Date.now() + 16, unloadDate: '2026-04-03', client: 'ЯНДЕКС', quantity: 1, unloadTime: 1, docNumbers: ['22743'], placementTime: 1, placementDate: '2026-04-11' },
+      { id: Date.now() + 17, unloadDate: '2026-04-02', client: 'ОЗОН', quantity: 115, unloadTime: 40, docNumbers: ['22641'], placementTime: 120, placementDate: '2026-04-11' },
+      { id: Date.now() + 18, unloadDate: '2026-04-02', client: 'РВБ', quantity: 140, unloadTime: 70, docNumbers: ['22644','22646'], placementTime: 280, placementDate: '2026-04-11' },
+      { id: Date.now() + 19, unloadDate: '2026-04-01', client: 'РВБ', quantity: 142, unloadTime: 60, docNumbers: ['22623','22627'], placementTime: 140, placementDate: '2026-04-11' }
+    ];
+  }
+
   function loadAllData() {
-    tyresRecords = localStorage.getItem(STORAGE_KEY_TYRES) ? JSON.parse(localStorage.getItem(STORAGE_KEY_TYRES)) : [];
-    wheelsRecords = localStorage.getItem(STORAGE_KEY_WHEELS) ? JSON.parse(localStorage.getItem(STORAGE_KEY_WHEELS)) : [];
-    quarantineRecords = localStorage.getItem(STORAGE_KEY_QUARANTINE) ? JSON.parse(localStorage.getItem(STORAGE_KEY_QUARANTINE)) : getDemoQuarantineData();
+    const storedTyres = localStorage.getItem(STORAGE_KEY_TYRES);
+    // Если в localStorage пусто — загружаем демо-данные с вашими записями
+    if (storedTyres && JSON.parse(storedTyres).length > 0) {
+      tyresRecords = JSON.parse(storedTyres);
+    } else {
+      tyresRecords = getDemoTyresData();
+    }
+    
+    const storedWheels = localStorage.getItem(STORAGE_KEY_WHEELS);
+    wheelsRecords = storedWheels ? JSON.parse(storedWheels) : [];
+    
     const storedNorms = localStorage.getItem(NORMS_KEY);
     if (storedNorms) norms = JSON.parse(storedNorms);
+    
     saveAllToStorage();
   }
 
-  function getDemoQuarantineData() {
-    return [
-      { id: Date.now() + 1, dateArrival: '2026-02-27', poNumber: '21364', taskNumber: '64029', client: 'ООО "Шиноф Моторс"', ukdDate: 'УКД ещё не отправлено', product: 'Шины', taskDate: '2026-03-01', problem: 'Марки на балансе ООО "ШИНОФ МОТОРС" в статусе ВЫБЫЛИ', manager: 'Евгения Тимофеева', quantity: 4, type: 'Карантин', direction: 'Опт' },
-      { id: Date.now() + 2, dateArrival: '2026-03-27', poNumber: '22457', taskNumber: '64711', client: 'ИП Киселюк Владимир Михайлович', ukdDate: 'УКД ещё не отправлено', product: 'Шины', taskDate: '2026-03-30', problem: 'Марки на балансе ИП Киселюк Владимир Михайлович', manager: 'Елена Бакунина', quantity: 107, type: 'Карантин', direction: 'Опт' },
-      { id: Date.now() + 3, dateArrival: '2026-03-30', poNumber: '22423', taskNumber: '64722', client: 'ИП Голицын Андрей Андреевич', ukdDate: 'УКД ещё не отправлено', product: 'Шины', taskDate: '2026-03-30', problem: 'Марки на балансе ИП ГОЛИЦЫН АНДРЕЙ АНДРЕЕВИЧ', manager: 'Евгения Тимофеева', quantity: 27, type: 'Карантин', direction: 'Опт' },
-      { id: Date.now() + 4, dateArrival: '2026-04-01', poNumber: '22582', taskNumber: '64784', client: 'ИП Булычев Сергей Александрович', ukdDate: 'УКД ещё не отправлено', product: 'Шины', taskDate: '2026-04-01', problem: 'Марки на балансе ИП Булычев Сергей Александрович', manager: 'Елена Бакунина', quantity: 241, type: 'Карантин', direction: 'Опт' },
-      { id: Date.now() + 5, dateArrival: '2026-04-02', poNumber: '22664 22629 22630 22631', taskNumber: '64795 64795', client: 'ИП Лушнов Вячеслав Анатольевич', ukdDate: 'УКД на ПО 22664 ещё не отправлено', product: 'Шины', taskDate: '2026-04-03', problem: 'Марки на балансе ИП ЛУШНОВ ВЯЧЕСЛАВ АНАТОЛЬЕВИЧ + некоторые марки в поступлениях тоже на балансе', manager: 'Елена Шевелёва', quantity: 117, type: 'Карантин', direction: 'Опт' },
-      { id: Date.now() + 6, dateArrival: '2026-01-22', poNumber: '21337', taskNumber: '------', client: 'ИП Платонова Наталья Игоревна', ukdDate: '-----', product: 'Диски', taskDate: '------', problem: '------', manager: 'Надежда Лавелина', quantity: 12, type: 'На развоз', direction: 'Опт' }
-    ];
+  function saveCurrentToStorage() {
+    const key = currentProduct === 'tyres' ? STORAGE_KEY_TYRES : STORAGE_KEY_WHEELS;
+    localStorage.setItem(key, JSON.stringify(getCurrentRecords()));
   }
 
   function saveAllToStorage() {
     localStorage.setItem(STORAGE_KEY_TYRES, JSON.stringify(tyresRecords));
     localStorage.setItem(STORAGE_KEY_WHEELS, JSON.stringify(wheelsRecords));
-    localStorage.setItem(STORAGE_KEY_QUARANTINE, JSON.stringify(quarantineRecords));
   }
 
-  function saveQuarantineToStorage() { localStorage.setItem(STORAGE_KEY_QUARANTINE, JSON.stringify(quarantineRecords)); }
-  function saveCurrentToStorage() { localStorage.setItem(currentProduct === 'tyres' ? STORAGE_KEY_TYRES : STORAGE_KEY_WHEELS, JSON.stringify(getCurrentRecords())); }
-  function saveNorms() { localStorage.setItem(NORMS_KEY, JSON.stringify(norms)); }
+  function saveNorms() {
+    localStorage.setItem(NORMS_KEY, JSON.stringify(norms));
+  }
 
-  // ========== ОСНОВНЫЕ ФУНКЦИИ (ОПЕРАЦИИ И АНАЛИТИКА) ==========
+  function saveAllDataToFile() {
+    const allData = {
+      version: '1.0',
+      exportDate: new Date().toISOString(),
+      tyres: tyresRecords,
+      wheels: wheelsRecords,
+      norms: norms
+    };
+    
+    const jsonStr = JSON.stringify(allData, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', BACKUP_FILE_NAME);
+    link.click();
+    URL.revokeObjectURL(url);
+    
+    showNotification('✅ Все данные сохранены в файл ' + BACKUP_FILE_NAME, true);
+  }
+
+  function loadAllDataFromFile(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const allData = JSON.parse(e.target.result);
+        
+        if (allData.tyres) {
+          tyresRecords = allData.tyres.map(r => ({
+            ...r,
+            id: r.id || Date.now() + Math.random(),
+            docNumbers: r.docNumbers || [],
+            placementDate: r.placementDate || null
+          }));
+        }
+        
+        if (allData.wheels) {
+          wheelsRecords = allData.wheels.map(r => ({
+            ...r,
+            id: r.id || Date.now() + Math.random(),
+            docNumbers: r.docNumbers || [],
+            placementDate: r.placementDate || null
+          }));
+        }
+        
+        if (allData.norms) {
+          norms = allData.norms;
+        }
+        
+        saveAllToStorage();
+        saveNorms();
+        refreshUI();
+        
+        const totalRecords = tyresRecords.length + wheelsRecords.length;
+        showNotification(`✅ Загружено ${totalRecords} записей`, true);
+      } catch (error) {
+        console.error('Load error:', error);
+        showNotification('❌ Ошибка при загрузке файла');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function refreshUI() {
+    if (currentMainTab === 'operations') {
+      updateCards();
+      renderHistoryTable();
+    } else {
+      updateAnalytics();
+      renderCalendar();
+      if (selectedDate) updateDateDetails(selectedDate);
+    }
+  }
+
   function updateCards() {
     const records = getCurrentRecords();
-    const totalUnloaded = records.reduce((s, r) => s + r.quantity, 0);
-    const totalPlaced = records.filter(r => r.placementTime).reduce((s, r) => s + r.quantity, 0);
+    const totalUnloaded = records.reduce((sum, r) => sum + r.quantity, 0);
+    const totalPlaced = records.filter(r => r.placementTime).reduce((sum, r) => sum + r.quantity, 0);
+    
     document.getElementById('totalUnloaded').textContent = totalUnloaded;
     document.getElementById('totalPlaced').textContent = totalPlaced;
     document.getElementById('remainingStock').textContent = totalUnloaded - totalPlaced;
+  }
+
+  function formatDate(iso) {
+    if (!iso) return '';
+    const [y,m,d] = iso.split('-');
+    return `${d}.${m}.${y}`;
   }
 
   function renderHistoryTable() {
@@ -1178,7 +1148,7 @@
     const historySearchInput = document.getElementById('historySearchInput');
     if (historySearchTerm) { searchResultCount.style.display = 'inline'; searchResultCount.innerHTML = `<span class="filter-badge">Найдено: ${filteredRecords.length} из ${allRecords.length}</span>`; historySearchInput.style.borderColor = '#3b82f6'; }
     else { searchResultCount.style.display = 'none'; historySearchInput.style.borderColor = '#2e3a4a'; }
-    if (filteredRecords.length === 0) { historyBody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 30px;">${historySearchTerm ? '🔍 Ничего не найдено' : 'Нет записей'}</td></tr>`; return; }
+    if (filteredRecords.length === 0) { historyBody.innerHTML = `<tr><td colspan="11" style="text-align: center; padding: 30px;">${historySearchTerm ? '🔍 Ничего не найдено' : 'Нет записей'}</td></tr>`; return; }
     historyBody.innerHTML = filteredRecords.map(r => {
       const unloadSpeed = calculateSpeed(r.quantity, r.unloadTime);
       const placementSpeed = r.placementTime ? calculateSpeed(r.quantity, r.placementTime) : null;
@@ -1188,7 +1158,8 @@
       let docNumbersHtml = '—';
       if (r.docNumbers && r.docNumbers.length > 0) docNumbersHtml = `<div class="doc-numbers-list">${r.docNumbers.map(num => `<span class="doc-number-tag">${num}</span>`).join('')}</div>`;
       const status = r.placementTime ? '✅ Размещено' : (r.docNumbers?.length ? '📋 Есть номера' : '⏳ Без номеров');
-      return `<tr><td>${formatDate(r.unloadDate)}</td><td><span class="client-badge ${clientClass}">${r.client}</span></td><td>${r.quantity}</td><td>${r.unloadTime} мин</td><td><span class="speed-badge ${unloadSpeedClass}">${Math.round(unloadSpeed)} шт/ч</span></td><td>${docNumbersHtml}</td><td>${r.placementTime ? r.placementTime + ' мин' : '—'}</td><td>${placementSpeed ? `<span class="speed-badge ${placementSpeedClass}">${Math.round(placementSpeed)} шт/ч</span>` : '—'}</td><td>${status}</td><td class="actions-cell"><button class="btn btn-outline btn-icon edit-record-btn" data-id="${r.id}">✏️</button><button class="btn btn-danger btn-icon delete-record-btn" data-id="${r.id}">🗑️</button></td></tr>`;
+      const placementDateDisplay = r.placementDate ? formatDate(r.placementDate) : '—';
+      return `<tr><td>${formatDate(r.unloadDate)}</td><td><span class="client-badge ${clientClass}">${r.client}</span></td><td>${r.quantity}</td><td>${r.unloadTime} мин</td><td><span class="speed-badge ${unloadSpeedClass}">${Math.round(unloadSpeed)} шт/ч</span></td><td>${docNumbersHtml}</td><td>${r.placementTime ? r.placementTime + ' мин' : '—'}</td><td>${placementDateDisplay}</td><td>${placementSpeed ? `<span class="speed-badge ${placementSpeedClass}">${Math.round(placementSpeed)} шт/ч</span>` : '—'}</td><td>${status}</td><td class="actions-cell"><button class="btn btn-outline btn-icon edit-record-btn" data-id="${r.id}">✏️</button><button class="btn btn-danger btn-icon delete-record-btn" data-id="${r.id}">🗑️</button></td></tr>`;
     }).join('');
     document.querySelectorAll('.edit-record-btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); openEditModal(btn.dataset.id); }));
     document.querySelectorAll('.delete-record-btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); deleteRecord(btn.dataset.id); }));
@@ -1206,7 +1177,7 @@
     const record = records.find(r => r.id == recordId);
     if (!record) return;
     modalTitle.textContent = 'Редактировать запись';
-    modalContent.innerHTML = `<div class="input-group modal-input"><label>Дата выгрузки</label><input type="date" id="editUnloadDate" value="${record.unloadDate}"></div><div class="input-group modal-input"><label>Клиент</label><select id="editClient">${['РВБ','ОЗОН','ЯНДЕКС'].map(c => `<option value="${c}" ${record.client === c ? 'selected' : ''}>${c}</option>`).join('')}</select></div><div class="input-group modal-input"><label>Количество</label><input type="number" id="editQuantity" min="1" value="${record.quantity}"></div><div class="input-group modal-input"><label>Время выгрузки (мин)</label><input type="number" id="editUnloadTime" min="1" value="${record.unloadTime}"></div><div class="input-group modal-input"><label>Номера документов (через запятую)</label><textarea id="editDocNumbers" rows="2">${(record.docNumbers || []).join(', ')}</textarea></div><div class="input-group modal-input"><label>Время размещения (мин)</label><input type="number" id="editPlacementTime" min="1" value="${record.placementTime || ''}"></div>`;
+    modalContent.innerHTML = `<div class="input-group modal-input"><label>Дата выгрузки</label><input type="date" id="editUnloadDate" value="${record.unloadDate}"></div><div class="input-group modal-input"><label>Клиент</label><select id="editClient">${CLIENTS.map(c => `<option value="${c}" ${record.client === c ? 'selected' : ''}>${c}</option>`).join('')}</select></div><div class="input-group modal-input"><label>Количество</label><input type="number" id="editQuantity" min="1" value="${record.quantity}"></div><div class="input-group modal-input"><label>Время выгрузки (мин)</label><input type="number" id="editUnloadTime" min="1" value="${record.unloadTime}"></div><div class="input-group modal-input"><label>Номера документов (через запятую)</label><textarea id="editDocNumbers" rows="2">${(record.docNumbers || []).join(', ')}</textarea></div><div class="input-group modal-input"><label>Время размещения (мин, оставьте пустым если не размещено)</label><input type="number" id="editPlacementTime" min="1" value="${record.placementTime || ''}"></div><div class="input-group modal-input"><label>Дата размещения</label><input type="date" id="editPlacementDate" value="${record.placementDate || ''}"></div>`;
     modalCallback = () => {
       const newDate = document.getElementById('editUnloadDate').value;
       const newClient = document.getElementById('editClient').value;
@@ -1214,10 +1185,12 @@
       const newUnloadTime = parseInt(document.getElementById('editUnloadTime').value);
       const docNumbersText = document.getElementById('editDocNumbers').value.trim();
       const placementTimeVal = document.getElementById('editPlacementTime').value;
+      const placementDateVal = document.getElementById('editPlacementDate').value;
       if (!newDate || !newQuantity || newQuantity <= 0 || !newUnloadTime || newUnloadTime <= 0) { showNotification('Заполните все поля'); return; }
       record.unloadDate = newDate; record.client = newClient; record.quantity = newQuantity; record.unloadTime = newUnloadTime;
       record.docNumbers = docNumbersText ? docNumbersText.split(',').map(n => n.trim()).filter(n => n) : [];
       record.placementTime = placementTimeVal ? parseInt(placementTimeVal) : null;
+      record.placementDate = placementDateVal || null;
       setCurrentRecords(records); saveCurrentToStorage(); refreshUI(); closeModal(); showNotification('✅ Запись обновлена', true);
     };
     modalOverlay.style.display = 'flex';
@@ -1280,11 +1253,11 @@
     const dailyData = {};
     sorted.forEach(r => { if (!dailyData[r.unloadDate]) dailyData[r.unloadDate] = { 'РВБ':0, 'ОЗОН':0, 'ЯНДЕКС':0 }; dailyData[r.unloadDate][r.client] += r.quantity; });
     const dates = Object.keys(dailyData).sort();
-    dailyClientsChartInstance = new Chart(dailyCtx, { type: 'bar', data: { labels: dates.map(d => formatDate(d)), datasets: [['РВБ','#a855f7'],['ОЗОН','#0ea5e9'],['ЯНДЕКС','#fde047']].map(([client,color]) => ({ label: client, data: dates.map(d => dailyData[d][client]), backgroundColor: color, borderRadius: 6 })) }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#cbd5e1' } } }, scales: { x: { ticks: { color: '#9aa9bb', maxRotation: 45 }, grid: { color: '#2a3647' } }, y: { ticks: { color: '#9aa9bb' }, grid: { color: '#2a3647' }, beginAtZero: true } } } });
+    dailyClientsChartInstance = new Chart(dailyCtx, { type: 'bar', data: { labels: dates.map(d => formatDate(d)), datasets: CLIENTS.map(client => ({ label: client, data: dates.map(d => dailyData[d][client]), backgroundColor: CLIENT_COLORS[client], borderRadius: 6 })) }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#cbd5e1' } } }, scales: { x: { ticks: { color: '#9aa9bb', maxRotation: 45 }, grid: { color: '#2a3647' } }, y: { ticks: { color: '#9aa9bb' }, grid: { color: '#2a3647' }, beginAtZero: true } } } });
     const clientsCtx = document.getElementById('clientsUnloadChart').getContext('2d');
     if (clientsChartInstance) clientsChartInstance.destroy();
     const clientTotals = { 'РВБ': filteredRecords.filter(r => r.client === 'РВБ').reduce((s,r) => s + r.quantity,0), 'ОЗОН': filteredRecords.filter(r => r.client === 'ОЗОН').reduce((s,r) => s + r.quantity,0), 'ЯНДЕКС': filteredRecords.filter(r => r.client === 'ЯНДЕКС').reduce((s,r) => s + r.quantity,0) };
-    clientsChartInstance = new Chart(clientsCtx, { type: 'bar', data: { labels: ['РВБ','ОЗОН','ЯНДЕКС'], datasets: [{ label: 'Выгружено (шт)', data: [clientTotals['РВБ'], clientTotals['ОЗОН'], clientTotals['ЯНДЕКС']], backgroundColor: ['#a855f7','#0ea5e9','#fde047'], borderRadius: 8 }] }, options: { responsive: true, plugins: { legend: { labels: { color: '#cbd5e1' } } }, scales: { x: { ticks: { color: '#9aa9bb' }, grid: { color: '#2a3647' } }, y: { ticks: { color: '#9aa9bb' }, grid: { color: '#2a3647' }, beginAtZero: true } } } });
+    clientsChartInstance = new Chart(clientsCtx, { type: 'bar', data: { labels: CLIENTS, datasets: [{ label: 'Выгружено (шт)', data: [clientTotals['РВБ'], clientTotals['ОЗОН'], clientTotals['ЯНДЕКС']], backgroundColor: ['#a855f7','#0ea5e9','#fde047'], borderRadius: 8 }] }, options: { responsive: true, plugins: { legend: { labels: { color: '#cbd5e1' } } }, scales: { x: { ticks: { color: '#9aa9bb' }, grid: { color: '#2a3647' } }, y: { ticks: { color: '#9aa9bb' }, grid: { color: '#2a3647' }, beginAtZero: true } } } });
     const unloadCtx = document.getElementById('unloadChart').getContext('2d');
     if (unloadChartInstance) unloadChartInstance.destroy();
     unloadChartInstance = new Chart(unloadCtx, { type: 'line', data: { labels: sorted.map(r => formatDate(r.unloadDate)), datasets: [{ label: 'Скорость выгрузки (шт/час)', data: sorted.map(r => calculateSpeed(r.quantity, r.unloadTime)), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', tension: 0.2, fill: true }, { label: 'Норматив', data: sorted.map(() => norms.unload), borderColor: '#10b981', borderDash: [5,5], borderWidth: 2, pointRadius: 0 }] }, options: { responsive: true, plugins: { legend: { labels: { color: '#cbd5e1' } } }, scales: { x: { ticks: { color: '#9aa9bb' }, grid: { color: '#2a3647' } }, y: { ticks: { color: '#9aa9bb' }, grid: { color: '#2a3647' } } } } });
@@ -1322,10 +1295,10 @@
     titleEl.innerHTML = `📅 ${formatDate(dateStr)}`;
     if (dayRecords.length === 0) { detailsDiv.innerHTML = '<div class="no-data-message">📭 Нет данных за эту дату</div>'; return; }
     const clientData = {};
-    ['РВБ','ОЗОН','ЯНДЕКС'].forEach(client => { clientData[client] = { quantity: 0, speeds: [] }; });
+    CLIENTS.forEach(client => { clientData[client] = { quantity: 0, speeds: [] }; });
     dayRecords.forEach(r => { clientData[r.client].quantity += r.quantity; if (r.placementTime) { clientData[r.client].speeds.push(calculateSpeed(r.quantity, r.placementTime)); } });
     let html = '<div class="date-stats">';
-    for (const client of ['РВБ','ОЗОН','ЯНДЕКС']) {
+    for (const client of CLIENTS) {
       const data = clientData[client];
       const avgSpeed = data.speeds.length ? Math.round(data.speeds.reduce((a,b) => a+b, 0) / data.speeds.length) : 0;
       const clientClass = client === 'РВБ' ? 'rvb' : (client === 'ОЗОН' ? 'ozon' : 'yandex');
@@ -1342,7 +1315,7 @@
     const time = parseInt(document.getElementById('unloadTime').value);
     if (!date || !quantity || quantity <= 0 || !time || time <= 0) { showNotification('Заполните все поля'); return; }
     const records = getCurrentRecords();
-    records.push({ id: Date.now() + Math.random(), unloadDate: date, client, quantity, unloadTime: time, docNumbers: [], placementTime: null });
+    records.push({ id: Date.now() + Math.random(), unloadDate: date, client, quantity, unloadTime: time, docNumbers: [], placementTime: null, placementDate: null });
     setCurrentRecords(records); saveCurrentToStorage(); refreshUI();
     document.getElementById('unloadQuantity').value = 0; document.getElementById('unloadTime').value = 0;
     showNotification(`✅ Выгрузка ${quantity} шт. для ${client} добавлена`, true);
@@ -1388,12 +1361,16 @@
     const records = getCurrentRecords();
     const record = records.find(r => r.id == recordId);
     if (!record) return;
-    modalTitle.textContent = 'Указать время размещения';
-    modalContent.innerHTML = `<p>Клиент: ${record.client}</p><p>Номера документов: ${record.docNumbers.join(', ')}</p><p>Количество: ${record.quantity} шт.</p><div class="input-group modal-input"><label>Время размещения (мин)</label><input type="number" id="placementTimeInput" min="1" placeholder="Время в минутах"></div>`;
+    modalTitle.textContent = 'Указать время и дату размещения';
+    modalContent.innerHTML = `<p>Клиент: ${record.client}</p><p>Номера документов: ${record.docNumbers.join(', ')}</p><p>Количество: ${record.quantity} шт.</p><div class="input-group modal-input"><label>Время размещения (мин)</label><input type="number" id="placementTimeInput" min="1" placeholder="Время в минутах"></div><div class="input-group modal-input"><label>Дата размещения</label><input type="date" id="placementDateInput" value="${new Date().toISOString().slice(0,10)}"></div>`;
     modalCallback = () => {
       const placementTime = parseInt(document.getElementById('placementTimeInput').value);
+      const placementDate = document.getElementById('placementDateInput').value;
       if (!placementTime || placementTime <= 0) { showNotification('Укажите время размещения'); return; }
-      record.placementTime = placementTime; setCurrentRecords(records); saveCurrentToStorage(); refreshUI(); closeModal(); showNotification(`✅ Размещение для ${record.client} завершено за ${placementTime} мин.`, true); searchForPlacement();
+      if (!placementDate) { showNotification('Укажите дату размещения'); return; }
+      record.placementTime = placementTime;
+      record.placementDate = placementDate;
+      setCurrentRecords(records); saveCurrentToStorage(); refreshUI(); closeModal(); showNotification(`✅ Размещение для ${record.client} завершено за ${placementTime} мин.`, true); searchForPlacement();
     };
     modalOverlay.style.display = 'flex';
   }
@@ -1401,8 +1378,8 @@
   function exportToCSV() {
     const records = getCurrentRecords();
     if (records.length === 0) { showNotification('Нет данных для экспорта'); return; }
-    const headers = ['Дата выгрузки', 'Клиент', 'Количество', 'Время выгрузки (мин)', 'Номера документов', 'Время размещения (мин)'];
-    const rows = records.map(r => [r.unloadDate, r.client, r.quantity, r.unloadTime, (r.docNumbers || []).join(';'), r.placementTime || '']);
+    const headers = ['Дата выгрузки', 'Клиент', 'Количество', 'Время выгрузки (мин)', 'Номера документов', 'Время размещения (мин)', 'Дата размещения'];
+    const rows = records.map(r => [r.unloadDate, r.client, r.quantity, r.unloadTime, (r.docNumbers || []).join(';'), r.placementTime || '', r.placementDate || '']);
     const csvContent = [headers.join(','), ...rows.map(row => row.map(cell => (typeof cell === 'string' && (cell.includes(',') || cell.includes(';') || cell.includes('"'))) ? `"${cell.replace(/"/g, '""')}"` : cell).join(','))].join('\n');
     const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `${currentProduct}_export_${new Date().toISOString().slice(0,10)}.csv`; link.click(); URL.revokeObjectURL(link.href);
@@ -1423,8 +1400,9 @@
             const unloadDate = values[0]?.trim(), client = values[1]?.trim() || 'РВБ', quantity = parseInt(values[2]) || 0, unloadTime = parseInt(values[3]) || 0;
             let docNumbers = (values[4] && values[4].trim()) ? values[4].trim().split(';').map(n => n.trim()).filter(n => n) : [];
             let placementTime = (values[5] && values[5].trim()) ? parseInt(values[5]) || null : null;
+            let placementDate = (values[6] && values[6].trim()) ? values[6].trim() : null;
             if (unloadDate && quantity > 0 && unloadTime > 0) {
-              records.push({ id: Date.now() + Math.random() + i, unloadDate, client: ['РВБ','ОЗОН','ЯНДЕКС'].includes(client) ? client : 'РВБ', quantity, unloadTime, docNumbers, placementTime });
+              records.push({ id: Date.now() + Math.random() + i, unloadDate, client: CLIENTS.includes(client) ? client : 'РВБ', quantity, unloadTime, docNumbers, placementTime, placementDate });
               imported++;
             }
           }
@@ -1447,184 +1425,36 @@
     return result.map(v => v.startsWith('"') && v.endsWith('"') ? v.slice(1,-1).replace(/""/g, '"') : v);
   }
 
-  function saveAllDataToFile() {
-    const allData = { version: '1.0', exportDate: new Date().toISOString(), tyres: tyresRecords, wheels: wheelsRecords, norms: norms };
-    const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
-    const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'tyre_wheel_backup.json'; link.click(); URL.revokeObjectURL(link.href);
-    showNotification('✅ Все данные сохранены', true);
-  }
-
-  function loadAllDataFromFile(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const allData = JSON.parse(e.target.result);
-        if (allData.tyres) tyresRecords = allData.tyres.map(r => ({ ...r, id: r.id || Date.now() + Math.random(), docNumbers: r.docNumbers || [] }));
-        if (allData.wheels) wheelsRecords = allData.wheels.map(r => ({ ...r, id: r.id || Date.now() + Math.random(), docNumbers: r.docNumbers || [] }));
-        if (allData.norms) norms = allData.norms;
-        saveAllToStorage(); saveNorms(); refreshUI();
-        showNotification(`✅ Загружено ${tyresRecords.length + wheelsRecords.length} записей`, true);
-      } catch (error) { showNotification('❌ Ошибка загрузки'); }
-    };
-    reader.readAsText(file);
-  }
-
-  // ========== КАРАНТИН ФУНКЦИИ ==========
-  function renderQuarantineTable() {
-    let filtered = [...quarantineRecords];
-    if (quarantineSearchTerm) {
-      const searchLower = quarantineSearchTerm.toLowerCase();
-      filtered = filtered.filter(r => (r.client && r.client.toLowerCase().includes(searchLower)) || (r.poNumber && r.poNumber.toLowerCase().includes(searchLower)) || (r.taskNumber && r.taskNumber.toLowerCase().includes(searchLower)) || (r.manager && r.manager.toLowerCase().includes(searchLower)) || (r.problem && r.problem.toLowerCase().includes(searchLower)));
+  function resetCurrentData() {
+    const productName = currentProduct === 'tyres' ? 'Шины' : 'Диски';
+    if (confirm(`Удалить ВСЕ записи для вкладки "${productName}"?`)) {
+      setCurrentRecords([]);
+      saveCurrentToStorage();
+      historySearchTerm = '';
+      document.getElementById('historySearchInput').value = '';
+      refreshUI();
+      showNotification(`✅ Данные "${productName}" сброшены`, true);
     }
-    const tbody = document.getElementById('quarantineBody');
-    const searchCountSpan = document.getElementById('quarantineSearchResultCount');
-    if (quarantineSearchTerm) { searchCountSpan.style.display = 'inline'; searchCountSpan.innerHTML = `<span class="filter-badge">Найдено: ${filtered.length} из ${quarantineRecords.length}</span>`; }
-    else { searchCountSpan.style.display = 'none'; }
-    if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;padding:30px;">Нет записей</td></tr>'; return; }
-    tbody.innerHTML = filtered.map(r => {
-      const typeClass = r.type === 'Карантин' ? 'quarantine' : 'delivery';
-      const directionClass = r.direction === 'Опт' ? 'wholesale' : 'retail';
-      const productClass = r.product === 'Шины' ? 'tyres' : 'wheels';
-      return `<tr><td>${formatDate(r.dateArrival)}</td><td>${r.poNumber || '—'}</td><td>${r.taskNumber || '—'}</td><td style="max-width:200px; white-space:normal;">${r.client || '—'}</td><td>${r.ukdDate || '—'}</td><td><span class="product-badge ${productClass}">${r.product || '—'}</span></td><td>${r.taskDate ? formatDate(r.taskDate) : '—'}</td><td style="max-width:250px; white-space:normal;">${r.problem || '—'}</td><td>${r.manager || '—'}</td><td><strong>${r.quantity || 0}</strong></td><td><span class="type-badge ${typeClass}">${r.type || '—'}</span></td><td><span class="direction-badge ${directionClass}">${r.direction || '—'}</span></td><td class="actions-cell"><button class="btn btn-outline btn-icon edit-quarantine-btn" data-id="${r.id}">✏️</button><button class="btn btn-danger btn-icon delete-quarantine-btn" data-id="${r.id}">🗑️</button></td></tr>`;
-    }).join('');
-    document.querySelectorAll('.edit-quarantine-btn').forEach(btn => btn.addEventListener('click', () => openQuarantineEditModal(btn.dataset.id)));
-    document.querySelectorAll('.delete-quarantine-btn').forEach(btn => btn.addEventListener('click', () => deleteQuarantineRecord(btn.dataset.id)));
   }
 
-  function addQuarantineRecord() {
-    const dateArrival = document.getElementById('qDateArrival').value;
-    const poNumber = document.getElementById('qPoNumber').value;
-    const taskNumber = document.getElementById('qTaskNumber').value;
-    const client = document.getElementById('qClient').value;
-    const ukdDate = document.getElementById('qUkdDate').value;
-    const product = document.getElementById('qProduct').value;
-    const taskDate = document.getElementById('qTaskDate').value;
-    const problem = document.getElementById('qProblem').value;
-    const manager = document.getElementById('qManager').value;
-    const quantity = parseInt(document.getElementById('qQuantity').value);
-    const type = document.getElementById('qType').value;
-    const direction = document.getElementById('qDirection').value;
-    if (!dateArrival || !quantity || quantity <= 0) { showNotification('Заполните обязательные поля (дата прихода и количество)'); return; }
-    quarantineRecords.push({ id: Date.now() + Math.random(), dateArrival, poNumber, taskNumber, client, ukdDate, product, taskDate, problem, manager, quantity, type, direction });
-    saveQuarantineToStorage();
-    renderQuarantineTable();
-    if (quarantineSubview === 'stats') renderQuarantineStats();
-    document.getElementById('qDateArrival').value = ''; document.getElementById('qPoNumber').value = ''; document.getElementById('qTaskNumber').value = ''; document.getElementById('qClient').value = ''; document.getElementById('qUkdDate').value = ''; document.getElementById('qTaskDate').value = ''; document.getElementById('qProblem').value = ''; document.getElementById('qManager').value = ''; document.getElementById('qQuantity').value = '0';
-    showNotification(`✅ Запись добавлена (${quantity} шт.)`, true);
+  function resetAllData() {
+    if (confirm('⚠️ Удалить ВСЕ записи (и шины, и диски)? Это действие необратимо!')) {
+      tyresRecords = [];
+      wheelsRecords = [];
+      saveAllToStorage();
+      historySearchTerm = '';
+      document.getElementById('historySearchInput').value = '';
+      refreshUI();
+      showNotification('✅ Все данные сброшены', true);
+    }
   }
 
-  function deleteQuarantineRecord(id) {
-    if (!confirm('Удалить эту запись?')) return;
-    const index = quarantineRecords.findIndex(r => r.id == id);
-    if (index !== -1) { quarantineRecords.splice(index, 1); saveQuarantineToStorage(); renderQuarantineTable(); if (quarantineSubview === 'stats') renderQuarantineStats(); showNotification('✅ Запись удалена', true); }
-  }
-
-  function openQuarantineEditModal(id) {
-    const record = quarantineRecords.find(r => r.id == id);
-    if (!record) return;
-    modalTitle.textContent = 'Редактировать запись карантина';
-    modalContent.innerHTML = `<div class="form-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;"><div class="input-group modal-input"><label>Дата прихода</label><input type="date" id="editDateArrival" value="${record.dateArrival || ''}"></div><div class="input-group modal-input"><label>№ ПО</label><input type="text" id="editPoNumber" value="${record.poNumber || ''}"></div><div class="input-group modal-input"><label>№ Задачи</label><input type="text" id="editTaskNumber" value="${record.taskNumber || ''}"></div><div class="input-group modal-input"><label>Клиент</label><input type="text" id="editClient" value="${record.client || ''}"></div><div class="input-group modal-input"><label>Дата отправки УКД</label><input type="text" id="editUkdDate" value="${record.ukdDate || ''}"></div><div class="input-group modal-input"><label>Товар</label><select id="editProduct"><option value="Шины" ${record.product === 'Шины' ? 'selected' : ''}>Шины</option><option value="Диски" ${record.product === 'Диски' ? 'selected' : ''}>Диски</option></select></div><div class="input-group modal-input"><label>Дата постановки задачи</label><input type="date" id="editTaskDate" value="${record.taskDate || ''}"></div><div class="input-group modal-input"><label>Проблема</label><textarea id="editProblem" rows="2">${record.problem || ''}</textarea></div><div class="input-group modal-input"><label>Менеджер</label><input type="text" id="editManager" value="${record.manager || ''}"></div><div class="input-group modal-input"><label>Кол-во</label><input type="number" id="editQuantity" min="1" value="${record.quantity || 0}"></div><div class="input-group modal-input"><label>Тип</label><select id="editType"><option value="Карантин" ${record.type === 'Карантин' ? 'selected' : ''}>Карантин</option><option value="На развоз" ${record.type === 'На развоз' ? 'selected' : ''}>На развоз</option></select></div><div class="input-group modal-input"><label>Направление</label><select id="editDirection"><option value="Опт" ${record.direction === 'Опт' ? 'selected' : ''}>Опт</option><option value="Розница" ${record.direction === 'Розница' ? 'selected' : ''}>Розница</option></select></div></div>`;
-    modalCallback = () => {
-      record.dateArrival = document.getElementById('editDateArrival').value; record.poNumber = document.getElementById('editPoNumber').value; record.taskNumber = document.getElementById('editTaskNumber').value; record.client = document.getElementById('editClient').value; record.ukdDate = document.getElementById('editUkdDate').value; record.product = document.getElementById('editProduct').value; record.taskDate = document.getElementById('editTaskDate').value; record.problem = document.getElementById('editProblem').value; record.manager = document.getElementById('editManager').value; record.quantity = parseInt(document.getElementById('editQuantity').value); record.type = document.getElementById('editType').value; record.direction = document.getElementById('editDirection').value;
-      saveQuarantineToStorage(); renderQuarantineTable(); if (quarantineSubview === 'stats') renderQuarantineStats(); closeModal(); showNotification('✅ Запись обновлена', true);
-    };
-    modalOverlay.style.display = 'flex';
-  }
-
-  function renderQuarantineStats() {
-    const totalRecords = quarantineRecords.length;
-    const totalQuantity = quarantineRecords.reduce((sum, r) => sum + (r.quantity || 0), 0);
-    const quarantineCount = quarantineRecords.filter(r => r.type === 'Карантин').length;
-    const deliveryCount = quarantineRecords.filter(r => r.type === 'На развоз').length;
-    document.getElementById('qTotalRecords').textContent = totalRecords;
-    document.getElementById('qTotalQuantity').textContent = totalQuantity;
-    document.getElementById('qQuarantineCount').textContent = quarantineCount;
-    document.getElementById('qDeliveryCount').textContent = deliveryCount;
-    const managerStats = {};
-    quarantineRecords.forEach(r => { if (r.manager) managerStats[r.manager] = (managerStats[r.manager] || 0) + (r.quantity || 0); });
-    const managerCtx = document.getElementById('managerChart').getContext('2d');
-    if (managerChart) managerChart.destroy();
-    managerChart = new Chart(managerCtx, { type: 'bar', data: { labels: Object.keys(managerStats), datasets: [{ label: 'Количество (шт)', data: Object.values(managerStats), backgroundColor: '#3b82f6', borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#cbd5e1' } } }, scales: { y: { beginAtZero: true, ticks: { color: '#9aa9bb' } }, x: { ticks: { color: '#9aa9bb', maxRotation: 45 } } } } });
-    const productStats = { 'Шины': 0, 'Диски': 0 };
-    quarantineRecords.forEach(r => { if (r.product) productStats[r.product] += (r.quantity || 0); });
-    const productCtx = document.getElementById('productChart').getContext('2d');
-    if (productChart) productChart.destroy();
-    productChart = new Chart(productCtx, { type: 'pie', data: { labels: Object.keys(productStats), datasets: [{ data: Object.values(productStats), backgroundColor: ['#3b82f6', '#f59e0b'] }] }, options: { responsive: true, plugins: { legend: { labels: { color: '#cbd5e1' } } } } });
-    const typeStats = { 'Карантин': 0, 'На развоз': 0 };
-    quarantineRecords.forEach(r => { if (r.type) typeStats[r.type] += (r.quantity || 0); });
-    const typeCtx = document.getElementById('typeChart').getContext('2d');
-    if (typeChart) typeChart.destroy();
-    typeChart = new Chart(typeCtx, { type: 'doughnut', data: { labels: Object.keys(typeStats), datasets: [{ data: Object.values(typeStats), backgroundColor: ['#ef4444', '#10b981'] }] }, options: { responsive: true, plugins: { legend: { labels: { color: '#cbd5e1' } } } } });
-    const directionStats = { 'Опт': 0, 'Розница': 0 };
-    quarantineRecords.forEach(r => { if (r.direction) directionStats[r.direction] += (r.quantity || 0); });
-    const directionCtx = document.getElementById('directionChart').getContext('2d');
-    if (directionChart) directionChart.destroy();
-    directionChart = new Chart(directionCtx, { type: 'bar', data: { labels: Object.keys(directionStats), datasets: [{ label: 'Количество (шт)', data: Object.values(directionStats), backgroundColor: '#8b5cf6', borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { labels: { color: '#cbd5e1' } } }, scales: { y: { beginAtZero: true, ticks: { color: '#9aa9bb' } }, x: { ticks: { color: '#9aa9bb' } } } } });
-    const timelineStats = {};
-    quarantineRecords.forEach(r => { if (r.dateArrival) timelineStats[r.dateArrival] = (timelineStats[r.dateArrival] || 0) + (r.quantity || 0); });
-    const sortedDates = Object.keys(timelineStats).sort();
-    const timelineCtx = document.getElementById('timelineChart').getContext('2d');
-    if (timelineChart) timelineChart.destroy();
-    timelineChart = new Chart(timelineCtx, { type: 'line', data: { labels: sortedDates.map(d => formatDate(d)), datasets: [{ label: 'Количество (шт)', data: sortedDates.map(d => timelineStats[d]), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.2 }] }, options: { responsive: true, plugins: { legend: { labels: { color: '#cbd5e1' } } }, scales: { y: { beginAtZero: true, ticks: { color: '#9aa9bb' } }, x: { ticks: { color: '#9aa9bb', maxRotation: 45 } } } } });
-  }
-
-  function exportQuarantineToCSV() {
-    if (quarantineRecords.length === 0) { showNotification('Нет данных для экспорта'); return; }
-    const headers = ['Дата прихода', '№ ПО', '№ Задачи', 'Клиент', 'Дата отправки УКД', 'Товар', 'Дата постановки задачи', 'Проблема', 'Менеджер', 'Кол-во', 'Тип', 'Направление'];
-    const rows = quarantineRecords.map(r => [r.dateArrival, r.poNumber, r.taskNumber, r.client, r.ukdDate, r.product, r.taskDate, r.problem, r.manager, r.quantity, r.type, r.direction]);
-    const csvContent = [headers.join(','), ...rows.map(row => row.map(cell => { if (typeof cell === 'string' && (cell.includes(',') || cell.includes(';') || cell.includes('"'))) return `"${cell.replace(/"/g, '""')}"`; return cell; }).join(','))].join('\n');
-    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `quarantine_export_${new Date().toISOString().slice(0,10)}.csv`; link.click(); URL.revokeObjectURL(link.href);
-    showNotification('✅ Экспорт выполнен', true);
-  }
-
-  function importQuarantineFromCSV(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const lines = e.target.result.split('\n').filter(l => l.trim());
-        if (lines.length < 2) { showNotification('Файл пуст'); return; }
-        let imported = 0;
-        for (let i = 1; i < lines.length; i++) {
-          const values = parseCSVLine(lines[i]);
-          if (values.length >= 6) {
-            quarantineRecords.push({ id: Date.now() + Math.random() + i, dateArrival: values[0] || '', poNumber: values[1] || '', taskNumber: values[2] || '', client: values[3] || '', ukdDate: values[4] || '', product: values[5] || 'Шины', taskDate: values[6] || '', problem: values[7] || '', manager: values[8] || '', quantity: parseInt(values[9]) || 0, type: values[10] || 'Карантин', direction: values[11] || 'Опт' });
-            imported++;
-          }
-        }
-        saveQuarantineToStorage(); renderQuarantineTable(); if (quarantineSubview === 'stats') renderQuarantineStats(); showNotification(`✅ Импортировано ${imported} записей`, true);
-      } catch (error) { showNotification('Ошибка импорта'); }
-    };
-    reader.readAsText(file, 'UTF-8');
-  }
-
-  function saveQuarantineToFile() {
-    const blob = new Blob([JSON.stringify(quarantineRecords, null, 2)], { type: 'application/json' });
-    const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'quarantine_backup.json'; link.click(); URL.revokeObjectURL(link.href);
-    showNotification('✅ Карантин сохранён в файл', true);
-  }
-
-  function loadQuarantineFromFile(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = JSON.parse(e.target.result);
-        if (Array.isArray(data)) { quarantineRecords = data; saveQuarantineToStorage(); renderQuarantineTable(); if (quarantineSubview === 'stats') renderQuarantineStats(); showNotification(`✅ Загружено ${quarantineRecords.length} записей`, true); }
-        else { showNotification('Неверный формат файла'); }
-      } catch (error) { showNotification('Ошибка загрузки'); }
-    };
-    reader.readAsText(file);
-  }
-
-  // ========== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ==========
   function switchMainTab(tab) {
     currentMainTab = tab;
     document.querySelectorAll('[data-tab]').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
     document.getElementById('operationsView').style.display = tab === 'operations' ? 'block' : 'none';
     document.getElementById('analyticsView').style.display = tab === 'analytics' ? 'block' : 'none';
-    document.getElementById('quarantineView').style.display = tab === 'quarantine' ? 'block' : 'none';
     refreshUI();
-    if (tab === 'quarantine') { renderQuarantineTable(); if (quarantineSubview === 'stats') renderQuarantineStats(); }
   }
 
   function switchProduct(product) {
@@ -1634,34 +1464,6 @@
     historySearchTerm = ''; document.getElementById('historySearchInput').value = '';
     chartDateFrom = document.getElementById('chartDateFrom').value; chartDateTo = document.getElementById('chartDateTo').value;
     refreshUI();
-  }
-
-  function switchQuarantineSubview(view) {
-    quarantineSubview = view;
-    document.querySelectorAll('.quarantine-subtab').forEach(btn => btn.classList.toggle('active', btn.dataset.qview === view));
-    document.getElementById('quarantineListView').style.display = view === 'list' ? 'block' : 'none';
-    document.getElementById('quarantineStatsView').style.display = view === 'stats' ? 'block' : 'none';
-    if (view === 'stats') renderQuarantineStats();
-  }
-
-  function resetCurrentData() {
-    if (currentMainTab === 'quarantine') {
-      if (confirm('Удалить ВСЕ записи из карантина?')) { quarantineRecords = []; saveQuarantineToStorage(); renderQuarantineTable(); if (quarantineSubview === 'stats') renderQuarantineStats(); showNotification('✅ Карантин очищен', true); }
-    } else {
-      const productName = currentProduct === 'tyres' ? 'Шины' : 'Диски';
-      if (confirm(`Удалить ВСЕ записи для вкладки "${productName}"?`)) { setCurrentRecords([]); saveCurrentToStorage(); historySearchTerm = ''; document.getElementById('historySearchInput').value = ''; refreshUI(); showNotification(`✅ Данные "${productName}" сброшены`, true); }
-    }
-  }
-
-  function resetAllData() {
-    if (confirm('⚠️ Удалить ВСЕ записи (шины, диски и карантин)? Это действие необратимо!')) {
-      tyresRecords = []; wheelsRecords = []; quarantineRecords = []; saveAllToStorage(); saveQuarantineToStorage(); historySearchTerm = ''; document.getElementById('historySearchInput').value = ''; quarantineSearchTerm = ''; document.getElementById('quarantineSearch').value = ''; refreshUI(); renderQuarantineTable(); if (quarantineSubview === 'stats') renderQuarantineStats(); showNotification('✅ Все данные сброшены', true);
-    }
-  }
-
-  function refreshUI() {
-    if (currentMainTab === 'operations') { updateCards(); renderHistoryTable(); }
-    else if (currentMainTab === 'analytics') { updateAnalytics(); renderCalendar(); if (selectedDate) updateDateDetails(selectedDate); }
   }
 
   let modalCallback = null;
@@ -1683,46 +1485,36 @@
     document.querySelectorAll('[data-tab]').forEach(btn => btn.addEventListener('click', () => switchMainTab(btn.dataset.tab)));
     document.querySelectorAll('[data-product]').forEach(btn => btn.addEventListener('click', () => switchProduct(btn.dataset.product)));
     document.querySelectorAll('[data-analytics-product]').forEach(btn => btn.addEventListener('click', () => switchProduct(btn.dataset.analyticsProduct)));
-    document.querySelectorAll('.quarantine-subtab').forEach(btn => btn.addEventListener('click', () => switchQuarantineSubview(btn.dataset.qview)));
-
+    
     document.getElementById('addUnloadBtn').addEventListener('click', addUnload);
     document.getElementById('searchDocBtn').addEventListener('click', searchForDoc);
     document.getElementById('clearDocSearchBtn').addEventListener('click', () => { document.getElementById('docSearch').value = ''; document.getElementById('docDateFilter').value = ''; document.getElementById('docSearchResults').innerHTML = ''; });
     document.getElementById('searchPlacementBtn').addEventListener('click', searchForPlacement);
+    
     const historySearchInput = document.getElementById('historySearchInput');
     document.getElementById('clearHistorySearchBtn').addEventListener('click', () => { historySearchInput.value = ''; historySearchTerm = ''; renderHistoryTable(); });
     historySearchInput.addEventListener('input', (e) => { historySearchTerm = e.target.value.trim(); renderHistoryTable(); });
+    
     document.getElementById('saveNormsBtn').addEventListener('click', () => { norms.unload = parseInt(document.getElementById('unloadNorm').value) || 60; norms.placement = parseInt(document.getElementById('placementNorm').value) || 40; saveNorms(); updateAnalytics(); renderHistoryTable(); showNotification('✅ Нормативы сохранены', true); });
     document.getElementById('applyChartDateFilter').addEventListener('click', () => { chartDateFrom = document.getElementById('chartDateFrom').value; chartDateTo = document.getElementById('chartDateTo').value; updateAnalytics(); });
     document.getElementById('resetChartDateFilter').addEventListener('click', () => { const today = new Date().toISOString().slice(0,10); const twoWeeksAgo = new Date(); twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14); document.getElementById('chartDateFrom').value = twoWeeksAgo.toISOString().slice(0,10); document.getElementById('chartDateTo').value = today; chartDateFrom = twoWeeksAgo.toISOString().slice(0,10); chartDateTo = today; updateAnalytics(); });
+    
     document.getElementById('exportCSVBtn').addEventListener('click', exportToCSV);
     document.getElementById('importCSVBtn').addEventListener('click', () => document.getElementById('csvFileInput').click());
     document.getElementById('csvFileInput').addEventListener('change', (e) => { if (e.target.files.length) { importFromCSV(e.target.files[0]); e.target.value = ''; } });
     document.getElementById('saveToFileBtn').addEventListener('click', saveAllDataToFile);
     document.getElementById('loadFromFileBtn').addEventListener('click', () => document.getElementById('backupFileInput').click());
     document.getElementById('backupFileInput').addEventListener('change', (e) => { if (e.target.files.length) { loadAllDataFromFile(e.target.files[0]); e.target.value = ''; } });
+    
     document.getElementById('modalCancelBtn').addEventListener('click', closeModal);
     document.getElementById('modalConfirmBtn').addEventListener('click', () => { if (modalCallback) modalCallback(); });
     modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+    
     document.getElementById('resetCurrentTabBtn').addEventListener('click', resetCurrentData);
     document.getElementById('resetAllDataBtn').addEventListener('click', resetAllData);
+    
     document.getElementById('prevMonthBtn').addEventListener('click', () => { currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(); if (selectedDate) updateDateDetails(selectedDate); });
     document.getElementById('nextMonthBtn').addEventListener('click', () => { currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar(); if (selectedDate) updateDateDetails(selectedDate); });
-
-    // Карантин
-    document.getElementById('addQuarantineBtn').addEventListener('click', addQuarantineRecord);
-    document.getElementById('exportQuarantineCSVBtn').addEventListener('click', exportQuarantineToCSV);
-    document.getElementById('importQuarantineCSVBtn').addEventListener('click', () => document.getElementById('quarantineCsvFileInput').click());
-    document.getElementById('quarantineCsvFileInput').addEventListener('change', (e) => { if (e.target.files.length) { importQuarantineFromCSV(e.target.files[0]); e.target.value = ''; } });
-    document.getElementById('saveQuarantineToFileBtn').addEventListener('click', saveQuarantineToFile);
-    document.getElementById('loadQuarantineFromFileBtn').addEventListener('click', () => document.getElementById('quarantineBackupFileInput').click());
-    document.getElementById('quarantineBackupFileInput').addEventListener('change', (e) => { if (e.target.files.length) { loadQuarantineFromFile(e.target.files[0]); e.target.value = ''; } });
-    const quarantineSearch = document.getElementById('quarantineSearch');
-    quarantineSearch.addEventListener('input', (e) => { quarantineSearchTerm = e.target.value.trim(); renderQuarantineTable(); });
-    document.getElementById('clearQuarantineSearchBtn').addEventListener('click', () => { quarantineSearch.value = ''; quarantineSearchTerm = ''; renderQuarantineTable(); });
-
-    switchMainTab('quarantine');
-    switchQuarantineSubview('list');
   }
 
   init();

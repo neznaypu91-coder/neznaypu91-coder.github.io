@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>Tyres & Wheels • Контроль товарооборота</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <style>
+    /* ========== ВСЕ СТИЛИ ИЗ ПРЕДЫДУЩЕЙ ВЕРСИИ ========== */
     * {
       margin: 0;
       padding: 0;
@@ -204,6 +206,7 @@
       font-weight: 600;
     }
 
+    /* Календарь */
     .calendar-container {
       background: #131822;
       border-radius: 24px;
@@ -701,7 +704,7 @@
       background: #131822;
       border-radius: 24px;
       padding: 30px;
-      max-width: 600px;
+      max-width: 700px;
       width: 90%;
       border: 1px solid #3b82f6;
       max-height: 85vh;
@@ -709,8 +712,8 @@
     }
 
     .modal h3 { margin-top: 0; margin-bottom: 20px; }
-    .modal-input { width: 100%; margin-bottom: 20px; }
-    .modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
+    .modal-input { width: 100%; margin-bottom: 16px; }
+    .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
 
     .toast-notification {
       position: fixed;
@@ -787,6 +790,107 @@
       flex-wrap: wrap;
     }
 
+    /* Стили для отчётов */
+    .report-container {
+      background: #131822;
+      border-radius: 24px;
+      padding: 20px;
+      margin-bottom: 28px;
+      border: 1px solid #283040;
+    }
+
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #2a3647;
+    }
+
+    .report-date-selector {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .report-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .report-stat-card {
+      background: #1a2230;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .report-stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: #8e9aab;
+      margin-bottom: 8px;
+    }
+
+    .report-stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .report-stat-value.tyres { color: #3b82f6; }
+    .report-stat-value.wheels { color: #f59e0b; }
+
+    .quarantine-list {
+      margin-top: 20px;
+    }
+
+    .quarantine-item {
+      background: #1a2230;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #2a3647;
+    }
+
+    .quarantine-item:hover {
+      background: #252f40;
+      border-color: #3b82f6;
+    }
+
+    .quarantine-item-client {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .quarantine-item-detail {
+      font-size: 0.8rem;
+      color: #8e9aab;
+      margin-top: 4px;
+    }
+
+    .progress-bar {
+      background: #2a3647;
+      border-radius: 10px;
+      height: 8px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-fill {
+      background: #10b981;
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.3s;
+    }
+
     @media (max-width: 768px) {
       .operations-container, .analytics-grid, .client-cards {
         grid-template-columns: 1fr;
@@ -815,11 +919,13 @@
   <h1>📊 TYRE·WHEEL HUB</h1>
 
   <div class="tabs-container">
-    <button class="tab-btn active" data-tab="operations">📦 Операции</button>
+    <button class="tab-btn" data-tab="operations">📦 Операции</button>
     <button class="tab-btn" data-tab="analytics">📈 Аналитика</button>
+    <button class="tab-btn active" data-tab="reports">📋 Отчёты</button>
   </div>
 
-  <div id="operationsView">
+  <!-- ОПЕРАЦИИ -->
+  <div id="operationsView" style="display: none;">
     <div class="sub-tabs">
       <button class="sub-tab-btn active" data-product="tyres"><span class="tyre-icon"></span> Шины</button>
       <button class="sub-tab-btn" data-product="wheels"><span class="wheel-icon"></span> Диски</button>
@@ -865,6 +971,7 @@
     <div class="table-wrapper"><table id="historyTable"><thead><tr><th>Дата выгрузки</th><th>Клиент</th><th>Кол-во</th><th>Время выгр.</th><th>Скорость выгр.</th><th>№ документов</th><th>Время разм.</th><th>Дата размещения</th><th>Скорость разм.</th><th>Статус</th><th>Действия</th></tr></thead><tbody id="historyBody"></tbody></table></div>
   </div>
 
+  <!-- АНАЛИТИКА -->
   <div id="analyticsView" style="display: none;">
     <div class="sub-tabs">
       <button class="sub-tab-btn active" data-analytics-product="tyres"><span class="tyre-icon"></span> Шины</button>
@@ -902,6 +1009,26 @@
     <div class="chart-container"><h3>📈 Скорость размещения по дням</h3><canvas id="placementChart"></canvas></div>
   </div>
 
+  <!-- ОТЧЁТЫ -->
+  <div id="reportsView">
+    <div class="report-container">
+      <div class="report-header">
+        <div class="report-date-selector">
+          <div class="input-group" style="min-width: 200px;">
+            <label>📅 Выберите дату</label>
+            <input type="date" id="reportDate" value="">
+          </div>
+          <button class="btn btn-primary" id="generateReportBtn">📊 Сформировать отчёт</button>
+          <button class="btn btn-success" id="exportReportPDFBtn">📄 Скачать PDF</button>
+        </div>
+      </div>
+
+      <div id="reportContent">
+        <div class="no-data-message" style="padding: 40px;">📅 Выберите дату и нажмите "Сформировать отчёт"</div>
+      </div>
+    </div>
+  </div>
+
   <div class="footer-actions">
     <button class="btn btn-danger" id="resetCurrentTabBtn">🗑️ Сбросить данные текущей вкладки</button>
     <button class="btn btn-danger" id="resetAllDataBtn">⚠️ Сбросить ВСЕ данные</button>
@@ -925,8 +1052,9 @@
 (function(){
   "use strict";
 
-  const STORAGE_KEY_TYRES = 'tyreWheelDashboard_tyres_v23';
-  const STORAGE_KEY_WHEELS = 'tyreWheelDashboard_wheels_v23';
+  const STORAGE_KEY_TYRES = 'tyreWheelDashboard_tyres_v24';
+  const STORAGE_KEY_WHEELS = 'tyreWheelDashboard_wheels_v24';
+  const STORAGE_KEY_QUARANTINE = 'tyreWheelDashboard_quarantine_v4';
   const NORMS_KEY = 'tyreWheelDashboard_norms';
   const BACKUP_FILE_NAME = 'tyre_wheel_backup.json';
   
@@ -937,10 +1065,11 @@
     'ЯНДЕКС': '#fde047'
   };
   
-  let currentMainTab = 'operations';
+  let currentMainTab = 'reports';
   let currentProduct = 'tyres';
   let tyresRecords = [];
   let wheelsRecords = [];
+  let quarantineRecords = [];
   let norms = { unload: 60, placement: 40 };
   
   let unloadChartInstance = null;
@@ -955,6 +1084,15 @@
   let currentYear = new Date().getFullYear();
   let currentMonth = new Date().getMonth();
   let selectedDate = null;
+
+  // Демо-данные карантина
+  function getDemoQuarantineData() {
+    return [
+      { id: Date.now() + 1, dateArrival: '2026-04-10', poNumber: '22818', taskNumber: '64030', client: 'ООО "Шиноф Моторс"', ukdDate: 'УКД ещё не отправлено', product: 'Шины', taskDate: '2026-04-10', problem: 'Марки на балансе', manager: 'Евгения Тимофеева', quantity: 59, type: 'Карантин', direction: 'Опт' },
+      { id: Date.now() + 2, dateArrival: '2026-04-09', poNumber: '22791', taskNumber: '64025', client: 'ИП Иванов', ukdDate: 'УКД отправлено', product: 'Шины', taskDate: '2026-04-09', problem: 'Проблема с маркировкой', manager: 'Елена Бакунина', quantity: 155, type: 'Карантин', direction: 'Опт' },
+      { id: Date.now() + 3, dateArrival: '2026-04-08', poNumber: '22760', taskNumber: '64020', client: 'ООО "Автошина"', ukdDate: 'УКД ещё не отправлено', product: 'Диски', taskDate: '2026-04-08', problem: 'Несоответствие количества', manager: 'Елена Шевелёва', quantity: 32, type: 'Карантин', direction: 'Опт' }
+    ];
+  }
 
   function showNotification(message, isSuccess = false) {
     const container = document.getElementById('notificationArea');
@@ -990,7 +1128,6 @@
   }
 
   function getDemoTyresData() {
-    // ВАШИ ДАННЫЕ С ДАТОЙ РАЗМЕЩЕНИЯ 11.04.2026
     return [
       { id: Date.now() + 1, unloadDate: '2026-04-10', client: 'РВБ', quantity: 59, unloadTime: 30, docNumbers: ['22818'], placementTime: 60, placementDate: '2026-04-11' },
       { id: Date.now() + 2, unloadDate: '2026-04-10', client: 'РВБ', quantity: 99, unloadTime: 45, docNumbers: ['22824'], placementTime: 120, placementDate: '2026-04-11' },
@@ -1016,7 +1153,6 @@
 
   function loadAllData() {
     const storedTyres = localStorage.getItem(STORAGE_KEY_TYRES);
-    // Если в localStorage пусто — загружаем демо-данные с вашими записями
     if (storedTyres && JSON.parse(storedTyres).length > 0) {
       tyresRecords = JSON.parse(storedTyres);
     } else {
@@ -1026,10 +1162,14 @@
     const storedWheels = localStorage.getItem(STORAGE_KEY_WHEELS);
     wheelsRecords = storedWheels ? JSON.parse(storedWheels) : [];
     
+    const storedQuarantine = localStorage.getItem(STORAGE_KEY_QUARANTINE);
+    quarantineRecords = storedQuarantine ? JSON.parse(storedQuarantine) : getDemoQuarantineData();
+    
     const storedNorms = localStorage.getItem(NORMS_KEY);
     if (storedNorms) norms = JSON.parse(storedNorms);
     
     saveAllToStorage();
+    saveQuarantineToStorage();
   }
 
   function saveCurrentToStorage() {
@@ -1042,6 +1182,10 @@
     localStorage.setItem(STORAGE_KEY_WHEELS, JSON.stringify(wheelsRecords));
   }
 
+  function saveQuarantineToStorage() {
+    localStorage.setItem(STORAGE_KEY_QUARANTINE, JSON.stringify(quarantineRecords));
+  }
+
   function saveNorms() {
     localStorage.setItem(NORMS_KEY, JSON.stringify(norms));
   }
@@ -1052,6 +1196,7 @@
       exportDate: new Date().toISOString(),
       tyres: tyresRecords,
       wheels: wheelsRecords,
+      quarantine: quarantineRecords,
       norms: norms
     };
     
@@ -1091,11 +1236,16 @@
           }));
         }
         
+        if (allData.quarantine) {
+          quarantineRecords = allData.quarantine;
+        }
+        
         if (allData.norms) {
           norms = allData.norms;
         }
         
         saveAllToStorage();
+        saveQuarantineToStorage();
         saveNorms();
         refreshUI();
         
@@ -1113,27 +1263,28 @@
     if (currentMainTab === 'operations') {
       updateCards();
       renderHistoryTable();
-    } else {
+    } else if (currentMainTab === 'analytics') {
       updateAnalytics();
       renderCalendar();
       if (selectedDate) updateDateDetails(selectedDate);
     }
-  }
-
-  function updateCards() {
-    const records = getCurrentRecords();
-    const totalUnloaded = records.reduce((sum, r) => sum + r.quantity, 0);
-    const totalPlaced = records.filter(r => r.placementTime).reduce((sum, r) => sum + r.quantity, 0);
-    
-    document.getElementById('totalUnloaded').textContent = totalUnloaded;
-    document.getElementById('totalPlaced').textContent = totalPlaced;
-    document.getElementById('remainingStock').textContent = totalUnloaded - totalPlaced;
+    // Отчёты обновляются при генерации
   }
 
   function formatDate(iso) {
     if (!iso) return '';
     const [y,m,d] = iso.split('-');
     return `${d}.${m}.${y}`;
+  }
+
+  // ========== ОПЕРАЦИИ И АНАЛИТИКА (сокращённо, но рабочее) ==========
+  function updateCards() {
+    const records = getCurrentRecords();
+    const totalUnloaded = records.reduce((s, r) => s + r.quantity, 0);
+    const totalPlaced = records.filter(r => r.placementTime).reduce((s, r) => s + r.quantity, 0);
+    document.getElementById('totalUnloaded').textContent = totalUnloaded;
+    document.getElementById('totalPlaced').textContent = totalPlaced;
+    document.getElementById('remainingStock').textContent = totalUnloaded - totalPlaced;
   }
 
   function renderHistoryTable() {
@@ -1148,7 +1299,7 @@
     const historySearchInput = document.getElementById('historySearchInput');
     if (historySearchTerm) { searchResultCount.style.display = 'inline'; searchResultCount.innerHTML = `<span class="filter-badge">Найдено: ${filteredRecords.length} из ${allRecords.length}</span>`; historySearchInput.style.borderColor = '#3b82f6'; }
     else { searchResultCount.style.display = 'none'; historySearchInput.style.borderColor = '#2e3a4a'; }
-    if (filteredRecords.length === 0) { historyBody.innerHTML = `<tr><td colspan="11" style="text-align: center; padding: 30px;">${historySearchTerm ? '🔍 Ничего не найдено' : 'Нет записей'}</td></tr>`; return; }
+    if (filteredRecords.length === 0) { historyBody.innerHTML = `<td><td colspan="11" style="text-align: center; padding: 30px;">${historySearchTerm ? '🔍 Ничего не найдено' : 'Нет записей'}</td></tr>`; return; }
     historyBody.innerHTML = filteredRecords.map(r => {
       const unloadSpeed = calculateSpeed(r.quantity, r.unloadTime);
       const placementSpeed = r.placementTime ? calculateSpeed(r.quantity, r.placementTime) : null;
@@ -1177,7 +1328,7 @@
     const record = records.find(r => r.id == recordId);
     if (!record) return;
     modalTitle.textContent = 'Редактировать запись';
-    modalContent.innerHTML = `<div class="input-group modal-input"><label>Дата выгрузки</label><input type="date" id="editUnloadDate" value="${record.unloadDate}"></div><div class="input-group modal-input"><label>Клиент</label><select id="editClient">${CLIENTS.map(c => `<option value="${c}" ${record.client === c ? 'selected' : ''}>${c}</option>`).join('')}</select></div><div class="input-group modal-input"><label>Количество</label><input type="number" id="editQuantity" min="1" value="${record.quantity}"></div><div class="input-group modal-input"><label>Время выгрузки (мин)</label><input type="number" id="editUnloadTime" min="1" value="${record.unloadTime}"></div><div class="input-group modal-input"><label>Номера документов (через запятую)</label><textarea id="editDocNumbers" rows="2">${(record.docNumbers || []).join(', ')}</textarea></div><div class="input-group modal-input"><label>Время размещения (мин, оставьте пустым если не размещено)</label><input type="number" id="editPlacementTime" min="1" value="${record.placementTime || ''}"></div><div class="input-group modal-input"><label>Дата размещения</label><input type="date" id="editPlacementDate" value="${record.placementDate || ''}"></div>`;
+    modalContent.innerHTML = `<div class="input-group modal-input"><label>Дата выгрузки</label><input type="date" id="editUnloadDate" value="${record.unloadDate}"></div><div class="input-group modal-input"><label>Клиент</label><select id="editClient">${CLIENTS.map(c => `<option value="${c}" ${record.client === c ? 'selected' : ''}>${c}</option>`).join('')}</select></div><div class="input-group modal-input"><label>Количество</label><input type="number" id="editQuantity" min="1" value="${record.quantity}"></div><div class="input-group modal-input"><label>Время выгрузки (мин)</label><input type="number" id="editUnloadTime" min="1" value="${record.unloadTime}"></div><div class="input-group modal-input"><label>Номера документов (через запятую)</label><textarea id="editDocNumbers" rows="2">${(record.docNumbers || []).join(', ')}</textarea></div><div class="input-group modal-input"><label>Время размещения (мин)</label><input type="number" id="editPlacementTime" min="1" value="${record.placementTime || ''}"></div><div class="input-group modal-input"><label>Дата размещения</label><input type="date" id="editPlacementDate" value="${record.placementDate || ''}"></div>`;
     modalCallback = () => {
       const newDate = document.getElementById('editUnloadDate').value;
       const newClient = document.getElementById('editClient').value;
@@ -1426,35 +1577,213 @@
   }
 
   function resetCurrentData() {
-    const productName = currentProduct === 'tyres' ? 'Шины' : 'Диски';
-    if (confirm(`Удалить ВСЕ записи для вкладки "${productName}"?`)) {
-      setCurrentRecords([]);
-      saveCurrentToStorage();
-      historySearchTerm = '';
-      document.getElementById('historySearchInput').value = '';
-      refreshUI();
-      showNotification(`✅ Данные "${productName}" сброшены`, true);
+    if (currentMainTab === 'quarantine') {
+      if (confirm('Удалить ВСЕ записи из карантина?')) { quarantineRecords = []; saveQuarantineToStorage(); showNotification('✅ Карантин очищен', true); }
+    } else if (currentMainTab === 'operations') {
+      const productName = currentProduct === 'tyres' ? 'Шины' : 'Диски';
+      if (confirm(`Удалить ВСЕ записи для вкладки "${productName}"?`)) { setCurrentRecords([]); saveCurrentToStorage(); historySearchTerm = ''; document.getElementById('historySearchInput').value = ''; refreshUI(); showNotification(`✅ Данные "${productName}" сброшены`, true); }
+    } else if (currentMainTab === 'reports') {
+      showNotification('В отчётах нет данных для сброса', false);
     }
   }
 
   function resetAllData() {
-    if (confirm('⚠️ Удалить ВСЕ записи (и шины, и диски)? Это действие необратимо!')) {
-      tyresRecords = [];
-      wheelsRecords = [];
-      saveAllToStorage();
-      historySearchTerm = '';
-      document.getElementById('historySearchInput').value = '';
-      refreshUI();
-      showNotification('✅ Все данные сброшены', true);
+    if (confirm('⚠️ Удалить ВСЕ записи (шины, диски и карантин)? Это действие необратимо!')) {
+      tyresRecords = []; wheelsRecords = []; quarantineRecords = []; saveAllToStorage(); saveQuarantineToStorage(); historySearchTerm = ''; document.getElementById('historySearchInput').value = ''; refreshUI(); showNotification('✅ Все данные сброшены', true);
     }
   }
 
+  // ========== ОТЧЁТЫ ==========
+  function generateReport() {
+    const reportDate = document.getElementById('reportDate').value;
+    if (!reportDate) {
+      showNotification('Выберите дату для отчёта');
+      return;
+    }
+    
+    const formattedDate = formatDate(reportDate);
+    
+    // Собираем данные по выгрузке за этот день (шины и диски отдельно)
+    const tyresUnloaded = tyresRecords.filter(r => r.unloadDate === reportDate).reduce((s, r) => s + r.quantity, 0);
+    const wheelsUnloaded = wheelsRecords.filter(r => r.unloadDate === reportDate).reduce((s, r) => s + r.quantity, 0);
+    const totalUnloaded = tyresUnloaded + wheelsUnloaded;
+    
+    // Собираем данные по размещению за этот день (по дате размещения)
+    const allOperations = [...tyresRecords, ...wheelsRecords];
+    const tyresPlaced = allOperations.filter(r => r.placementDate === reportDate && r.product === 'Шины').reduce((s, r) => s + r.quantity, 0);
+    const wheelsPlaced = allOperations.filter(r => r.placementDate === reportDate && r.product === 'Диски').reduce((s, r) => s + r.quantity, 0);
+    const totalPlaced = tyresPlaced + wheelsPlaced;
+    
+    // Процент выполнения нормативов (средняя скорость размещения за день)
+    const placedOperations = allOperations.filter(r => r.placementDate === reportDate && r.placementTime);
+    const avgPlacementSpeed = placedOperations.length ? placedOperations.reduce((s, r) => s + calculateSpeed(r.quantity, r.placementTime), 0) / placedOperations.length : 0;
+    const normPercent = norms.placement ? Math.min(100, Math.round((avgPlacementSpeed / norms.placement) * 100)) : 0;
+    
+    // Карантин за эту дату
+    const quarantineEntries = quarantineRecords.filter(r => r.dateArrival === reportDate);
+    
+    // Формируем HTML отчёта
+    let reportHTML = `
+      <div class="report-stats-grid">
+        <div class="report-stat-card">
+          <div class="report-stat-label">📦 Выгружено всего</div>
+          <div class="report-stat-value">${totalUnloaded} шт</div>
+          <div class="report-stat-label" style="margin-top: 8px; font-size: 0.7rem;">Шины: ${tyresUnloaded} | Диски: ${wheelsUnloaded}</div>
+        </div>
+        <div class="report-stat-card">
+          <div class="report-stat-label">✅ Размещено всего</div>
+          <div class="report-stat-value">${totalPlaced} шт</div>
+          <div class="report-stat-label" style="margin-top: 8px; font-size: 0.7rem;">Шины: ${tyresPlaced} | Диски: ${wheelsPlaced}</div>
+        </div>
+        <div class="report-stat-card">
+          <div class="report-stat-label">📊 Остаток</div>
+          <div class="report-stat-value">${totalUnloaded - totalPlaced} шт</div>
+        </div>
+        <div class="report-stat-card">
+          <div class="report-stat-label">⚡ Выполнение норматива</div>
+          <div class="report-stat-value">${normPercent}%</div>
+          <div class="progress-bar"><div class="progress-fill" style="width: ${normPercent}%;"></div></div>
+          <div class="report-stat-label" style="margin-top: 8px; font-size: 0.7rem;">Ср. скорость: ${Math.round(avgPlacementSpeed)} шт/ч (норматив ${norms.placement} шт/ч)</div>
+        </div>
+      </div>
+    `;
+    
+    // Детализация по клиентам (выгрузка)
+    const unloadByClient = {};
+    allOperations.filter(r => r.unloadDate === reportDate).forEach(r => {
+      if (!unloadByClient[r.client]) unloadByClient[r.client] = 0;
+      unloadByClient[r.client] += r.quantity;
+    });
+    
+    if (Object.keys(unloadByClient).length > 0) {
+      reportHTML += `
+        <div style="margin-top: 20px;">
+          <h3>📋 Детализация выгрузки по клиентам</h3>
+          <div class="report-stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+            ${Object.entries(unloadByClient).map(([client, qty]) => `
+              <div class="report-stat-card">
+                <div class="report-stat-label">${client}</div>
+                <div class="report-stat-value">${qty} шт</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+    
+    // Карантин
+    if (quarantineEntries.length > 0) {
+      reportHTML += `
+        <div style="margin-top: 20px;">
+          <h3>⚠️ Карантин за ${formattedDate}</h3>
+          <div class="quarantine-list">
+            ${quarantineEntries.map(q => `
+              <div class="quarantine-item" data-id="${q.id}">
+                <div class="quarantine-item-client">${q.client}</div>
+                <div class="quarantine-item-detail">№ ПО: ${q.poNumber} | № Задачи: ${q.taskNumber} | Кол-во: ${q.quantity} шт | Менеджер: ${q.manager}</div>
+                <div class="quarantine-item-detail">Проблема: ${q.problem.substring(0, 100)}${q.problem.length > 100 ? '...' : ''}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    } else {
+      reportHTML += `
+        <div style="margin-top: 20px; padding: 20px; text-align: center; background: #1a2230; border-radius: 16px;">
+          <span style="color: #6b7a8f;">📭 За ${formattedDate} нет записей в карантине</span>
+        </div>
+      `;
+    }
+    
+    document.getElementById('reportContent').innerHTML = reportHTML;
+    
+    // Добавляем обработчики для кликов по карантинным записям
+    document.querySelectorAll('.quarantine-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const id = parseInt(el.dataset.id);
+        const record = quarantineRecords.find(r => r.id === id);
+        if (record) {
+          showQuarantineDetailsModal(record);
+        }
+      });
+    });
+  }
+  
+  function showQuarantineDetailsModal(record) {
+    modalTitle.textContent = `📋 Детали карантина: ${record.client}`;
+    modalContent.innerHTML = `
+      <div class="input-group modal-input"><label>Дата прихода</label><input type="text" readonly value="${formatDate(record.dateArrival)}" style="background:#1a2230;"></div>
+      <div class="input-group modal-input"><label>№ ПО</label><input type="text" readonly value="${record.poNumber || '—'}" style="background:#1a2230;"></div>
+      <div class="input-group modal-input"><label>№ Задачи</label><input type="text" readonly value="${record.taskNumber || '—'}" style="background:#1a2230;"></div>
+      <div class="input-group modal-input"><label>Клиент</label><input type="text" readonly value="${record.client}" style="background:#1a2230;"></div>
+      <div class="input-group modal-input"><label>Дата отправки УКД</label><input type="text" readonly value="${record.ukdDate || '—'}" style="background:#1a2230;"></div>
+      <div class="input-group modal-input"><label>Товар</label><input type="text" readonly value="${record.product || '—'}" style="background:#1a2230;"></div>
+      <div class="input-group modal-input"><label>Дата постановки задачи</label><input type="text" readonly value="${record.taskDate ? formatDate(record.taskDate) : '—'}" style="background:#1a2230;"></div>
+      <div class="input-group modal-input"><label>Проблема</label><textarea readonly rows="3" style="background:#1a2230;">${record.problem || '—'}</textarea></div>
+      <div class="input-group modal-input"><label>Менеджер</label><input type="text" readonly value="${record.manager || '—'}" style="background:#1a2230;"></div>
+      <div class="input-group modal-input"><label>Количество</label><input type="text" readonly value="${record.quantity || 0} шт" style="background:#1a2230;"></div>
+      <div class="input-group modal-input"><label>Тип</label><input type="text" readonly value="${record.type || '—'}" style="background:#1a2230;"></div>
+      <div class="input-group modal-input"><label>Направление</label><input type="text" readonly value="${record.direction || '—'}" style="background:#1a2230;"></div>
+    `;
+    modalCallback = () => closeModal();
+    modalOverlay.style.display = 'flex';
+  }
+  
+  function exportReportToPDF() {
+    const reportContent = document.getElementById('reportContent');
+    const reportDate = document.getElementById('reportDate').value;
+    
+    if (!reportDate || reportContent.innerHTML.includes('Выберите дату')) {
+      showNotification('Сначала сформируйте отчёт');
+      return;
+    }
+    
+    const element = document.createElement('div');
+    element.style.padding = '20px';
+    element.style.background = '#0b0e14';
+    element.style.color = '#e3e6eb';
+    element.style.fontFamily = 'Inter, sans-serif';
+    element.innerHTML = `
+      <h1 style="color: #3b82f6; margin-bottom: 20px;">📊 TYRE·WHEEL HUB - Отчёт</h1>
+      <h2 style="margin-bottom: 20px;">📅 Дата: ${formatDate(reportDate)}</h2>
+      ${reportContent.innerHTML}
+      <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #2a3647; font-size: 0.8rem; color: #6b7a8f; text-align: center;">
+        Отчёт сгенерирован ${new Date().toLocaleString()}
+      </div>
+    `;
+    
+    const opt = {
+      margin: [10, 10, 10, 10],
+      filename: `report_${reportDate}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, backgroundColor: '#0b0e14' },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    
+    html2pdf().set(opt).from(element).save();
+    showNotification('✅ Отчёт сохранён в PDF', true);
+  }
+
+  // ========== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ==========
   function switchMainTab(tab) {
     currentMainTab = tab;
     document.querySelectorAll('[data-tab]').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
     document.getElementById('operationsView').style.display = tab === 'operations' ? 'block' : 'none';
     document.getElementById('analyticsView').style.display = tab === 'analytics' ? 'block' : 'none';
-    refreshUI();
+    document.getElementById('reportsView').style.display = tab === 'reports' ? 'block' : 'none';
+    
+    if (tab === 'operations') {
+      updateCards();
+      renderHistoryTable();
+    } else if (tab === 'analytics') {
+      updateAnalytics();
+      renderCalendar();
+      if (selectedDate) updateDateDetails(selectedDate);
+    } else if (tab === 'reports') {
+      const today = new Date().toISOString().slice(0,10);
+      document.getElementById('reportDate').value = today;
+      generateReport();
+    }
   }
 
   function switchProduct(product) {
@@ -1463,7 +1792,9 @@
     document.querySelectorAll('[data-analytics-product]').forEach(btn => btn.classList.toggle('active', btn.dataset.analyticsProduct === product));
     historySearchTerm = ''; document.getElementById('historySearchInput').value = '';
     chartDateFrom = document.getElementById('chartDateFrom').value; chartDateTo = document.getElementById('chartDateTo').value;
-    refreshUI();
+    updateCards();
+    renderHistoryTable();
+    updateAnalytics();
   }
 
   let modalCallback = null;
@@ -1476,11 +1807,17 @@
     loadAllData();
     const today = new Date().toISOString().slice(0,10);
     document.getElementById('unloadDate').value = today;
+    document.getElementById('reportDate').value = today;
     const twoWeeksAgo = new Date(); twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
     document.getElementById('chartDateFrom').value = twoWeeksAgo.toISOString().slice(0,10);
     document.getElementById('chartDateTo').value = today;
     chartDateFrom = twoWeeksAgo.toISOString().slice(0,10); chartDateTo = today;
-    refreshUI();
+    
+    updateCards();
+    renderHistoryTable();
+    updateAnalytics();
+    renderCalendar();
+    generateReport();
 
     document.querySelectorAll('[data-tab]').forEach(btn => btn.addEventListener('click', () => switchMainTab(btn.dataset.tab)));
     document.querySelectorAll('[data-product]').forEach(btn => btn.addEventListener('click', () => switchProduct(btn.dataset.product)));
@@ -1515,6 +1852,9 @@
     
     document.getElementById('prevMonthBtn').addEventListener('click', () => { currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(); if (selectedDate) updateDateDetails(selectedDate); });
     document.getElementById('nextMonthBtn').addEventListener('click', () => { currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar(); if (selectedDate) updateDateDetails(selectedDate); });
+    
+    document.getElementById('generateReportBtn').addEventListener('click', generateReport);
+    document.getElementById('exportReportPDFBtn').addEventListener('click', exportReportToPDF);
   }
 
   init();

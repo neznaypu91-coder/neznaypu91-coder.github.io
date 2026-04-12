@@ -2,9 +2,8 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>Tyres & Wheels • Контроль товарооборота</title>
-  <!-- Chart.js для графиков -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     * {
@@ -17,7 +16,7 @@
     body {
       background: #0b0e14;
       color: #e3e6eb;
-      padding: 16px;
+      padding: 12px;
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -30,33 +29,32 @@
 
     h1 {
       font-weight: 500;
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       letter-spacing: -0.5px;
-      margin-bottom: 20px;
-      border-left: 5px solid #3b82f6;
-      padding-left: 20px;
+      margin-bottom: 16px;
+      border-left: 4px solid #3b82f6;
+      padding-left: 14px;
       color: #f0f3f8;
     }
 
     h2 {
       font-weight: 400;
-      font-size: 1.3rem;
-      margin: 24px 0 16px;
+      font-size: 1.2rem;
+      margin: 20px 0 12px;
       color: #b0b8c5;
     }
 
     h3 {
       font-weight: 400;
-      font-size: 1.1rem;
-      margin: 16px 0 12px;
+      font-size: 1rem;
+      margin: 12px 0 10px;
       color: #9aa9bb;
     }
 
-    /* Вкладки */
     .tabs-container {
       display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
+      gap: 6px;
+      margin-bottom: 20px;
       border-bottom: 2px solid #2a3140;
       flex-wrap: wrap;
     }
@@ -65,13 +63,12 @@
       background: transparent;
       border: none;
       color: #8e9aab;
-      padding: 14px 28px;
-      font-size: 1.2rem;
+      padding: 10px 16px;
+      font-size: 1rem;
       font-weight: 500;
       cursor: pointer;
-      border-radius: 16px 16px 0 0;
+      border-radius: 14px 14px 0 0;
       transition: all 0.2s;
-      position: relative;
     }
 
     .tab-btn:hover {
@@ -82,6 +79,7 @@
     .tab-btn.active {
       color: #3b82f6;
       background: #131822;
+      position: relative;
     }
 
     .tab-btn.active::after {
@@ -94,28 +92,26 @@
       background: #3b82f6;
     }
 
-    /* Подвкладки товаров */
     .sub-tabs {
       display: flex;
       gap: 8px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
     }
 
     .sub-tab-btn {
       background: #1a2230;
       border: 1px solid #2a3647;
       color: #8e9aab;
-      padding: 10px 24px;
-      font-size: 1rem;
+      padding: 8px 18px;
+      font-size: 0.9rem;
       font-weight: 500;
       cursor: pointer;
       border-radius: 30px;
       transition: all 0.2s;
-    }
-
-    .sub-tab-btn:hover {
-      background: #252f40;
-      color: #cbd5e1;
+      flex: 1;
+      text-align: center;
+      min-width: 100px;
     }
 
     .sub-tab-btn.active {
@@ -124,83 +120,70 @@
       color: white;
     }
 
-    /* Карточки */
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-bottom: 28px;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
     .card {
       background: #1a1f2b;
-      border-radius: 20px;
-      padding: 20px 16px;
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+      border-radius: 18px;
+      padding: 16px 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
       border: 1px solid #2a3140;
     }
 
     .card-label {
-      font-size: 0.9rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: #8e9aab;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .card-value {
-      font-size: 2.5rem;
+      font-size: 1.8rem;
       font-weight: 600;
       color: #ffffff;
-      line-height: 1.2;
     }
 
-    .card-sub {
-      font-size: 0.85rem;
-      color: #6b7a8f;
-      margin-top: 6px;
-    }
-
-    /* Клиентские карточки */
     .client-cards {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-bottom: 28px;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 640px) {
+      .client-cards {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
 
     .client-card {
       background: linear-gradient(135deg, #1a2230 0%, #131822 100%);
-      border-radius: 20px;
-      padding: 20px;
+      border-radius: 18px;
+      padding: 16px;
       border: 1px solid #2a3647;
     }
 
     .client-name {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-weight: 700;
-      margin-bottom: 12px;
-      text-shadow: 0 0 10px currentColor;
+      margin-bottom: 10px;
+      text-align: center;
     }
 
-    .client-name.rvb { 
-      color: #c084fc;
-      text-shadow: 0 0 15px #a855f7, 0 0 30px #7e22ce;
-    }
-    .client-name.ozon { 
-      color: #38bdf8;
-      text-shadow: 0 0 15px #0ea5e9, 0 0 30px #0284c7;
-    }
-    .client-name.yandex { 
-      color: #fef08a;
-      text-shadow: 0 0 15px #fde047, 0 0 30px #eab308;
-    }
+    .client-name.rvb { color: #c084fc; text-shadow: 0 0 15px #a855f7; }
+    .client-name.ozon { color: #38bdf8; text-shadow: 0 0 15px #0ea5e9; }
+    .client-name.yandex { color: #fef08a; text-shadow: 0 0 15px #fde047; }
 
     .client-stats {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 8px;
+      gap: 10px;
     }
 
     .client-stat {
@@ -208,98 +191,280 @@
     }
 
     .client-stat-label {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: #8e9aab;
       text-transform: uppercase;
     }
 
     .client-stat-value {
-      font-size: 1.2rem;
+      font-size: 1rem;
       font-weight: 600;
     }
 
-    /* Секции операций */
+    /* Календарь */
+    .calendar-container {
+      background: #131822;
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 20px;
+      border: 1px solid #283040;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .calendar-nav {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .calendar-nav button {
+      background: #1a2230;
+      border: 1px solid #2a3647;
+      color: #cbd5e1;
+      padding: 8px 16px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .current-month {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #e3e6eb;
+    }
+
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .weekday {
+      padding: 8px 4px;
+      color: #8e9aab;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .calendar-day {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #1a2230;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #2a3647;
+      padding: 8px 4px;
+      text-align: center;
+    }
+
+    .calendar-day:hover {
+      background: #252f40;
+      transform: scale(1.02);
+    }
+
+    .calendar-day.selected {
+      background: #2563eb;
+      border-color: #3b82f6;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    }
+
+    .calendar-day.has-data {
+      border: 1px solid #3b82f6;
+      position: relative;
+    }
+
+    .calendar-day.has-data::after {
+      content: '';
+      position: absolute;
+      bottom: 3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 6px;
+      background: #3b82f6;
+      border-radius: 50%;
+    }
+
+    .day-number {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #e3e6eb;
+    }
+
+    .day-indicator {
+      font-size: 0.6rem;
+      color: #8e9aab;
+      margin-top: 2px;
+    }
+
+    .calendar-day.empty {
+      background: transparent;
+      border-color: transparent;
+      cursor: default;
+    }
+
+    .calendar-day.empty:hover {
+      background: transparent;
+      transform: none;
+    }
+
+    /* Детали выбранной даты */
+    .date-details {
+      background: #131822;
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 20px;
+      border: 1px solid #283040;
+    }
+
+    .date-details h3 {
+      margin-bottom: 12px;
+      color: #3b82f6;
+    }
+
+    .date-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .client-detail-card {
+      background: #1a2230;
+      border-radius: 16px;
+      padding: 12px;
+      border-left: 3px solid;
+    }
+
+    .client-detail-card.rvb { border-left-color: #c084fc; }
+    .client-detail-card.ozon { border-left-color: #38bdf8; }
+    .client-detail-card.yandex { border-left-color: #fef08a; }
+
+    .client-detail-name {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .client-detail-stats {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .client-detail-item {
+      text-align: center;
+      flex: 1;
+    }
+
+    .client-detail-label {
+      font-size: 0.65rem;
+      color: #8e9aab;
+    }
+
+    .client-detail-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .no-data-message {
+      text-align: center;
+      padding: 20px;
+      color: #6b7a8f;
+    }
+
     .operations-container {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-bottom: 28px;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .operations-container {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     .operation-section {
       background: #131822;
-      border-radius: 24px;
-      padding: 20px;
+      border-radius: 20px;
+      padding: 16px;
       border: 1px solid #283040;
     }
 
     .form-row {
       display: flex;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      gap: 12px 16px;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    @media (min-width: 480px) {
+      .form-row {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
     }
 
     .input-group {
       display: flex;
       flex-direction: column;
-      min-width: 140px;
-      flex: 1;
+      width: 100%;
+    }
+
+    @media (min-width: 480px) {
+      .input-group {
+        flex: 1;
+        min-width: 120px;
+      }
     }
 
     .input-group label {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.4px;
       color: #8e9aab;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
 
     .input-group input, .input-group textarea, .input-group select {
       background: #0f141c;
       border: 1.5px solid #2e3a4a;
-      border-radius: 14px;
-      padding: 12px 14px;
+      border-radius: 12px;
+      padding: 10px 12px;
       color: #fff;
-      font-size: 1rem;
-      font-weight: 500;
-      transition: border 0.2s;
-    }
-
-    .input-group select {
-      cursor: pointer;
-    }
-
-    .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
-      outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-    }
-
-    .input-group input[type="date"] {
-      color-scheme: dark;
-      cursor: pointer;
-    }
-
-    .input-group input[type="date"]::-webkit-calendar-picker-indicator {
-      filter: invert(0.7) sepia(1) saturate(500%) hue-rotate(200deg);
-      opacity: 0.9;
-      cursor: pointer;
-      padding: 4px;
-      border-radius: 6px;
-      background-color: #1e2a3a;
+      font-size: 0.95rem;
+      width: 100%;
     }
 
     .btn {
       background: #262e3d;
       border: none;
-      border-radius: 40px;
-      padding: 12px 24px;
+      border-radius: 30px;
+      padding: 10px 18px;
       font-weight: 500;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: #e0e4eb;
       cursor: pointer;
-      transition: 0.15s;
       border: 1px solid #384253;
     }
 
@@ -307,10 +472,6 @@
       background: #2563eb;
       border-color: #3b82f6;
       color: white;
-    }
-
-    .btn-primary:hover {
-      background: #3b82f6;
     }
 
     .btn-success {
@@ -323,452 +484,213 @@
       border: 1px solid #4a5668;
     }
 
-    .btn-outline:hover {
-      background: #1f2a37;
-    }
-
     .btn-danger {
       background: #7f1d1d;
       border-color: #b91c1c;
       color: #fee2e2;
     }
 
-    .btn-danger:hover {
-      background: #991b1b;
-    }
-
-    .btn-icon {
-      padding: 8px 12px;
-      font-size: 1rem;
-    }
-
     .search-section {
       background: #131822;
-      border-radius: 24px;
-      padding: 20px;
-      margin-bottom: 20px;
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 16px;
       border: 1px solid #283040;
     }
 
     .search-bar {
       display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-      align-items: flex-end;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    @media (min-width: 480px) {
+      .search-bar {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-end;
+      }
     }
 
     .search-input {
-      flex: 1;
-      min-width: 200px;
       background: #0f141c;
       border: 1.5px solid #2e3a4a;
-      border-radius: 14px;
-      padding: 12px 14px;
-      color: #fff;
-    }
-
-    .date-filter-group {
-      display: flex;
-      flex-direction: column;
-      min-width: 160px;
-    }
-
-    .date-filter-group label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      color: #8e9aab;
-      margin-bottom: 5px;
-    }
-
-    .date-filter-group input {
-      background: #0f141c;
-      border: 1.5px solid #2e3a4a;
-      border-radius: 14px;
-      padding: 12px 14px;
-      color: #fff;
-      font-size: 1rem;
-      color-scheme: dark;
-      cursor: pointer;
-    }
-
-    .search-results {
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .result-item {
-      background: #1a2230;
-      padding: 12px 16px;
-      margin-bottom: 8px;
       border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid #2a3647;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 10px 12px;
+      color: #fff;
+      flex: 1;
     }
 
-    .result-item:hover {
-      background: #252f40;
-      border-color: #3b82f6;
-    }
-
-    /* Таблица */
     .table-wrapper {
       background: #131822;
-      border-radius: 24px;
-      padding: 4px;
+      border-radius: 20px;
       border: 1px solid #283040;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 1400px;
+      min-width: 800px;
+      font-size: 0.85rem;
+    }
+
+    th, td {
+      padding: 10px 8px;
+      text-align: left;
+      border-bottom: 1px solid #202838;
     }
 
     th {
-      text-align: left;
-      padding: 18px 16px;
       background: #1a2230;
       color: #b0bed6;
-      font-weight: 500;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
-      border-bottom: 1px solid #2e3e54;
-      white-space: nowrap;
     }
 
-    td {
-      padding: 14px 16px;
-      border-bottom: 1px solid #202838;
-      color: #d3dae6;
-    }
-
-    .actions-cell {
-      display: flex;
-      gap: 8px;
-    }
-
-    /* Неоновые бейджи клиентов */
     .client-badge {
-      padding: 4px 12px;
+      padding: 3px 10px;
       border-radius: 20px;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       font-weight: 700;
-      text-shadow: 0 0 8px currentColor;
-      letter-spacing: 0.5px;
-      white-space: nowrap;
+      display: inline-block;
     }
 
-    .client-badge.rvb {
-      background: rgba(168, 85, 247, 0.15);
-      color: #c084fc;
-      text-shadow: 0 0 10px #a855f7;
-      border: 1px solid rgba(168, 85, 247, 0.3);
+    .client-badge.rvb { background: rgba(168,85,247,0.15); color: #c084fc; }
+    .client-badge.ozon { background: rgba(56,189,248,0.15); color: #38bdf8; }
+    .client-badge.yandex { background: rgba(254,240,138,0.15); color: #fef08a; }
+
+    .speed-badge {
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: inline-block;
     }
 
-    .client-badge.ozon {
-      background: rgba(56, 189, 248, 0.15);
-      color: #38bdf8;
-      text-shadow: 0 0 10px #0ea5e9;
-      border: 1px solid rgba(56, 189, 248, 0.3);
+    .speed-fast { background: #065f46; color: #a7f3d0; }
+    .speed-normal { background: #1e3a5f; color: #93c5fd; }
+    .speed-slow { background: #7f1d1d; color: #fecaca; }
+
+    .doc-number-tag {
+      background: #1e3a5f;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      color: #93c5fd;
+      display: inline-block;
+      margin: 2px;
     }
 
-    .client-badge.yandex {
-      background: rgba(254, 240, 138, 0.15);
-      color: #fef08a;
-      text-shadow: 0 0 10px #fde047;
-      border: 1px solid rgba(254, 240, 138, 0.3);
-    }
-
-    /* Аналитика */
     .analytics-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      margin-bottom: 28px;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 640px) {
+      .analytics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     .analytics-card {
       background: #131822;
-      border-radius: 24px;
-      padding: 20px;
+      border-radius: 20px;
+      padding: 16px;
       border: 1px solid #283040;
     }
 
     .metric-row {
       display: flex;
       justify-content: space-between;
-      padding: 12px 0;
+      padding: 10px 0;
       border-bottom: 1px solid #2a3647;
-    }
-
-    .metric-label {
-      color: #8e9aab;
-    }
-
-    .metric-value {
-      font-weight: 600;
-      font-size: 1.2rem;
-    }
-
-    .metric-value.positive {
-      color: #10b981;
-    }
-
-    .metric-value.negative {
-      color: #ef4444;
-    }
-
-    .speed-badge {
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .speed-fast {
-      background: #065f46;
-      color: #a7f3d0;
-    }
-
-    .speed-normal {
-      background: #1e3a5f;
-      color: #93c5fd;
-    }
-
-    .speed-slow {
-      background: #7f1d1d;
-      color: #fecaca;
-    }
-
-    .doc-numbers-list {
-      display: flex;
       flex-wrap: wrap;
-      gap: 4px;
-    }
-
-    .doc-number-tag {
-      background: #1e3a5f;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      color: #93c5fd;
-      white-space: nowrap;
-    }
-
-    .history-header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      gap: 16px;
-    }
-
-    .history-search {
-      display: flex;
       gap: 8px;
-      flex: 1;
-      max-width: 400px;
-    }
-
-    .history-search input {
-      flex: 1;
-      background: #0f141c;
-      border: 1.5px solid #2e3a4a;
-      border-radius: 14px;
-      padding: 10px 14px;
-      color: #fff;
-      font-size: 0.95rem;
     }
 
     .chart-container {
       background: #131822;
-      border-radius: 24px;
-      padding: 20px;
-      margin-bottom: 28px;
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 20px;
       border: 1px solid #283040;
-    }
-
-    .chart-container h3 {
-      margin-top: 0;
-      margin-bottom: 16px;
     }
 
     canvas {
       width: 100% !important;
-      max-height: 350px;
+      max-height: 280px;
     }
 
-    /* Модальное окно */
+    .footer-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    @media (min-width: 480px) {
+      .footer-actions {
+        flex-direction: row;
+        justify-content: flex-end;
+      }
+    }
+
+    .toast-notification {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      left: 16px;
+      background: #1e293b;
+      border-left: 4px solid #ef4444;
+      color: #f1f5f9;
+      padding: 14px 18px;
+      border-radius: 14px;
+      z-index: 2000;
+      animation: slideIn 0.2s ease;
+    }
+
+    @media (min-width: 480px) {
+      .toast-notification {
+        left: auto;
+        max-width: 320px;
+      }
+    }
+
+    .toast-notification.success { border-left-color: #10b981; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0,0,0,0.85);
       display: none;
       justify-content: center;
       align-items: center;
       z-index: 1000;
+      padding: 16px;
     }
 
     .modal {
       background: #131822;
       border-radius: 24px;
-      padding: 30px;
-      max-width: 600px;
-      width: 90%;
+      padding: 20px;
+      max-width: 500px;
+      width: 100%;
       border: 1px solid #3b82f6;
       max-height: 85vh;
       overflow-y: auto;
-    }
-
-    .modal h3 {
-      margin-top: 0;
-      margin-bottom: 20px;
-    }
-
-    .modal-input {
-      width: 100%;
-      margin-bottom: 20px;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 12px;
-      justify-content: flex-end;
-    }
-
-    /* Уведомления */
-    .toast-notification {
-      position: fixed;
-      top: 24px;
-      right: 24px;
-      background: #1e293b;
-      border-left: 6px solid #ef4444;
-      color: #f1f5f9;
-      padding: 16px 24px;
-      border-radius: 16px;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.6);
-      font-weight: 500;
-      z-index: 2000;
-      max-width: 320px;
-      animation: slideIn 0.2s ease;
-    }
-    .toast-notification.success {
-      border-left-color: #10b981;
-    }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(20px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    .footer-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      margin-top: 24px;
-      flex-wrap: wrap;
-    }
-
-    .settings-row {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .import-export-section {
-      background: #131822;
-      border-radius: 24px;
-      padding: 20px;
-      margin-bottom: 20px;
-      border: 1px solid #283040;
-    }
-
-    .filter-badge {
-      background: #2563eb;
-      color: white;
-      padding: 2px 10px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      margin-left: 8px;
-    }
-
-    .tyre-icon {
-      display: inline-block;
-      width: 1.2em;
-      height: 1.2em;
-      margin-right: 4px;
-      vertical-align: middle;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3C/svg%3E");
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-    }
-
-    .wheel-icon {
-      display: inline-block;
-      width: 1.2em;
-      height: 1.2em;
-      margin-right: 4px;
-      vertical-align: middle;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 3v18M3 12h18'/%3E%3Ccircle cx='12' cy='12' r='2'/%3E%3C/svg%3E");
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-    }
-
-    .date-range-filter {
-      display: flex;
-      gap: 12px;
-      align-items: flex-end;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-
-    .week-selector {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-
-    .week-btn {
-      padding: 8px 16px;
-      font-size: 0.9rem;
-    }
-
-    @media (max-width: 768px) {
-      .operations-container, .analytics-grid, .client-cards {
-        grid-template-columns: 1fr;
-      }
-      .history-header {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .history-search {
-        max-width: 100%;
-      }
-    }
-
-    @media (max-width: 640px) {
-      body { padding: 10px; }
-      h1 { font-size: 1.6rem; }
-      .card-value { font-size: 2rem; }
-      .btn { padding: 14px 20px; width: 100%; }
-      .tab-btn { padding: 12px 16px; font-size: 1rem; }
     }
   </style>
 </head>
@@ -776,1532 +698,157 @@
 <div class="dashboard">
   <h1>📊 TYRE·WHEEL HUB</h1>
 
-  <!-- Главные вкладки -->
   <div class="tabs-container">
     <button class="tab-btn active" data-tab="operations">📦 Операции</button>
     <button class="tab-btn" data-tab="analytics">📈 Аналитика</button>
   </div>
 
-  <!-- Контейнер операций -->
   <div id="operationsView">
-    <!-- Подвкладки товаров -->
     <div class="sub-tabs">
-      <button class="sub-tab-btn active" data-product="tyres"><span class="tyre-icon"></span> Шины</button>
-      <button class="sub-tab-btn" data-product="wheels"><span class="wheel-icon"></span> Диски</button>
+      <button class="sub-tab-btn active" data-product="tyres"><span>🚗</span> Шины</button>
+      <button class="sub-tab-btn" data-product="wheels"><span>⚙️</span> Диски</button>
     </div>
 
-    <!-- Карточки -->
     <div class="cards-grid">
-      <div class="card">
-        <div class="card-label">Выгружено всего</div>
-        <div class="card-value" id="totalUnloaded">0</div>
-        <div class="card-sub">общее количество</div>
-      </div>
-      <div class="card">
-        <div class="card-label">Размещено</div>
-        <div class="card-value" id="totalPlaced">0</div>
-        <div class="card-sub">завершённые операции</div>
-      </div>
-      <div class="card">
-        <div class="card-label">Остаток</div>
-        <div class="card-value" id="remainingStock">0</div>
-        <div class="card-sub">выгружено − размещено</div>
-      </div>
+      <div class="card"><div class="card-label">Выгружено всего</div><div class="card-value" id="totalUnloaded">0</div><div class="card-sub">общее количество</div></div>
+      <div class="card"><div class="card-label">Размещено</div><div class="card-value" id="totalPlaced">0</div><div class="card-sub">завершённые операции</div></div>
+      <div class="card"><div class="card-label">Остаток</div><div class="card-value" id="remainingStock">0</div><div class="card-sub">выгружено − размещено</div></div>
     </div>
 
-    <!-- Операции -->
     <div class="operations-container">
       <div class="operation-section">
         <h3>📦 Выгрузка</h3>
         <div class="form-row">
-          <div class="input-group">
-            <label>Дата</label>
-            <input type="date" id="unloadDate">
-          </div>
-          <div class="input-group">
-            <label>Клиент</label>
-            <select id="unloadClient">
-              <option value="РВБ">РВБ</option>
-              <option value="ОЗОН">ОЗОН</option>
-              <option value="ЯНДЕКС">ЯНДЕКС</option>
-            </select>
-          </div>
-          <div class="input-group">
-            <label>Количество</label>
-            <input type="number" id="unloadQuantity" min="1" value="0">
-          </div>
-          <div class="input-group">
-            <label>Время (мин)</label>
-            <input type="number" id="unloadTime" min="1" value="0">
-          </div>
+          <div class="input-group"><label>Дата</label><input type="date" id="unloadDate"></div>
+          <div class="input-group"><label>Клиент</label><select id="unloadClient"><option value="РВБ">РВБ</option><option value="ОЗОН">ОЗОН</option><option value="ЯНДЕКС">ЯНДЕКС</option></select></div>
+          <div class="input-group"><label>Количество</label><input type="number" id="unloadQuantity" min="1" value="0"></div>
+          <div class="input-group"><label>Время (мин)</label><input type="number" id="unloadTime" min="1" value="0"></div>
         </div>
-        <button class="btn btn-primary" id="addUnloadBtn" style="margin-top: 16px; width: 100%;">
-          ➕ Добавить выгрузку
-        </button>
+        <button class="btn btn-primary" id="addUnloadBtn" style="margin-top:12px; width:100%">➕ Добавить выгрузку</button>
       </div>
 
       <div class="operation-section">
         <h3>📋 Размещение</h3>
-        <div class="search-bar">
-          <input type="text" class="search-input" id="placementSearch" placeholder="Поиск по номеру док-та или клиенту...">
-          <button class="btn btn-outline" id="searchPlacementBtn">🔍 Найти</button>
-        </div>
+        <div class="search-bar"><input type="text" class="search-input" id="placementSearch" placeholder="Поиск по номеру док-та или клиенту..."><button class="btn btn-outline" id="searchPlacementBtn">🔍 Найти</button></div>
         <div class="search-results" id="placementResults"></div>
       </div>
     </div>
 
-    <!-- Присвоить номера документов -->
     <div class="search-section">
       <h3>🔖 Присвоить номера документов</h3>
-      <div class="search-bar">
-        <input type="text" class="search-input" id="docSearch" placeholder="Поиск по количеству, клиенту или дате...">
-        <div class="date-filter-group">
-          <label>📅 Фильтр по дате</label>
-          <input type="date" id="docDateFilter">
-        </div>
-        <button class="btn btn-outline" id="searchDocBtn">🔍 Поиск</button>
-        <button class="btn btn-outline" id="clearDocSearchBtn">Очистить</button>
-      </div>
+      <div class="search-bar"><input type="text" class="search-input" id="docSearch" placeholder="Поиск..."><div class="date-filter-group"><label>📅 Фильтр по дате</label><input type="date" id="docDateFilter"></div><button class="btn btn-outline" id="searchDocBtn">🔍 Поиск</button><button class="btn btn-outline" id="clearDocSearchBtn">Очистить</button></div>
       <div class="search-results" id="docSearchResults"></div>
     </div>
 
-    <!-- Импорт/Экспорт -->
-    <div class="import-export-section">
-      <h3>📁 Импорт / Экспорт данных</h3>
-      <div class="settings-row">
-        <button class="btn btn-success" id="exportCSVBtn">📤 Экспорт в CSV</button>
-        <button class="btn btn-outline" id="importCSVBtn">📥 Импорт из CSV</button>
-        <button class="btn btn-primary" id="saveToFileBtn">💾 Сохранить все данные в файл</button>
-        <button class="btn btn-outline" id="loadFromFileBtn">📂 Загрузить данные из файла</button>
-        <input type="file" id="csvFileInput" accept=".csv,.txt,text/csv" style="display: none;">
-        <input type="file" id="backupFileInput" accept=".json,application/json" style="display: none;">
+    <div class="search-section">
+      <h3>📁 Импорт / Экспорт</h3>
+      <div class="settings-row" style="display:flex; gap:10px; flex-wrap:wrap">
+        <button class="btn btn-success" id="exportCSVBtn">📤 Экспорт CSV</button>
+        <button class="btn btn-outline" id="importCSVBtn">📥 Импорт CSV</button>
+        <button class="btn btn-primary" id="saveToFileBtn">💾 Сохранить</button>
+        <button class="btn btn-outline" id="loadFromFileBtn">📂 Загрузить</button>
+        <input type="file" id="csvFileInput" accept=".csv" style="display:none">
+        <input type="file" id="backupFileInput" accept=".json" style="display:none">
       </div>
     </div>
 
-    <!-- Таблица -->
-    <div class="history-header">
-      <h2 style="margin: 0;">📋 Журнал операций</h2>
-      <div class="history-search">
-        <input type="text" id="historySearchInput" placeholder="🔍 Поиск по номеру документа...">
-        <button class="btn btn-outline" id="clearHistorySearchBtn" title="Очистить поиск">✕</button>
-        <span id="searchResultCount" style="display: none;"></span>
-      </div>
+    <div class="history-header" style="display:flex; justify-content:space-between; margin-bottom:12px; flex-wrap:wrap; gap:10px">
+      <h2 style="margin:0">📋 Журнал операций</h2>
+      <div class="history-search" style="display:flex; gap:8px"><input type="text" id="historySearchInput" placeholder="🔍 Поиск по номеру документа..."><button class="btn btn-outline" id="clearHistorySearchBtn">✕</button><span id="searchResultCount"></span></div>
     </div>
-    <div class="table-wrapper">
-      <table id="historyTable">
-        <thead>
-          <tr>
-            <th>Дата выгрузки</th>
-            <th>Клиент</th>
-            <th>Кол-во</th>
-            <th>Время выгр.</th>
-            <th>Скорость выгр.</th>
-            <th>№ документов</th>
-            <th>Время разм.</th>
-            <th>Скорость разм.</th>
-            <th>Статус</th>
-            <th>Действия</th>
-          </tr>
-        </thead>
-        <tbody id="historyBody"></tbody>
-      </table>
-    </div>
+    <div class="table-wrapper"><table id="historyTable"><thead><tr><th>Дата</th><th>Клиент</th><th>Кол-во</th><th>Время выгр.</th><th>Скорость</th><th>№ документов</th><th>Время разм.</th><th>Скорость разм.</th><th>Статус</th><th>Действия</th></tr></thead><tbody id="historyBody"></tbody></table></div>
   </div>
 
-  <!-- Контейнер аналитики -->
   <div id="analyticsView" style="display: none;">
     <div class="sub-tabs">
-      <button class="sub-tab-btn active" data-analytics-product="tyres"><span class="tyre-icon"></span> Шины</button>
-      <button class="sub-tab-btn" data-analytics-product="wheels"><span class="wheel-icon"></span> Диски</button>
+      <button class="sub-tab-btn active" data-analytics-product="tyres"><span>🚗</span> Шины</button>
+      <button class="sub-tab-btn" data-analytics-product="wheels"><span>⚙️</span> Диски</button>
+    </div>
+
+    <!-- Календарь -->
+    <div class="calendar-container">
+      <div class="calendar-header">
+        <div class="calendar-nav">
+          <button id="prevMonthBtn">◀ Назад</button>
+          <button id="nextMonthBtn">Вперед ▶</button>
+        </div>
+        <div class="current-month" id="currentMonth"></div>
+      </div>
+      <div class="calendar-weekdays">
+        <div class="weekday">Пн</div><div class="weekday">Вт</div><div class="weekday">Ср</div><div class="weekday">Чт</div><div class="weekday">Пт</div><div class="weekday">Сб</div><div class="weekday">Вс</div>
+      </div>
+      <div class="calendar-days" id="calendarDays"></div>
+    </div>
+
+    <!-- Детали выбранной даты -->
+    <div class="date-details" id="dateDetails">
+      <h3 id="selectedDateTitle">📅 Выберите дату в календаре</h3>
+      <div id="dateDetailsContent"></div>
     </div>
 
     <!-- Статистика по клиентам -->
-    <h3>🏢 Статистика по клиентам</h3>
+    <h3>🏢 Общая статистика по клиентам</h3>
     <div class="client-cards">
-      <div class="client-card">
-        <div class="client-name rvb">РВБ</div>
-        <div class="client-stats">
-          <div class="client-stat">
-            <div class="client-stat-label">Выгружено</div>
-            <div class="client-stat-value" id="rvbUnloaded">0</div>
-          </div>
-          <div class="client-stat">
-            <div class="client-stat-label">Размещено</div>
-            <div class="client-stat-value" id="rvbPlaced">0</div>
-          </div>
-          <div class="client-stat">
-            <div class="client-stat-label">Остаток</div>
-            <div class="client-stat-value" id="rvbRemaining">0</div>
-          </div>
-          <div class="client-stat">
-            <div class="client-stat-label">Ср. скорость разм.</div>
-            <div class="client-stat-value" id="rvbAvgPlacementSpeed">0</div>
-          </div>
-        </div>
-      </div>
-      <div class="client-card">
-        <div class="client-name ozon">ОЗОН</div>
-        <div class="client-stats">
-          <div class="client-stat">
-            <div class="client-stat-label">Выгружено</div>
-            <div class="client-stat-value" id="ozonUnloaded">0</div>
-          </div>
-          <div class="client-stat">
-            <div class="client-stat-label">Размещено</div>
-            <div class="client-stat-value" id="ozonPlaced">0</div>
-          </div>
-          <div class="client-stat">
-            <div class="client-stat-label">Остаток</div>
-            <div class="client-stat-value" id="ozonRemaining">0</div>
-          </div>
-          <div class="client-stat">
-            <div class="client-stat-label">Ср. скорость разм.</div>
-            <div class="client-stat-value" id="ozonAvgPlacementSpeed">0</div>
-          </div>
-        </div>
-      </div>
-      <div class="client-card">
-        <div class="client-name yandex">ЯНДЕКС</div>
-        <div class="client-stats">
-          <div class="client-stat">
-            <div class="client-stat-label">Выгружено</div>
-            <div class="client-stat-value" id="yandexUnloaded">0</div>
-          </div>
-          <div class="client-stat">
-            <div class="client-stat-label">Размещено</div>
-            <div class="client-stat-value" id="yandexPlaced">0</div>
-          </div>
-          <div class="client-stat">
-            <div class="client-stat-label">Остаток</div>
-            <div class="client-stat-value" id="yandexRemaining">0</div>
-          </div>
-          <div class="client-stat">
-            <div class="client-stat-label">Ср. скорость разм.</div>
-            <div class="client-stat-value" id="yandexAvgPlacementSpeed">0</div>
-          </div>
-        </div>
-      </div>
+      <div class="client-card"><div class="client-name rvb">РВБ</div><div class="client-stats"><div class="client-stat"><div class="client-stat-label">Выгружено</div><div class="client-stat-value" id="rvbUnloaded">0</div></div><div class="client-stat"><div class="client-stat-label">Размещено</div><div class="client-stat-value" id="rvbPlaced">0</div></div><div class="client-stat"><div class="client-stat-label">Остаток</div><div class="client-stat-value" id="rvbRemaining">0</div></div><div class="client-stat"><div class="client-stat-label">Ср. скорость</div><div class="client-stat-value" id="rvbAvgPlacementSpeed">0</div></div></div></div>
+      <div class="client-card"><div class="client-name ozon">ОЗОН</div><div class="client-stats"><div class="client-stat"><div class="client-stat-label">Выгружено</div><div class="client-stat-value" id="ozonUnloaded">0</div></div><div class="client-stat"><div class="client-stat-label">Размещено</div><div class="client-stat-value" id="ozonPlaced">0</div></div><div class="client-stat"><div class="client-stat-label">Остаток</div><div class="client-stat-value" id="ozonRemaining">0</div></div><div class="client-stat"><div class="client-stat-label">Ср. скорость</div><div class="client-stat-value" id="ozonAvgPlacementSpeed">0</div></div></div></div>
+      <div class="client-card"><div class="client-name yandex">ЯНДЕКС</div><div class="client-stats"><div class="client-stat"><div class="client-stat-label">Выгружено</div><div class="client-stat-value" id="yandexUnloaded">0</div></div><div class="client-stat"><div class="client-stat-label">Размещено</div><div class="client-stat-value" id="yandexPlaced">0</div></div><div class="client-stat"><div class="client-stat-label">Остаток</div><div class="client-stat-value" id="yandexRemaining">0</div></div><div class="client-stat"><div class="client-stat-label">Ср. скорость</div><div class="client-stat-value" id="yandexAvgPlacementSpeed">0</div></div></div></div>
     </div>
 
     <!-- Настройки нормативов -->
     <div class="search-section">
       <h3>⚙️ Нормативы (шт/час)</h3>
-      <div class="settings-row">
-        <div class="input-group">
-          <label>Норматив выгрузки</label>
-          <input type="number" id="unloadNorm" min="1" value="60" step="1">
-        </div>
-        <div class="input-group">
-          <label>Норматив размещения</label>
-          <input type="number" id="placementNorm" min="1" value="40" step="1">
-        </div>
+      <div class="settings-row" style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end">
+        <div class="input-group"><label>Норматив выгрузки</label><input type="number" id="unloadNorm" min="1" value="60"></div>
+        <div class="input-group"><label>Норматив размещения</label><input type="number" id="placementNorm" min="1" value="40"></div>
         <button class="btn btn-primary" id="saveNormsBtn">Сохранить</button>
       </div>
     </div>
 
     <!-- Метрики -->
     <div class="analytics-grid">
-      <div class="analytics-card">
-        <h3>📦 Выгрузка</h3>
-        <div class="metric-row">
-          <span class="metric-label">Всего операций</span>
-          <span class="metric-value" id="unloadTotalOps">0</span>
-        </div>
-        <div class="metric-row">
-          <span class="metric-label">Средняя скорость</span>
-          <span class="metric-value" id="unloadAvgSpeed">0 шт/час</span>
-        </div>
-        <div class="metric-row">
-          <span class="metric-label">Норматив</span>
-          <span class="metric-value" id="unloadNormDisplay">60 шт/час</span>
-        </div>
-        <div class="metric-row">
-          <span class="metric-label">Отклонение</span>
-          <span class="metric-value" id="unloadDeviation">0%</span>
-        </div>
-      </div>
-
-      <div class="analytics-card">
-        <h3>📋 Размещение</h3>
-        <div class="metric-row">
-          <span class="metric-label">Всего операций</span>
-          <span class="metric-value" id="placementTotalOps">0</span>
-        </div>
-        <div class="metric-row">
-          <span class="metric-label">Средняя скорость</span>
-          <span class="metric-value" id="placementAvgSpeed">0 шт/час</span>
-        </div>
-        <div class="metric-row">
-          <span class="metric-label">Норматив</span>
-          <span class="metric-value" id="placementNormDisplay">40 шт/час</span>
-        </div>
-        <div class="metric-row">
-          <span class="metric-label">Отклонение</span>
-          <span class="metric-value" id="placementDeviation">0%</span>
-        </div>
-      </div>
+      <div class="analytics-card"><h3>📦 Выгрузка</h3><div class="metric-row"><span class="metric-label">Операций</span><span class="metric-value" id="unloadTotalOps">0</span></div><div class="metric-row"><span class="metric-label">Ср. скорость</span><span class="metric-value" id="unloadAvgSpeed">0 шт/час</span></div><div class="metric-row"><span class="metric-label">Норматив</span><span class="metric-value" id="unloadNormDisplay">60 шт/час</span></div><div class="metric-row"><span class="metric-label">Отклонение</span><span class="metric-value" id="unloadDeviation">0%</span></div></div>
+      <div class="analytics-card"><h3>📋 Размещение</h3><div class="metric-row"><span class="metric-label">Операций</span><span class="metric-value" id="placementTotalOps">0</span></div><div class="metric-row"><span class="metric-label">Ср. скорость</span><span class="metric-value" id="placementAvgSpeed">0 шт/час</span></div><div class="metric-row"><span class="metric-label">Норматив</span><span class="metric-value" id="placementNormDisplay">40 шт/час</span></div><div class="metric-row"><span class="metric-label">Отклонение</span><span class="metric-value" id="placementDeviation">0%</span></div></div>
     </div>
 
-    <!-- Аналитика по неделям -->
-    <div class="chart-container">
-      <h3>📅 Аналитика по неделям</h3>
-      <div class="week-selector">
-        <button class="btn btn-outline week-btn" data-week-offset="0">Текущая неделя</button>
-        <button class="btn btn-outline week-btn" data-week-offset="-1">Прошлая неделя</button>
-        <button class="btn btn-outline week-btn" data-week-offset="-2">2 недели назад</button>
-        <button class="btn btn-outline week-btn" data-week-offset="-3">3 недели назад</button>
-        <span id="weekRangeDisplay" style="color: #9aa9bb; margin-left: auto;"></span>
-      </div>
-      <canvas id="weeklyChart"></canvas>
-    </div>
-
-    <!-- График по дням с разбивкой по клиентам -->
-    <div class="chart-container">
-      <h3>📊 Выгружено по дням (по клиентам)</h3>
-      <div class="date-range-filter">
-        <div class="input-group">
-          <label>📅 С даты</label>
-          <input type="date" id="chartDateFrom">
-        </div>
-        <div class="input-group">
-          <label>📅 По дату</label>
-          <input type="date" id="chartDateTo">
-        </div>
-        <button class="btn btn-outline" id="applyChartDateFilter">Применить</button>
-        <button class="btn btn-outline" id="resetChartDateFilter">Сбросить</button>
-      </div>
-      <canvas id="dailyClientsChart"></canvas>
-    </div>
-
-    <!-- График общий по клиентам -->
-    <div class="chart-container">
-      <h3>📈 Всего выгружено по клиентам</h3>
-      <canvas id="clientsUnloadChart"></canvas>
-    </div>
-
-    <!-- График скорости выгрузки -->
-    <div class="chart-container">
-      <h3>📈 Скорость выгрузки по дням</h3>
-      <canvas id="unloadChart"></canvas>
-    </div>
-
-    <!-- График скорости размещения -->
-    <div class="chart-container">
-      <h3>📈 Скорость размещения по дням</h3>
-      <canvas id="placementChart"></canvas>
-    </div>
+    <!-- Графики -->
+    <div class="chart-container"><h3>📊 Выгружено по дням</h3><div class="date-range-filter" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px"><div class="input-group"><label>С даты</label><input type="date" id="chartDateFrom"></div><div class="input-group"><label>По дату</label><input type="date" id="chartDateTo"></div><button class="btn btn-outline" id="applyChartDateFilter">Применить</button><button class="btn btn-outline" id="resetChartDateFilter">Сбросить</button></div><canvas id="dailyClientsChart"></canvas></div>
+    <div class="chart-container"><h3>📈 Всего по клиентам</h3><canvas id="clientsUnloadChart"></canvas></div>
+    <div class="chart-container"><h3>📈 Скорость выгрузки</h3><canvas id="unloadChart"></canvas></div>
+    <div class="chart-container"><h3>📈 Скорость размещения</h3><canvas id="placementChart"></canvas></div>
   </div>
 
-  <!-- Кнопки сброса -->
   <div class="footer-actions">
-    <button class="btn btn-danger" id="resetCurrentTabBtn">🗑️ Сбросить данные текущей вкладки</button>
-    <button class="btn btn-danger" id="resetAllDataBtn">⚠️ Сбросить ВСЕ данные</button>
+    <button class="btn btn-danger" id="resetCurrentTabBtn">🗑️ Сбросить текущие</button>
+    <button class="btn btn-danger" id="resetAllDataBtn">⚠️ Сбросить ВСЕ</button>
   </div>
 </div>
 
-<!-- Модальное окно -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <h3 id="modalTitle">Введите данные</h3>
-    <div id="modalContent"></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" id="modalCancelBtn">Отмена</button>
-      <button class="btn btn-primary" id="modalConfirmBtn">Подтвердить</button>
-    </div>
-  </div>
-</div>
-
-<div id="notificationArea" style="position: fixed; top: 20px; right: 20px; z-index: 999;"></div>
+<div class="modal-overlay" id="modalOverlay"><div class="modal"><h3 id="modalTitle"></h3><div id="modalContent"></div><div class="modal-actions"><button class="btn btn-outline" id="modalCancelBtn">Отмена</button><button class="btn btn-primary" id="modalConfirmBtn">Подтвердить</button></div></div></div>
+<div id="notificationArea"></div>
 
 <script>
-  (function(){
-    "use strict";
+(function(){
+  const STORAGE_KEY_TYRES = 'tyreWheelDashboard_tyres_v17';
+  const STORAGE_KEY_WHEELS = 'tyreWheelDashboard_wheels_v17';
+  const NORMS_KEY = 'tyreWheelDashboard_norms';
+  
+  const CLIENTS = ['РВБ', 'ОЗОН', 'ЯНДЕКС'];
+  const CLIENT_COLORS = { 'РВБ': '#a855f7', 'ОЗОН': '#0ea5e9', 'ЯНДЕКС': '#fde047' };
+  
+  let currentMainTab = 'operations';
+  let currentProduct = 'tyres';
+  let tyresRecords = [];
+  let wheelsRecords = [];
+  let norms = { unload: 60, placement: 40 };
+  
+  let currentYear = new Date().getFullYear();
+  let currentMonth = new Date().getMonth();
+  let selectedDate = null;
+  
+  let unloadChartInstance = null, placementChartInstance = null, clientsChartInstance = null, dailyClientsChartInstance = null;
+  let historySearchTerm = '', chartDateFrom = '', chartDateTo = '';
 
-    const STORAGE_KEY_TYRES = 'tyreWheelDashboard_tyres_v15';
-    const STORAGE_KEY_WHEELS = 'tyreWheelDashboard_wheels_v15';
-    const NORMS_KEY = 'tyreWheelDashboard_norms';
-    const BACKUP_FILE_NAME = 'tyre_wheel_backup.json';
-    
-    const CLIENTS = ['РВБ', 'ОЗОН', 'ЯНДЕКС'];
-    const CLIENT_COLORS = {
-      'РВБ': '#a855f7',
-      'ОЗОН': '#0ea5e9',
-      'ЯНДЕКС': '#fde047'
-    };
-    
-    let currentMainTab = 'operations';
-    let currentProduct = 'tyres';
-    let tyresRecords = [];
-    let wheelsRecords = [];
-    let norms = { unload: 60, placement: 40 };
-    
-    let unloadChartInstance = null;
-    let placementChartInstance = null;
-    let clientsChartInstance = null;
-    let dailyClientsChartInstance = null;
-    let weeklyChartInstance = null;
-    
-    let historySearchTerm = '';
-    let chartDateFrom = '';
-    let chartDateTo = '';
-    let currentWeekOffset = 0;
-
-    function showNotification(message, isSuccess = false) {
-      const container = document.getElementById('notificationArea');
-      const toast = document.createElement('div');
-      toast.className = 'toast-notification' + (isSuccess ? ' success' : '');
-      toast.textContent = message;
-      container.appendChild(toast);
-      setTimeout(() => toast.remove(), 4000);
-    }
-
-    function calculateSpeed(quantity, minutes) {
-      if (!quantity || !minutes || minutes === 0) return 0;
-      return (quantity / minutes) * 60;
-    }
-
-    function getSpeedClass(speed, type) {
-      const norm = type === 'unload' ? norms.unload : norms.placement;
-      if (speed >= norm * 1.1) return 'speed-fast';
-      if (speed >= norm * 0.9) return 'speed-normal';
-      return 'speed-slow';
-    }
-
-    function getCurrentRecords() {
-      return currentProduct === 'tyres' ? tyresRecords : wheelsRecords;
-    }
-
-    function setCurrentRecords(newRecords) {
-      if (currentProduct === 'tyres') {
-        tyresRecords = newRecords;
-      } else {
-        wheelsRecords = newRecords;
-      }
-    }
-
-    function getWeekRange(offset = 0) {
-      const now = new Date();
-      const dayOfWeek = now.getDay() || 7;
-      const monday = new Date(now);
-      monday.setDate(now.getDate() - dayOfWeek + 1 + (offset * 7));
-      monday.setHours(0, 0, 0, 0);
-      
-      const sunday = new Date(monday);
-      sunday.setDate(monday.getDate() + 6);
-      sunday.setHours(23, 59, 59, 999);
-      
-      return { start: monday, end: sunday };
-    }
-
-    function formatWeekRange(offset) {
-      const { start, end } = getWeekRange(offset);
-      return `${formatDate(start.toISOString().slice(0,10))} — ${formatDate(end.toISOString().slice(0,10))}`;
-    }
-
-    function loadAllData() {
-      const storedTyres = localStorage.getItem(STORAGE_KEY_TYRES);
-      tyresRecords = storedTyres ? JSON.parse(storedTyres) : [];
-      
-      const storedWheels = localStorage.getItem(STORAGE_KEY_WHEELS);
-      wheelsRecords = storedWheels ? JSON.parse(storedWheels) : [];
-      
-      const storedNorms = localStorage.getItem(NORMS_KEY);
-      if (storedNorms) norms = JSON.parse(storedNorms);
-      
-      saveAllToStorage();
-    }
-
-    function saveCurrentToStorage() {
-      const key = currentProduct === 'tyres' ? STORAGE_KEY_TYRES : STORAGE_KEY_WHEELS;
-      localStorage.setItem(key, JSON.stringify(getCurrentRecords()));
-    }
-
-    function saveAllToStorage() {
-      localStorage.setItem(STORAGE_KEY_TYRES, JSON.stringify(tyresRecords));
-      localStorage.setItem(STORAGE_KEY_WHEELS, JSON.stringify(wheelsRecords));
-    }
-
-    function saveNorms() {
-      localStorage.setItem(NORMS_KEY, JSON.stringify(norms));
-    }
-
-    function saveAllDataToFile() {
-      const allData = {
-        version: '1.0',
-        exportDate: new Date().toISOString(),
-        tyres: tyresRecords,
-        wheels: wheelsRecords,
-        norms: norms
-      };
-      
-      const jsonStr = JSON.stringify(allData, null, 2);
-      const blob = new Blob([jsonStr], { type: 'application/json' });
-      const link = document.createElement('a');
-      const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', BACKUP_FILE_NAME);
-      link.click();
-      URL.revokeObjectURL(url);
-      
-      showNotification('✅ Все данные сохранены в файл ' + BACKUP_FILE_NAME, true);
-    }
-
-    function loadAllDataFromFile(file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const allData = JSON.parse(e.target.result);
-          
-          if (allData.tyres) {
-            tyresRecords = allData.tyres.map(r => ({
-              ...r,
-              id: r.id || Date.now() + Math.random(),
-              docNumbers: r.docNumbers || []
-            }));
-          }
-          
-          if (allData.wheels) {
-            wheelsRecords = allData.wheels.map(r => ({
-              ...r,
-              id: r.id || Date.now() + Math.random(),
-              docNumbers: r.docNumbers || []
-            }));
-          }
-          
-          if (allData.norms) {
-            norms = allData.norms;
-          }
-          
-          saveAllToStorage();
-          saveNorms();
-          refreshUI();
-          
-          const totalRecords = tyresRecords.length + wheelsRecords.length;
-          showNotification(`✅ Загружено ${totalRecords} записей`, true);
-        } catch (error) {
-          console.error('Load error:', error);
-          showNotification('❌ Ошибка при загрузке файла');
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function refreshUI() {
-      if (currentMainTab === 'operations') {
-        updateCards();
-        renderHistoryTable();
-      } else {
-        updateAnalytics();
-      }
-    }
-
-    function updateCards() {
-      const records = getCurrentRecords();
-      const totalUnloaded = records.reduce((sum, r) => sum + r.quantity, 0);
-      const totalPlaced = records.filter(r => r.placementTime).reduce((sum, r) => sum + r.quantity, 0);
-      
-      document.getElementById('totalUnloaded').textContent = totalUnloaded;
-      document.getElementById('totalPlaced').textContent = totalPlaced;
-      document.getElementById('remainingStock').textContent = totalUnloaded - totalPlaced;
-    }
-
-    function getFilteredRecordsForHistory() {
-      const records = getCurrentRecords();
-      if (!historySearchTerm) return records;
-      
-      const searchLower = historySearchTerm.toLowerCase();
-      return records.filter(r => 
-        r.docNumbers && r.docNumbers.some(num => num.toLowerCase().includes(searchLower))
-      );
-    }
-
-    function renderHistoryTable() {
-      const allRecords = getCurrentRecords().sort((a,b) => new Date(b.unloadDate) - new Date(a.unloadDate));
-      const filteredRecords = getFilteredRecordsForHistory();
-      const sortedFiltered = [...filteredRecords].sort((a,b) => new Date(b.unloadDate) - new Date(a.unloadDate));
-      
-      const historyBody = document.getElementById('historyBody');
-      const searchResultCount = document.getElementById('searchResultCount');
-      const historySearchInput = document.getElementById('historySearchInput');
-      
-      if (historySearchTerm) {
-        searchResultCount.style.display = 'inline';
-        searchResultCount.innerHTML = `<span class="filter-badge">Найдено: ${filteredRecords.length} из ${allRecords.length}</span>`;
-        historySearchInput.style.borderColor = '#3b82f6';
-      } else {
-        searchResultCount.style.display = 'none';
-        historySearchInput.style.borderColor = '#2e3a4a';
-      }
-      
-      if (sortedFiltered.length === 0) {
-        if (historySearchTerm) {
-          historyBody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 30px; color: #6f7d92;">🔍 По запросу ничего не найдено</td></tr>';
-        } else {
-          historyBody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 30px;">Нет записей</td></tr>';
-        }
-        return;
-      }
-      
-      historyBody.innerHTML = sortedFiltered.map(r => {
-        const unloadSpeed = calculateSpeed(r.quantity, r.unloadTime);
-        const placementSpeed = r.placementTime ? calculateSpeed(r.quantity, r.placementTime) : null;
-        
-        const unloadSpeedClass = getSpeedClass(unloadSpeed, 'unload');
-        const placementSpeedClass = placementSpeed ? getSpeedClass(placementSpeed, 'placement') : '';
-        
-        const clientClass = r.client === 'РВБ' ? 'rvb' : (r.client === 'ОЗОН' ? 'ozon' : 'yandex');
-        
-        let docNumbersHtml = '';
-        if (r.docNumbers && r.docNumbers.length > 0) {
-          const docNumbersWithHighlight = r.docNumbers.map(num => {
-            if (historySearchTerm && num.toLowerCase().includes(historySearchTerm.toLowerCase())) {
-              return `<span class="doc-number-tag" style="background: #3b82f6; color: white; text-shadow: 0 0 8px #3b82f6;">${num}</span>`;
-            }
-            return `<span class="doc-number-tag">${num}</span>`;
-          });
-          docNumbersHtml = `<div class="doc-numbers-list">${docNumbersWithHighlight.join('')}</div>`;
-        } else {
-          docNumbersHtml = '—';
-        }
-        
-        const status = r.placementTime ? '✅ Размещено' : (r.docNumbers?.length ? '📋 Есть номера' : '⏳ Без номеров');
-        
-        return `
-          <tr>
-            <td>${formatDate(r.unloadDate)}</td>
-            <td><span class="client-badge ${clientClass}">${r.client}</span></td>
-            <td>${r.quantity}</td>
-            <td>${r.unloadTime} мин</td>
-            <td><span class="speed-badge ${unloadSpeedClass}">${Math.round(unloadSpeed)} шт/ч</span></td>
-            <td>${docNumbersHtml}</td>
-            <td>${r.placementTime ? r.placementTime + ' мин' : '—'}</td>
-            <td>${placementSpeed ? `<span class="speed-badge ${placementSpeedClass}">${Math.round(placementSpeed)} шт/ч</span>` : '—'}</td>
-            <td>${status}</td>
-            <td class="actions-cell">
-              <button class="btn btn-outline btn-icon edit-record-btn" data-id="${r.id}" title="Редактировать">✏️</button>
-              <button class="btn btn-danger btn-icon delete-record-btn" data-id="${r.id}" title="Удалить">🗑️</button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-      
-      document.querySelectorAll('.edit-record-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          openEditModal(btn.dataset.id);
-        });
-      });
-      
-      document.querySelectorAll('.delete-record-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          deleteRecord(btn.dataset.id);
-        });
-      });
-    }
-
-    function formatDate(iso) {
-      if (!iso) return '';
-      const [y,m,d] = iso.split('-');
-      return `${d}.${m}.${y}`;
-    }
-
-    function deleteRecord(recordId) {
-      if (!confirm('Удалить эту запись?')) return;
-      
-      const records = getCurrentRecords();
-      const index = records.findIndex(r => r.id == recordId);
-      if (index !== -1) {
-        records.splice(index, 1);
-        setCurrentRecords(records);
-        saveCurrentToStorage();
-        refreshUI();
-        showNotification('✅ Запись удалена', true);
-      }
-    }
-
-    function openEditModal(recordId) {
-      const records = getCurrentRecords();
-      const record = records.find(r => r.id == recordId);
-      if (!record) return;
-      
-      modalTitle.textContent = 'Редактировать запись';
-      modalContent.innerHTML = `
-        <div class="input-group modal-input">
-          <label>Дата выгрузки</label>
-          <input type="date" id="editUnloadDate" value="${record.unloadDate}">
-        </div>
-        <div class="input-group modal-input">
-          <label>Клиент</label>
-          <select id="editClient">
-            ${CLIENTS.map(c => `<option value="${c}" ${record.client === c ? 'selected' : ''}>${c}</option>`).join('')}
-          </select>
-        </div>
-        <div class="input-group modal-input">
-          <label>Количество</label>
-          <input type="number" id="editQuantity" min="1" value="${record.quantity}">
-        </div>
-        <div class="input-group modal-input">
-          <label>Время выгрузки (мин)</label>
-          <input type="number" id="editUnloadTime" min="1" value="${record.unloadTime}">
-        </div>
-        <div class="input-group modal-input">
-          <label>Номера документов (через запятую)</label>
-          <textarea id="editDocNumbers" rows="2">${(record.docNumbers || []).join(', ')}</textarea>
-        </div>
-        <div class="input-group modal-input">
-          <label>Время размещения (мин, оставьте пустым если не размещено)</label>
-          <input type="number" id="editPlacementTime" min="1" value="${record.placementTime || ''}">
-        </div>
-      `;
-      
-      modalCallback = () => {
-        const newDate = document.getElementById('editUnloadDate').value;
-        const newClient = document.getElementById('editClient').value;
-        const newQuantity = parseInt(document.getElementById('editQuantity').value);
-        const newUnloadTime = parseInt(document.getElementById('editUnloadTime').value);
-        const docNumbersText = document.getElementById('editDocNumbers').value.trim();
-        const placementTimeVal = document.getElementById('editPlacementTime').value;
-        
-        if (!newDate) { showNotification('Выберите дату'); return; }
-        if (!newQuantity || newQuantity <= 0) { showNotification('Укажите количество'); return; }
-        if (!newUnloadTime || newUnloadTime <= 0) { showNotification('Укажите время выгрузки'); return; }
-        
-        record.unloadDate = newDate;
-        record.client = newClient;
-        record.quantity = newQuantity;
-        record.unloadTime = newUnloadTime;
-        record.docNumbers = docNumbersText ? docNumbersText.split(',').map(n => n.trim()).filter(n => n) : [];
-        record.placementTime = placementTimeVal ? parseInt(placementTimeVal) : null;
-        
-        setCurrentRecords(records);
-        saveCurrentToStorage();
-        refreshUI();
-        closeModal();
-        showNotification('✅ Запись обновлена', true);
-      };
-      
-      modalOverlay.style.display = 'flex';
-    }
-
-    function updateAnalytics() {
-      const records = currentProduct === 'tyres' ? tyresRecords : wheelsRecords;
-      
-      updateClientStats(records);
-      
-      document.getElementById('unloadNorm').value = norms.unload;
-      document.getElementById('placementNorm').value = norms.placement;
-      document.getElementById('unloadNormDisplay').textContent = `${norms.unload} шт/час`;
-      document.getElementById('placementNormDisplay').textContent = `${norms.placement} шт/час`;
-      
-      const unloadOps = records.length;
-      const unloadSpeeds = records.map(r => calculateSpeed(r.quantity, r.unloadTime));
-      const avgUnloadSpeed = unloadSpeeds.length ? unloadSpeeds.reduce((a,b) => a + b, 0) / unloadSpeeds.length : 0;
-      const unloadDeviation = avgUnloadSpeed ? ((avgUnloadSpeed - norms.unload) / norms.unload * 100) : -100;
-      
-      document.getElementById('unloadTotalOps').textContent = unloadOps;
-      document.getElementById('unloadAvgSpeed').textContent = `${Math.round(avgUnloadSpeed)} шт/час`;
-      document.getElementById('unloadDeviation').textContent = `${unloadDeviation > 0 ? '+' : ''}${Math.round(unloadDeviation)}%`;
-      document.getElementById('unloadDeviation').className = `metric-value ${unloadDeviation >= 0 ? 'positive' : 'negative'}`;
-      
-      const placementRecords = records.filter(r => r.placementTime);
-      const placementOps = placementRecords.length;
-      const placementSpeeds = placementRecords.map(r => calculateSpeed(r.quantity, r.placementTime));
-      const avgPlacementSpeed = placementSpeeds.length ? placementSpeeds.reduce((a,b) => a + b, 0) / placementSpeeds.length : 0;
-      const placementDeviation = avgPlacementSpeed ? ((avgPlacementSpeed - norms.placement) / norms.placement * 100) : -100;
-      
-      document.getElementById('placementTotalOps').textContent = placementOps;
-      document.getElementById('placementAvgSpeed').textContent = `${Math.round(avgPlacementSpeed)} шт/час`;
-      document.getElementById('placementDeviation').textContent = `${placementDeviation > 0 ? '+' : ''}${Math.round(placementDeviation)}%`;
-      document.getElementById('placementDeviation').className = `metric-value ${placementDeviation >= 0 ? 'positive' : 'negative'}`;
-      
-      document.getElementById('weekRangeDisplay').textContent = formatWeekRange(currentWeekOffset);
-      
-      renderCharts(records);
-    }
-
-    function updateClientStats(records) {
-      const stats = {
-        'РВБ': { unloaded: 0, placed: 0, placementSpeeds: [] },
-        'ОЗОН': { unloaded: 0, placed: 0, placementSpeeds: [] },
-        'ЯНДЕКС': { unloaded: 0, placed: 0, placementSpeeds: [] }
-      };
-      
-      records.forEach(r => {
-        if (stats[r.client]) {
-          stats[r.client].unloaded += r.quantity;
-          if (r.placementTime) {
-            stats[r.client].placed += r.quantity;
-            stats[r.client].placementSpeeds.push(calculateSpeed(r.quantity, r.placementTime));
-          }
-        }
-      });
-      
-      document.getElementById('rvbUnloaded').textContent = stats['РВБ'].unloaded;
-      document.getElementById('rvbPlaced').textContent = stats['РВБ'].placed;
-      document.getElementById('rvbRemaining').textContent = stats['РВБ'].unloaded - stats['РВБ'].placed;
-      const rvbAvg = stats['РВБ'].placementSpeeds.length 
-        ? Math.round(stats['РВБ'].placementSpeeds.reduce((a,b) => a + b, 0) / stats['РВБ'].placementSpeeds.length) 
-        : 0;
-      document.getElementById('rvbAvgPlacementSpeed').textContent = rvbAvg + ' шт/ч';
-      
-      document.getElementById('ozonUnloaded').textContent = stats['ОЗОН'].unloaded;
-      document.getElementById('ozonPlaced').textContent = stats['ОЗОН'].placed;
-      document.getElementById('ozonRemaining').textContent = stats['ОЗОН'].unloaded - stats['ОЗОН'].placed;
-      const ozonAvg = stats['ОЗОН'].placementSpeeds.length 
-        ? Math.round(stats['ОЗОН'].placementSpeeds.reduce((a,b) => a + b, 0) / stats['ОЗОН'].placementSpeeds.length) 
-        : 0;
-      document.getElementById('ozonAvgPlacementSpeed').textContent = ozonAvg + ' шт/ч';
-      
-      document.getElementById('yandexUnloaded').textContent = stats['ЯНДЕКС'].unloaded;
-      document.getElementById('yandexPlaced').textContent = stats['ЯНДЕКС'].placed;
-      document.getElementById('yandexRemaining').textContent = stats['ЯНДЕКС'].unloaded - stats['ЯНДЕКС'].placed;
-      const yandexAvg = stats['ЯНДЕКС'].placementSpeeds.length 
-        ? Math.round(stats['ЯНДЕКС'].placementSpeeds.reduce((a,b) => a + b, 0) / stats['ЯНДЕКС'].placementSpeeds.length) 
-        : 0;
-      document.getElementById('yandexAvgPlacementSpeed').textContent = yandexAvg + ' шт/ч';
-    }
-
-    function getFilteredRecordsForChart(records) {
-      let filtered = [...records];
-      
-      if (chartDateFrom) {
-        filtered = filtered.filter(r => r.unloadDate >= chartDateFrom);
-      }
-      if (chartDateTo) {
-        filtered = filtered.filter(r => r.unloadDate <= chartDateTo);
-      }
-      
-      return filtered;
-    }
-
-    function renderCharts(records) {
-      const filteredRecords = getFilteredRecordsForChart(records);
-      const sorted = [...filteredRecords].sort((a,b) => a.unloadDate.localeCompare(b.unloadDate));
-      
-      renderWeeklyChart(records);
-      
-      const dailyCtx = document.getElementById('dailyClientsChart').getContext('2d');
-      if (dailyClientsChartInstance) dailyClientsChartInstance.destroy();
-      
-      const dailyData = {};
-      sorted.forEach(r => {
-        if (!dailyData[r.unloadDate]) {
-          dailyData[r.unloadDate] = { 'РВБ': 0, 'ОЗОН': 0, 'ЯНДЕКС': 0 };
-        }
-        dailyData[r.unloadDate][r.client] += r.quantity;
-      });
-      
-      const dates = Object.keys(dailyData).sort();
-      
-      dailyClientsChartInstance = new Chart(dailyCtx, {
-        type: 'bar',
-        data: {
-          labels: dates.map(d => formatDate(d)),
-          datasets: CLIENTS.map(client => ({
-            label: client,
-            data: dates.map(d => dailyData[d][client]),
-            backgroundColor: CLIENT_COLORS[client],
-            borderRadius: 6
-          }))
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          plugins: {
-            legend: { labels: { color: '#cbd5e1' } },
-            tooltip: {
-              mode: 'index',
-              intersect: false,
-              backgroundColor: '#1e293b',
-              titleColor: '#f1f5f9'
-            }
-          },
-          scales: {
-            x: {
-              stacked: false,
-              ticks: { color: '#9aa9bb', maxRotation: 45 },
-              grid: { color: '#2a3647' }
-            },
-            y: {
-              stacked: false,
-              beginAtZero: true,
-              ticks: { color: '#9aa9bb' },
-              grid: { color: '#2a3647' }
-            }
-          }
-        }
-      });
-      
-      const clientsCtx = document.getElementById('clientsUnloadChart').getContext('2d');
-      if (clientsChartInstance) clientsChartInstance.destroy();
-      
-      const clientTotals = {
-        'РВБ': filteredRecords.filter(r => r.client === 'РВБ').reduce((s, r) => s + r.quantity, 0),
-        'ОЗОН': filteredRecords.filter(r => r.client === 'ОЗОН').reduce((s, r) => s + r.quantity, 0),
-        'ЯНДЕКС': filteredRecords.filter(r => r.client === 'ЯНДЕКС').reduce((s, r) => s + r.quantity, 0)
-      };
-      
-      clientsChartInstance = new Chart(clientsCtx, {
-        type: 'bar',
-        data: {
-          labels: CLIENTS,
-          datasets: [{
-            label: 'Выгружено (шт)',
-            data: [clientTotals['РВБ'], clientTotals['ОЗОН'], clientTotals['ЯНДЕКС']],
-            backgroundColor: ['#a855f7', '#0ea5e9', '#fde047'],
-            borderRadius: 8
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { labels: { color: '#cbd5e1' } } },
-          scales: {
-            x: { ticks: { color: '#9aa9bb' }, grid: { color: '#2a3647' } },
-            y: { ticks: { color: '#9aa9bb' }, grid: { color: '#2a3647' }, beginAtZero: true }
-          }
-        }
-      });
-      
-      const unloadCtx = document.getElementById('unloadChart').getContext('2d');
-      if (unloadChartInstance) unloadChartInstance.destroy();
-      
-      unloadChartInstance = new Chart(unloadCtx, {
-        type: 'line',
-        data: {
-          labels: sorted.map(r => formatDate(r.unloadDate)),
-          datasets: [{
-            label: 'Скорость выгрузки (шт/час)',
-            data: sorted.map(r => calculateSpeed(r.quantity, r.unloadTime)),
-            borderColor: '#3b82f6',
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            tension: 0.2,
-            fill: true
-          }, {
-            label: 'Норматив',
-            data: sorted.map(() => norms.unload),
-            borderColor: '#10b981',
-            borderDash: [5, 5],
-            borderWidth: 2,
-            pointRadius: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { labels: { color: '#cbd5e1' } } },
-          scales: {
-            x: { ticks: { color: '#9aa9bb' }, grid: { color: '#2a3647' } },
-            y: { ticks: { color: '#9aa9bb' }, grid: { color: '#2a3647' } }
-          }
-        }
-      });
-      
-      const placementCtx = document.getElementById('placementChart').getContext('2d');
-      if (placementChartInstance) placementChartInstance.destroy();
-      
-      const placementData = sorted.filter(r => r.placementTime);
-      
-      placementChartInstance = new Chart(placementCtx, {
-        type: 'line',
-        data: {
-          labels: placementData.map(r => formatDate(r.unloadDate)),
-          datasets: [{
-            label: 'Скорость размещения (шт/час)',
-            data: placementData.map(r => calculateSpeed(r.quantity, r.placementTime)),
-            borderColor: '#f59e0b',
-            backgroundColor: 'rgba(245, 158, 11, 0.1)',
-            tension: 0.2,
-            fill: true
-          }, {
-            label: 'Норматив',
-            data: placementData.map(() => norms.placement),
-            borderColor: '#10b981',
-            borderDash: [5, 5],
-            borderWidth: 2,
-            pointRadius: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { labels: { color: '#cbd5e1' } } },
-          scales: {
-            x: { ticks: { color: '#9aa9bb' }, grid: { color: '#2a3647' } },
-            y: { ticks: { color: '#9aa9bb' }, grid: { color: '#2a3647' } }
-          }
-        }
-      });
-    }
-
-    function renderWeeklyChart(records) {
-      const { start, end } = getWeekRange(currentWeekOffset);
-      
-      const weekRecords = records.filter(r => {
-        const date = new Date(r.unloadDate);
-        return date >= start && date <= end;
-      });
-      
-      const dailyTotals = {};
-      const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-      
-      for (let i = 0; i < 7; i++) {
-        const day = new Date(start);
-        day.setDate(start.getDate() + i);
-        const dateStr = day.toISOString().slice(0,10);
-        dailyTotals[dateStr] = { 'РВБ': 0, 'ОЗОН': 0, 'ЯНДЕКС': 0 };
-      }
-      
-      weekRecords.forEach(r => {
-        if (dailyTotals[r.unloadDate]) {
-          dailyTotals[r.unloadDate][r.client] += r.quantity;
-        }
-      });
-      
-      const sortedDates = Object.keys(dailyTotals).sort();
-      
-      const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
-      if (weeklyChartInstance) weeklyChartInstance.destroy();
-      
-      weeklyChartInstance = new Chart(weeklyCtx, {
-        type: 'bar',
-        data: {
-          labels: sortedDates.map(d => {
-            const date = new Date(d);
-            return days[date.getDay() === 0 ? 6 : date.getDay() - 1];
-          }),
-          datasets: CLIENTS.map(client => ({
-            label: client,
-            data: sortedDates.map(d => dailyTotals[d][client]),
-            backgroundColor: CLIENT_COLORS[client],
-            borderRadius: 6
-          }))
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          plugins: {
-            legend: { labels: { color: '#cbd5e1' } },
-            tooltip: {
-              mode: 'index',
-              intersect: false,
-              backgroundColor: '#1e293b',
-              titleColor: '#f1f5f9',
-              callbacks: {
-                title: (items) => {
-                  const idx = items[0].dataIndex;
-                  return formatDate(sortedDates[idx]);
-                }
-              }
-            }
-          },
-          scales: {
-            x: {
-              stacked: false,
-              ticks: { color: '#9aa9bb' },
-              grid: { color: '#2a3647' }
-            },
-            y: {
-              stacked: false,
-              beginAtZero: true,
-              ticks: { color: '#9aa9bb' },
-              grid: { color: '#2a3647' }
-            }
-          }
-        }
-      });
-    }
-
-    function addUnload() {
-      const date = document.getElementById('unloadDate').value;
-      const client = document.getElementById('unloadClient').value;
-      const quantity = parseInt(document.getElementById('unloadQuantity').value);
-      const time = parseInt(document.getElementById('unloadTime').value);
-      
-      if (!date) { showNotification('Выберите дату'); return; }
-      if (!quantity || quantity <= 0) { showNotification('Укажите количество'); return; }
-      if (!time || time <= 0) { showNotification('Укажите время'); return; }
-      
-      const records = getCurrentRecords();
-      records.push({
-        id: Date.now() + Math.random(),
-        unloadDate: date,
-        client,
-        quantity,
-        unloadTime: time,
-        docNumbers: [],
-        placementTime: null
-      });
-      
-      setCurrentRecords(records);
-      saveCurrentToStorage();
-      refreshUI();
-      
-      document.getElementById('unloadQuantity').value = 0;
-      document.getElementById('unloadTime').value = 0;
-      showNotification(`✅ Выгрузка ${quantity} шт. для ${client} добавлена`, true);
-    }
-
-    function searchForDoc() {
-      const searchTerm = document.getElementById('docSearch').value.toLowerCase().trim();
-      const filterDate = document.getElementById('docDateFilter').value;
-      const records = getCurrentRecords();
-      
-      let filtered = records;
-      if (filterDate) filtered = filtered.filter(r => r.unloadDate === filterDate);
-      if (searchTerm) {
-        filtered = filtered.filter(r => 
-          r.quantity.toString().includes(searchTerm) ||
-          formatDate(r.unloadDate).includes(searchTerm) ||
-          r.client.toLowerCase().includes(searchTerm)
-        );
-      }
-      
-      const resultsDiv = document.getElementById('docSearchResults');
-      if (filtered.length === 0) {
-        resultsDiv.innerHTML = '<div style="padding: 16px; text-align: center; color: #6f7d92;">Ничего не найдено</div>';
-        return;
-      }
-      
-      resultsDiv.innerHTML = filtered.map(r => {
-        const speed = calculateSpeed(r.quantity, r.unloadTime);
-        const docsCount = r.docNumbers?.length || 0;
-        return `
-          <div class="result-item">
-            <div>
-              <strong>${r.client} — ${r.quantity} шт.</strong> от ${formatDate(r.unloadDate)}<br>
-              <small>Скорость: ${Math.round(speed)} шт/ч | Номеров: ${docsCount}</small>
-            </div>
-            <button class="btn btn-outline btn-sm assign-doc-btn" data-id="${r.id}">${docsCount ? 'Изменить' : 'Добавить'} номера</button>
-          </div>
-        `;
-      }).join('');
-      
-      document.querySelectorAll('.assign-doc-btn').forEach(btn => {
-        btn.addEventListener('click', () => openAssignDocModal(btn.dataset.id));
-      });
-    }
-
-    let modalCallback = null;
-    const modalOverlay = document.getElementById('modalOverlay');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalContent = document.getElementById('modalContent');
-
-    function openAssignDocModal(recordId) {
-      const records = getCurrentRecords();
-      const record = records.find(r => r.id == recordId);
-      if (!record) return;
-      
-      modalTitle.textContent = 'Присвоить номера документов';
-      modalContent.innerHTML = `
-        <p>Клиент: ${record.client}</p>
-        <p>Количество: ${record.quantity} шт.</p>
-        <p>Дата выгрузки: ${formatDate(record.unloadDate)}</p>
-        <div class="input-group modal-input">
-          <label>Номера документов (через запятую)</label>
-          <textarea id="docNumbersInput" rows="3" placeholder="Например: ДОК-001, ДОК-002">${(record.docNumbers || []).join(', ')}</textarea>
-        </div>
-      `;
-      
-      modalCallback = () => {
-        const docNumbersText = document.getElementById('docNumbersInput').value.trim();
-        let docNumbers = [];
-        if (docNumbersText) {
-          docNumbers = docNumbersText.split(',').map(n => n.trim()).filter(n => n);
-        }
-        
-        record.docNumbers = docNumbers;
-        setCurrentRecords(records);
-        saveCurrentToStorage();
-        refreshUI();
-        closeModal();
-        showNotification(`✅ Номера документов сохранены (${docNumbers.length} шт.)`, true);
-        searchForDoc();
-      };
-      
-      modalOverlay.style.display = 'flex';
-    }
-
-    function searchForPlacement() {
-      const searchTerm = document.getElementById('placementSearch').value.toLowerCase().trim();
-      const records = getCurrentRecords();
-      
-      let filtered = records.filter(r => r.docNumbers?.length > 0 && !r.placementTime);
-      if (searchTerm) {
-        filtered = filtered.filter(r => 
-          r.docNumbers.some(n => n.toLowerCase().includes(searchTerm)) ||
-          r.client.toLowerCase().includes(searchTerm)
-        );
-      }
-      
-      const resultsDiv = document.getElementById('placementResults');
-      if (filtered.length === 0) {
-        resultsDiv.innerHTML = '<div style="padding: 16px; text-align: center; color: #6f7d92;">Ничего не найдено</div>';
-        return;
-      }
-      
-      resultsDiv.innerHTML = filtered.map(r => `
-        <div class="result-item">
-          <div>
-            <strong>${r.client} — ${r.docNumbers.join(', ')}</strong> — ${r.quantity} шт.<br>
-            <small>Выгружено: ${formatDate(r.unloadDate)}</small>
-          </div>
-          <button class="btn btn-success btn-sm add-placement-btn" data-id="${r.id}">Разместить</button>
-        </div>
-      `).join('');
-      
-      document.querySelectorAll('.add-placement-btn').forEach(btn => {
-        btn.addEventListener('click', () => openPlacementModal(btn.dataset.id));
-      });
-    }
-
-    function openPlacementModal(recordId) {
-      const records = getCurrentRecords();
-      const record = records.find(r => r.id == recordId);
-      if (!record) return;
-      
-      modalTitle.textContent = 'Указать время размещения';
-      modalContent.innerHTML = `
-        <p>Клиент: ${record.client}</p>
-        <p>Номера документов: ${record.docNumbers.join(', ')}</p>
-        <p>Количество: ${record.quantity} шт.</p>
-        <div class="input-group modal-input">
-          <label>Время размещения (мин)</label>
-          <input type="number" id="placementTimeInput" min="1" placeholder="Время в минутах">
-        </div>
-      `;
-      
-      modalCallback = () => {
-        const placementTime = parseInt(document.getElementById('placementTimeInput').value);
-        if (!placementTime || placementTime <= 0) {
-          showNotification('Укажите время размещения');
-          return;
-        }
-        
-        record.placementTime = placementTime;
-        setCurrentRecords(records);
-        saveCurrentToStorage();
-        refreshUI();
-        closeModal();
-        showNotification(`✅ Размещение для ${record.client} завершено за ${placementTime} мин.`, true);
-        searchForPlacement();
-      };
-      
-      modalOverlay.style.display = 'flex';
-    }
-
-    function closeModal() {
-      modalOverlay.style.display = 'none';
-      modalCallback = null;
-    }
-
-    function exportToCSV() {
-      const records = getCurrentRecords();
-      if (records.length === 0) {
-        showNotification('Нет данных для экспорта');
-        return;
-      }
-      
-      const headers = ['Дата выгрузки', 'Клиент', 'Количество', 'Время выгрузки (мин)', 'Номера документов', 'Время размещения (мин)'];
-      
-      const rows = records.map(r => [
-        r.unloadDate,
-        r.client,
-        r.quantity,
-        r.unloadTime,
-        (r.docNumbers || []).join(';'),
-        r.placementTime || ''
-      ]);
-      
-      const csvContent = [
-        headers.join(','),
-        ...rows.map(row => row.map(cell => {
-          if (typeof cell === 'string' && (cell.includes(',') || cell.includes(';') || cell.includes('"'))) {
-            return `"${cell.replace(/"/g, '""')}"`;
-          }
-          return cell;
-        }).join(','))
-      ].join('\n');
-      
-      const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', `${currentProduct}_export_${new Date().toISOString().slice(0,10)}.csv`);
-      link.click();
-      URL.revokeObjectURL(url);
-      
-      showNotification('✅ Данные экспортированы в CSV', true);
-    }
-
-    function importFromCSV(file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const text = e.target.result;
-          const lines = text.split('\n').filter(l => l.trim());
-          if (lines.length < 2) {
-            showNotification('Файл пуст или содержит только заголовки');
-            return;
-          }
-          
-          const records = getCurrentRecords();
-          let imported = 0;
-          
-          for (let i = 1; i < lines.length; i++) {
-            const values = parseCSVLine(lines[i]);
-            if (values.length >= 4) {
-              const unloadDate = values[0]?.trim();
-              const client = values[1]?.trim() || 'РВБ';
-              const quantity = parseInt(values[2]) || 0;
-              const unloadTime = parseInt(values[3]) || 0;
-              
-              let docNumbers = [];
-              if (values[4] && values[4].trim()) {
-                docNumbers = values[4].trim().split(';').map(n => n.trim()).filter(n => n);
-              }
-              
-              let placementTime = null;
-              if (values[5] && values[5].trim()) {
-                placementTime = parseInt(values[5]) || null;
-              }
-              
-              if (unloadDate && quantity > 0 && unloadTime > 0) {
-                records.push({
-                  id: Date.now() + Math.random() + i,
-                  unloadDate,
-                  client: CLIENTS.includes(client) ? client : 'РВБ',
-                  quantity,
-                  unloadTime,
-                  docNumbers,
-                  placementTime
-                });
-                imported++;
-              }
-            }
-          }
-          
-          setCurrentRecords(records);
-          saveCurrentToStorage();
-          refreshUI();
-          showNotification(`✅ Импортировано ${imported} записей`, true);
-        } catch (error) {
-          console.error('Import error:', error);
-          showNotification('Ошибка при импорте файла');
-        }
-      };
-      reader.readAsText(file, 'UTF-8');
-    }
-
-    function parseCSVLine(line) {
-      const result = [];
-      let current = '';
-      let inQuotes = false;
-      
-      for (let i = 0; i < line.length; i++) {
-        const char = line[i];
-        if (char === '"') {
-          if (inQuotes && line[i + 1] === '"') {
-            current += '"';
-            i++;
-          } else {
-            inQuotes = !inQuotes;
-          }
-        } else if (char === ',' && !inQuotes) {
-          result.push(current);
-          current = '';
-        } else {
-          current += char;
-        }
-      }
-      result.push(current);
-      
-      return result.map(v => {
-        if (v.startsWith('"') && v.endsWith('"')) {
-          return v.slice(1, -1).replace(/""/g, '"');
-        }
-        return v;
-      });
-    }
-
-    function resetCurrentData() {
-      const productName = currentProduct === 'tyres' ? 'Шины' : 'Диски';
-      if (confirm(`Удалить ВСЕ записи для вкладки "${productName}"?`)) {
-        setCurrentRecords([]);
-        saveCurrentToStorage();
-        historySearchTerm = '';
-        document.getElementById('historySearchInput').value = '';
-        refreshUI();
-        showNotification(`✅ Данные "${productName}" сброшены`, true);
-      }
-    }
-
-    function resetAllData() {
-      if (confirm('⚠️ Удалить ВСЕ записи (и шины, и диски)? Это действие необратимо!')) {
-        tyresRecords = [];
-        wheelsRecords = [];
-        saveAllToStorage();
-        historySearchTerm = '';
-        document.getElementById('historySearchInput').value = '';
-        refreshUI();
-        showNotification('✅ Все данные сброшены', true);
-      }
-    }
-
-    function switchMainTab(tab) {
-      currentMainTab = tab;
-      document.querySelectorAll('[data-tab]').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tab === tab);
-      });
-      
-      if (tab === 'operations') {
-        document.getElementById('operationsView').style.display = 'block';
-        document.getElementById('analyticsView').style.display = 'none';
-      } else {
-        document.getElementById('operationsView').style.display = 'none';
-        document.getElementById('analyticsView').style.display = 'block';
-      }
-      
-      refreshUI();
-    }
-
-    function switchProduct(product) {
-      currentProduct = product;
-      
-      document.querySelectorAll('[data-product]').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.product === product);
-      });
-      document.querySelectorAll('[data-analytics-product]').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.analyticsProduct === product);
-      });
-      
-      historySearchTerm = '';
-      document.getElementById('historySearchInput').value = '';
-      
-      chartDateFrom = document.getElementById('chartDateFrom').value;
-      chartDateTo = document.getElementById('chartDateTo').value;
-      
-      refreshUI();
-    }
-
-    function init() {
-      loadAllData();
-      
-      const today = new Date().toISOString().slice(0,10);
-      document.getElementById('unloadDate').value = today;
-      
-      const twoWeeksAgo = new Date();
-      twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
-      document.getElementById('chartDateFrom').value = twoWeeksAgo.toISOString().slice(0,10);
-      document.getElementById('chartDateTo').value = today;
-      chartDateFrom = twoWeeksAgo.toISOString().slice(0,10);
-      chartDateTo = today;
-      
-      refreshUI();
-
-      document.querySelectorAll('[data-tab]').forEach(btn => {
-        btn.addEventListener('click', () => switchMainTab(btn.dataset.tab));
-      });
-      
-      document.querySelectorAll('[data-product]').forEach(btn => {
-        btn.addEventListener('click', () => switchProduct(btn.dataset.product));
-      });
-      
-      document.querySelectorAll('[data-analytics-product]').forEach(btn => {
-        btn.addEventListener('click', () => switchProduct(btn.dataset.analyticsProduct));
-      });
-      
-      document.getElementById('addUnloadBtn').addEventListener('click', addUnload);
-      document.getElementById('searchDocBtn').addEventListener('click', searchForDoc);
-      document.getElementById('clearDocSearchBtn').addEventListener('click', () => {
-        document.getElementById('docSearch').value = '';
-        document.getElementById('docDateFilter').value = '';
-        document.getElementById('docSearchResults').innerHTML = '';
-      });
-      document.getElementById('searchPlacementBtn').addEventListener('click', searchForPlacement);
-      
-      const historySearchInput = document.getElementById('historySearchInput');
-      const clearHistorySearchBtn = document.getElementById('clearHistorySearchBtn');
-      
-      historySearchInput.addEventListener('input', (e) => {
-        historySearchTerm = e.target.value.trim();
-        renderHistoryTable();
-      });
-      
-      clearHistorySearchBtn.addEventListener('click', () => {
-        historySearchInput.value = '';
-        historySearchTerm = '';
-        renderHistoryTable();
-      });
-      
-      document.getElementById('saveNormsBtn').addEventListener('click', () => {
-        norms.unload = parseInt(document.getElementById('unloadNorm').value) || 60;
-        norms.placement = parseInt(document.getElementById('placementNorm').value) || 40;
-        saveNorms();
-        updateAnalytics();
-        renderHistoryTable();
-        showNotification('✅ Нормативы сохранены', true);
-      });
-      
-      document.getElementById('applyChartDateFilter').addEventListener('click', () => {
-        chartDateFrom = document.getElementById('chartDateFrom').value;
-        chartDateTo = document.getElementById('chartDateTo').value;
-        updateAnalytics();
-      });
-      
-      document.getElementById('resetChartDateFilter').addEventListener('click', () => {
-        const today = new Date().toISOString().slice(0,10);
-        const twoWeeksAgo = new Date();
-        twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
-        
-        document.getElementById('chartDateFrom').value = twoWeeksAgo.toISOString().slice(0,10);
-        document.getElementById('chartDateTo').value = today;
-        chartDateFrom = twoWeeksAgo.toISOString().slice(0,10);
-        chartDateTo = today;
-        updateAnalytics();
-      });
-      
-      document.querySelectorAll('[data-week-offset]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          currentWeekOffset = parseInt(btn.dataset.weekOffset);
-          document.querySelectorAll('[data-week-offset]').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          updateAnalytics();
-        });
-      });
-      
-      document.querySelector('[data-week-offset="0"]').classList.add('active');
-      
-      document.getElementById('exportCSVBtn').addEventListener('click', exportToCSV);
-      document.getElementById('importCSVBtn').addEventListener('click', () => {
-        document.getElementById('csvFileInput').click();
-      });
-      document.getElementById('csvFileInput').addEventListener('change', (e) => {
-        if (e.target.files.length > 0) {
-          importFromCSV(e.target.files[0]);
-          e.target.value = '';
-        }
-      });
-      
-      document.getElementById('saveToFileBtn').addEventListener('click', saveAllDataToFile);
-      document.getElementById('loadFromFileBtn').addEventListener('click', () => {
-        document.getElementById('backupFileInput').click();
-      });
-      document.getElementById('backupFileInput').addEventListener('change', (e) => {
-        if (e.target.files.length > 0) {
-          loadAllDataFromFile(e.target.files[0]);
-          e.target.value = '';
-        }
-      });
-      
-      document.getElementById('modalCancelBtn').addEventListener('click', closeModal);
-      document.getElementById('modalConfirmBtn').addEventListener('click', () => { if (modalCallback) modalCallback(); });
-      modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
-      
-      document.getElementById('resetCurrentTabBtn').addEventListener('click', resetCurrentData);
-      document.getElementById('resetAllDataBtn').addEventListener('click', resetAllData);
-    }
-
-    init();
-  })();
-</script>
-</body>
-</html>
+  function showNotification(msg, isSuccess = false) {
+    const container = document.getElementById('notificationArea');
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification' + (isSuccess ? ' success' : '');
